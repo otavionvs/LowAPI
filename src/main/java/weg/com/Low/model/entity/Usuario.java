@@ -3,8 +3,8 @@ package weg.com.Low.model.entity;
 public class Usuario {
 
     int codigoUsuario;
-    
-        String nome, departamento;
+    String nome, departamento;
+
 
         private void login(){
 
