@@ -1,7 +1,7 @@
 package weg.com.Low.model.entity;
 
 public class Usuario {
-    int id;
+    int codigoUsuario;
     String nome, departamento;
 
     private void login(){
