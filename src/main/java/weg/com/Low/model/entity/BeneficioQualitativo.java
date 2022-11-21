@@ -1,4 +1,4 @@
 package weg.com.Low.model.entity;
 
-public class Proposta {
+public class BeneficioQualitativo {
 }

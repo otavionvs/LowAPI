@@ -7,5 +7,5 @@ public class Pauta {
     int idPauta;
     Date reunicaoComissao;
     String comissaoSelecionada;
-    List<Proposta> propostas;
+    List<DemandaAnalista> propostas;
 }
