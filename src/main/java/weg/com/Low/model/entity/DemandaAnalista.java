@@ -1,13 +1,12 @@
 package weg.com.Low.model.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
 import java.util.Date;
 import java.util.List;
-
+@Entity
 public class DemandaAnalista extends Demanda{
-    int idProposta;
-    String escopoProposta, paybackProposta, parecerComissaoProposta, parecerDGProposta;
-    Date periodoInicioProposta, periodoFimProposta;
-    List<Recurso> recursoProposta;
-    Usuario responsavelProposta;
-    byte anexosProposta;
+    @Column
+    int codigoDemandaAnalista;
+    String tamanho;
 }
