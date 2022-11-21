@@ -1,6 +1,6 @@
 package weg.com.Low.model.entity;
 
-public class Solicitante {
+public class Usuario {
     int id;
     String nome, departamento;
 

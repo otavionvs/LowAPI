@@ -5,7 +5,7 @@ import java.util.List;
 public class Conversa {
     int idConversa;
     List mensagemConversa;
-    br.weg.sc.low.model.entities.Demanda demandaConversa;
+    Demanda demandaConversa;
 
     private void iniciarConversa(){
 
