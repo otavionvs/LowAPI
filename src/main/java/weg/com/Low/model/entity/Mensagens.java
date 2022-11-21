@@ -1,6 +1,6 @@
 package weg.com.Low.model.entity;
 
-public class Mensagem {
+public class Mensagens {
     int idMensagem, idRemetente;
     String texto;
 

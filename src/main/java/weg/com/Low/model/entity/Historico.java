@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Historico {
     int idHistorico;
-    Solicitante pessoaResponsavel;
+    Usuario pessoaResponsavel;
     Date dataAlteracao;
     List<Demanda> demandasHistorico;
 }
