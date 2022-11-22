@@ -1,10 +1,9 @@
 package weg.com.Low.model.entity;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 public class Proposta {
     @Id
@@ -12,20 +11,20 @@ public class Proposta {
     @Column()
     private int codigoProposta;
 
-    @Column()
+    @Column(nullable = false)
     private Date prazoProposta;
 
     @Column()
     private int codigoPPMProposta;
 
-    @Column()
+    @Column(nullable = false)
     private String jiraProposta;
 
     @Column()
-    private Date PeriodoExeDemandaInicioProposta;
+    private Date periodoExeDemandaInicioProposta;
 
     @Column()
-    private Date PeriodoExeDemandaFimProposta;
+    private Date periodoExeDemandaFimProposta;
 
     @Column()
     private double paybackProposta;
@@ -35,5 +34,15 @@ public class Proposta {
 
     @Column()
     private String areaResponsavelProposta;
+
+    @ManyToMany
+    @JoinTable(name = "proposta_recurso", joinColumns =
+    @JoinColumn(name = "codigo_proposta", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "codigo_recurso", nullable = false))
+    private Collection<Recurso> recursos;
+
+    @OneToMany
+    @JoinColumn(name = "codigo_arquivo")
+    private Arquivo arquivo;
 
 }
