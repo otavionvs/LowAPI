@@ -19,7 +19,7 @@ public class CentroCustoService {
         return centroCustoRepository.findAll();
     }
 
-    public <S extends CentroCusto> S save(S entity) {
+    public CentroCusto save(CentroCusto entity) {
         return centroCustoRepository.save(entity);
     }
 

@@ -1,4 +1,4 @@
 package weg.com.Low.repository;
 
-public class PropostaRepository {
+public  interface PropostaRepository {
 }

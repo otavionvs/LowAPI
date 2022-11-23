@@ -1,4 +1,4 @@
 package weg.com.Low.repository;
 
-public class UsuarioRepository {
+public  interface UsuarioRepository {
 }
