@@ -11,7 +11,12 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class Pauta {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
     int codigoPauta;
+    @Column(nullable = false)
     Date dataReuniao;
 
     @OneToOne

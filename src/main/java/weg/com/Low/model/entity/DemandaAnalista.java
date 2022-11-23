@@ -1,15 +1,11 @@
 package weg.com.Low.model.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
 @Entity
-@Data
 @Table(name = "demanda_analista")
-public class DemandaAnalista extends Demanda{
+@Data
+public class DemandaAnalista{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
@@ -29,7 +25,7 @@ public class DemandaAnalista extends Demanda{
     @JoinColumn(name = "codigo_sessao")
     private Sessao sessaoDemandaAnalista;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "codigo_arquivo")
     private Arquivo arquivoDemandaAnalista;
 

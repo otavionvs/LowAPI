@@ -34,7 +34,8 @@ public class Proposta {
     @Column()
     private double paybackProposta;
 
-    @Column()
+    @OneToOne
+    @JoinColumn(name = "codigo_responsavel")
     private Usuario responsavelProposta;
 
     @Column()
@@ -46,7 +47,7 @@ public class Proposta {
             inverseJoinColumns = @JoinColumn(name = "codigo_recurso", nullable = false))
     private Collection<Recurso> recursos;
 
-    @OneToMany
+    @ManyToOne
     @JoinColumn(name = "codigo_arquivo")
     private Arquivo arquivo;
 
