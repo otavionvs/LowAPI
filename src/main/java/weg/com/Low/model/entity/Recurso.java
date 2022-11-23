@@ -3,6 +3,7 @@ package weg.com.Low.model.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
 @Table(name = "recurso")
@@ -12,11 +13,11 @@ public class Recurso {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private int idRecurso;
+    private Integer codigoRecurso;
     @Column(nullable = false, length = 10)
-    private  int quantidadeHorasRecurso;
+    private  Integer quantidadeHorasRecurso;
     @Column(nullable = false)
-    private double valorHoraRecurso;
+    private Double valorHoraRecurso;
     @Column(nullable = false, length = 80)
     private String nomeRecurso;
     @Column(nullable = false)
@@ -26,8 +27,5 @@ public class Recurso {
     @Column(nullable = false)
     private String periodoExecucaoRecurso;
 
-    @ManyToOne
-    @JoinColumn(name = "codigo_centro_pagante")
-    private CentroCusto centroDeCustoRecurso;
 
 }

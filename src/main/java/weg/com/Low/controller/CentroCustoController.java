@@ -1,6 +1,7 @@
 package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,12 @@ public class CentroCustoController {
         if (centroCustoService.existsByNome(centroCustoDTO.getNome())) {
             return ResponseEntity.badRequest().body("Centro de Custo já existe");
         }
-        return ResponseEntity.ok().build();
+
+        CentroCusto cc = new CentroCusto();
+        BeanUtils.copyProperties(centroCustoDTO, cc);
+
+        return ResponseEntity.status(HttpStatus.OK).body(
+                centroCustoService.save(cc));
     }
 
     @GetMapping
@@ -34,14 +40,14 @@ public class CentroCustoController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(centroCustoService.findAll());
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{codigoCentroCusto}")
     public ResponseEntity<Object> deleteById(
-            @PathVariable(value = "isbn") Integer codigoCentro
+            @PathVariable(value = "codigoCentroCusto") Integer codigoCentroCusto
     ) {
-        if (!centroCustoService.existsById(codigoCentro)) {
+        if (!centroCustoService.existsById(codigoCentroCusto)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Livro não encontrado");
         } else {
-            centroCustoService.deleteById(codigoCentro);
+            centroCustoService.deleteById(codigoCentroCusto);
             return ResponseEntity.status(HttpStatus.OK).body("Livro deletado com sucesso");
         }
     }

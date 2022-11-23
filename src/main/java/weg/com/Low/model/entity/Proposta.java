@@ -3,6 +3,7 @@ package weg.com.Low.model.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -45,10 +46,10 @@ public class Proposta {
     @JoinTable(name = "proposta_recurso", joinColumns =
     @JoinColumn(name = "codigo_proposta", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "codigo_recurso", nullable = false))
-    private Collection<Recurso> recursos;
+    private List<Recurso> recursosProposta;
 
     @ManyToOne
     @JoinColumn(name = "codigo_arquivo")
-    private Arquivo arquivo;
+    private Arquivo arquivoProposta;
 
 }
