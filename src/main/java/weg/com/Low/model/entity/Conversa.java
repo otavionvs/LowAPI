@@ -1,22 +1,23 @@
 package weg.com.Low.model.entity;
 
+import lombok.Data;
+
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@Table(name = "conversa")
+@Data
 public class Conversa {
-    int idConversa;
-    List mensagemConversa;
-    Demanda demandaConversa;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
+    private Integer codigoConversa;
+    @ManyToMany
+    @JoinTable(name = "mensagens_Conversa", joinColumns =
+    @JoinColumn(name = "codigo_conversa", nullable = false),
+    inverseJoinColumns = @JoinColumn(name = "codigo_mensagem", nullable = false))
+    private List<Mensagens> mensagens;
 
-    private void iniciarConversa(){
 
-    }
-    private void finalizarConversa(){
-
-    }
-    private void silenciarConversa(){
-
-    }
-    private void mostrarConversa(){
-
-    }
 }

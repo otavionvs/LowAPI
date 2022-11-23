@@ -1,8 +1,6 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
-
 import javax.persistence.*;
 
 @Entity
@@ -11,9 +9,8 @@ import javax.persistence.*;
 public class CentroCusto {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column()
+    @Column
     private Integer codigoCentroCusto;
-    @Column()
+    @Column(nullable = false)
     private String nome;
-
 }
