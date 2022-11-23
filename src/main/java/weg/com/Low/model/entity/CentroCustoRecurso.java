@@ -1,8 +1,11 @@
 package weg.com.Low.model.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
+@Data
 @Table(name = "centro_pagante_recurso")
 public class CentroCustoRecurso {
     @ManyToOne

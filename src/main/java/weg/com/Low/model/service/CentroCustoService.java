@@ -14,12 +14,9 @@ public class CentroCustoService {
 
     private CentroCustoRepository centroCustoRepository;
 
-    public List<CentroCusto> findAllById(Iterable<Integer> integers) {
-        return centroCustoRepository.findAllById(integers);
-    }
 
-    public <S extends CentroCusto> List<S> findAll(Example<S> example) {
-        return centroCustoRepository.findAll(example);
+    public List<CentroCusto> findAll() {
+        return centroCustoRepository.findAll();
     }
 
     public <S extends CentroCusto> S save(S entity) {

@@ -1,13 +1,14 @@
 package weg.com.Low.model.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 @Entity
+@Data
 @Table(name = "demanda_analista")
-@AllArgsConstructor
 public class DemandaAnalista extends Demanda{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

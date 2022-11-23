@@ -1,19 +1,19 @@
 package weg.com.Low.model.entity;
 
+import lombok.Data;
 import org.springframework.data.annotation.Id;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 
 @Entity
+@Table(name = "centro_custo")
+@Data
 public class CentroCusto {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column
-    Integer codigoCentroCusto;
-    @Column
-    String nome;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column()
+    private Integer codigoCentroCusto;
+    @Column()
+    private String nome;
 
 }

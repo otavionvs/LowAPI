@@ -1,10 +1,15 @@
 package weg.com.Low.model.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+@Data
+@Table(name = "proposta")
+@Entity
 public class Proposta {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
