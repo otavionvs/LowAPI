@@ -26,4 +26,12 @@ public class UsuarioService {
     public boolean existsById(Integer codigo) {
         return usuarioRepository.existsById(codigo);
     }
+
+    public boolean existsByUserUsuario(String user) {
+        return usuarioRepository.existsByUserUsuario(user);
+    }
+
+    public boolean existsByEmailUsuario(String email) {
+        return usuarioRepository.existsByEmailUsuario(email);
+    }
 }

@@ -16,15 +16,18 @@ public class Usuario {
     @Column(nullable = false)
     private String nomeUsuario;
     @Column(nullable = false)
-    private String emailUsuario;
+    private String userUsuario;
     @Column(nullable = false)
-    private Date data_nascimentoUsuario;
-    @Column(nullable = false, length = 11)
-    private Integer telefoneUsuario;
+    private String emailUsuario;
+//    @Column(nullable = false)
+//    private Date data_nascimentoUsuario;
+//    @Column(nullable = false, length = 11)
+//    private Integer telefoneUsuario;
     @Column(nullable = false)
     private String senhaUsuario;
-    @Column(nullable = false)
-    private String departamentoUsuario;
+    @ManyToOne
+    @JoinColumn(name = "departamento_codigo", nullable = false)
+    private Departamento departamentoUsuario;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private NivelAcesso nivelAcessoUsuario;
