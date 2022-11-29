@@ -49,5 +49,4 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.save(usuario));
     }
 
-
 }

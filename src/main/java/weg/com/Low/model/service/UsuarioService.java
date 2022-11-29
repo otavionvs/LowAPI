@@ -34,4 +34,6 @@ public class UsuarioService {
     public boolean existsByEmailUsuario(String email) {
         return usuarioRepository.existsByEmailUsuario(email);
     }
+
+
 }
