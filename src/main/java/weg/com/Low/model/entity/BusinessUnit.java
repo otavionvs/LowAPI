@@ -6,9 +6,9 @@ import javax.persistence.*;
 @Table(name = "business_unit")
 public class BusinessUnit {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private int idBussinessUnit;
+    private int codigoBussinessUnit;
     @Column(nullable = false)
-    private String nome;
+    private String nomeBussinessUnit;
 }

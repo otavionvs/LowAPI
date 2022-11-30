@@ -10,10 +10,11 @@ public enum Status {
     Assessment("Assessment"), //1
     BusinessCase("Business Case"), //2
     ToDo("To Do"), //3
-    DesignAndBuild("Design and Build"), //3
-    Support("Support"),
-    Cancelled("Cancelled"),
-    Done("Done"); //3
+    DesignAndBuild("Design and Build"), //4
+    Support("Support"),//5
+    Cancelled("Cancelled"),//6
+    Done("Done"),//7
+    Draft("Draft");//8
 
     String status;
 }

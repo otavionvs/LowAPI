@@ -3,9 +3,10 @@ package weg.com.Low.dto;
 import lombok.Getter;
 
 import javax.persistence.Column;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 public class BusinessUnitDTO {
-    private int idBussinessUnit;
-    private String nome;
+    @NotBlank
+    private String nomeBussinessUnit;
 }
