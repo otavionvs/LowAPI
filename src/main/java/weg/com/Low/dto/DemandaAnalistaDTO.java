@@ -1,10 +1,7 @@
 package weg.com.Low.dto;
 
 import lombok.Getter;
-import weg.com.Low.model.entity.BusinessUnit;
-import weg.com.Low.model.entity.Demanda;
-import weg.com.Low.model.entity.TamanhoDemanda;
-import weg.com.Low.model.entity.Usuario;
+import weg.com.Low.model.entity.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -22,4 +19,6 @@ public class DemandaAnalistaDTO {
     private Demanda demandaDemandaAnalista;
     @NotNull
     private Usuario analista;
+    @NotNull
+    private Sessao sessao;
 }
