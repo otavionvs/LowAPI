@@ -13,5 +13,5 @@ public class Sessao {
     @GeneratedValue(strategy = GenerationType.AUTO)
     int codigoSessao;
     @Column(nullable = false)
-    String nome;
+    String nomeSessao;
 }

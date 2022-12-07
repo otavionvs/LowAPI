@@ -13,7 +13,7 @@ public class Beneficio {
     @Column
     private Integer codigoBeneficio;
     @Column(nullable = false)
-    private String memoria_de_calculoBeneficio;
+    private String memoriaDeCalculoBeneficio;
     @Column(nullable = false)
     private Double valorBeneficio;
     @Column(nullable = false)

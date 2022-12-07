@@ -52,7 +52,7 @@ public class DemandaAnalistaController {
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid DemandaAnalistaDTO demandaAnalistaDTO) {
         if (!demandaAnalistaService.existsById(codigo)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demandaAnalista não existe!");
         }
 
         DemandaAnalista demandaAnalista = demandaAnalistaService.findById(codigo).get();
@@ -64,10 +64,10 @@ public class DemandaAnalistaController {
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
         if (!demandaAnalistaService.existsById(codigo)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("demandaAnalista não encontrada!");
         }
         demandaAnalistaService.deleteById(codigo);
-        return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
+        return ResponseEntity.status(HttpStatus.OK).body("demandaAnalista Deletada!");
     }
 
 }

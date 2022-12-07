@@ -7,5 +7,5 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class SessaoDTO {
     @NotBlank
-    private String nome;
+    private String nomeSessao;
 }
