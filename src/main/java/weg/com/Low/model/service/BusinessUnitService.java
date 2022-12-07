@@ -5,6 +5,7 @@ import weg.com.Low.model.entity.BusinessUnit;
 import weg.com.Low.repository.BusinessUnitRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BusinessUnitService {
@@ -14,19 +15,15 @@ public class BusinessUnitService {
         return businessUnitRepository.findAll();
     }
 
-    public <S extends BusinessUnit> S save(S entity) {
+    public Optional<BusinessUnit> findById(Integer codigo) {
+        return businessUnitRepository.findById(codigo);
+    }
+
+    public BusinessUnit save(BusinessUnit entity) {
         return businessUnitRepository.save(entity);
     }
 
-    public boolean existsById(Integer integer) {
-        return businessUnitRepository.existsById(integer);
-    }
-
-    public void deleteById(Integer integer) {
-        businessUnitRepository.deleteById(integer);
-    }
-
-    public void delete(BusinessUnit entity) {
-        businessUnitRepository.delete(entity);
+    public boolean existsBynomeBusinessUnit(String nomeBusinessUnit) {
+        return businessUnitRepository.existsBynomeBusinessUnit(nomeBusinessUnit);
     }
 }

@@ -1,6 +1,6 @@
 package weg.com.Low.controller;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,48 +8,40 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.BusinessUnitDTO;
 import weg.com.Low.model.entity.BusinessUnit;
-import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.model.service.BusinessUnitService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
+
+@CrossOrigin
+@AllArgsConstructor
 @Controller
-@RequestMapping("/low-api/business-unit")
+@RequestMapping("/usuario")
 public class BusinessUnitController {
     private BusinessUnitService businessUnitService;
+
     @GetMapping
     public ResponseEntity<List<BusinessUnit>> findAll() {
-        return ResponseEntity.status(200).body(businessUnitService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(businessUnitService.findAll());
+    }
+
+    @GetMapping("/{codigo}")
+    public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
+        Optional<BusinessUnit> businessUnitOptional = businessUnitService.findById(codigo);
+        if (businessUnitOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("businessUnit não encontrado!");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(businessUnitOptional.get());
     }
 
     @PostMapping
-    public ResponseEntity<Object> save(
-            @RequestBody @Valid BusinessUnitDTO businessUnitDTO
-    ) {
-
-        if(businessUnitService.existsById(businessUnitDTO.getIdBussinessUnit())){
-            return ResponseEntity.status(401).body("Código já existe");
+    public ResponseEntity<Object> save(@RequestBody @Valid BusinessUnitDTO businessUnitDTO) {
+        if(businessUnitService.existsBynomeBusinessUnit(businessUnitDTO.getNomeBussinessUnit())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este nome já existe, Tente Outro!");
         }
-
-        BusinessUnit bu = new BusinessUnit();
-        BeanUtils.copyProperties(businessUnitDTO, bu);
-
-        return ResponseEntity.status(200).body(businessUnitService.findAll());
-    }
-
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable(value = "id") Integer id) {
-        if (!businessUnitService.existsById(id)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("Nâo foi encontrado!");
-        }
-        businessUnitService.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("Deletado com sucesso!");
-    }
-
-    public void delete(BusinessUnit entity) {
-        businessUnitService.delete(entity);
+        BusinessUnit businessUnit = new BusinessUnit();
+        BeanUtils.copyProperties(businessUnitDTO, businessUnit);
+        return ResponseEntity.status(HttpStatus.OK).body(businessUnitService.save(businessUnit));
     }
 }

@@ -6,6 +6,7 @@ import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.repository.PropostaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PropostaService {
@@ -15,15 +16,19 @@ public class PropostaService {
         return propostaRepository.findAll();
     }
 
-    public <S extends Proposta> S save(S entity) {
+    public Optional<Proposta> findById(Integer integer) {
+        return propostaRepository.findById(integer);
+    }
+
+    public Proposta save(Proposta entity) {
         return propostaRepository.save(entity);
     }
 
-    public void deleteById(Integer integer) {
-        propostaRepository.deleteById(integer);
+    public void deleteById(Integer codigo) {
+        propostaRepository.deleteById(codigo);
     }
 
-    public <S extends Proposta> boolean exists(Example<S> example) {
-        return propostaRepository.exists(example);
+    public boolean existsById(Integer integer) {
+        return propostaRepository.existsById(integer);
     }
 }

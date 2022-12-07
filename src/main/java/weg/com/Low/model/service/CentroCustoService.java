@@ -8,12 +8,9 @@ import weg.com.Low.repository.CentroCustoRepository;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Service
 public class CentroCustoService {
-
     private CentroCustoRepository centroCustoRepository;
-
 
     public List<CentroCusto> findAll() {
         return centroCustoRepository.findAll();

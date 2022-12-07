@@ -45,10 +45,10 @@ public class CentroCustoController {
             @PathVariable(value = "codigoCentroCusto") Integer codigoCentroCusto
     ) {
         if (!centroCustoService.existsById(codigoCentroCusto)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Livro não encontrado");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Centro de Custo não encontrado");
         } else {
             centroCustoService.deleteById(codigoCentroCusto);
-            return ResponseEntity.status(HttpStatus.OK).body("Livro deletado com sucesso");
+            return ResponseEntity.status(HttpStatus.OK).body("Centro de Custo deletado com sucesso");
         }
     }
 }

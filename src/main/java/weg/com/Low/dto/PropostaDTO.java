@@ -1,27 +1,31 @@
 package weg.com.Low.dto;
 
 import lombok.Getter;
-import weg.com.Low.model.entity.Arquivo;
 import weg.com.Low.model.entity.Recurso;
 import weg.com.Low.model.entity.Usuario;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.FutureOrPresent;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 public class PropostaDTO {
-    private int codigoProposta;
+    @NotNull
+    @FutureOrPresent
     private Date prazoProposta;
+    @NotNull
     private int codigoPPMProposta;
+    @NotNull
     private String jiraProposta;
+    @FutureOrPresent
     private Date periodoExeDemandaInicioProposta;
+    @Future
     private Date periodoExeDemandaFimProposta;
-    private double paybackProposta;
+    private Double paybackProposta;
     private Usuario responsavelProposta;
     private String areaResponsavelProposta;
     private List<Recurso> recursosProposta;
-    private Arquivo arquivoProposta;
+//    private Arquivo arquivoProposta;
 }

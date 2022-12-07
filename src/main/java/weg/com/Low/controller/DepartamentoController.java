@@ -30,7 +30,7 @@ public class DepartamentoController {
     public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
         Optional<Departamento> departamentoOptional = departamentoService.findById(codigo);
         if (departamentoOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario não encontrado!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Departamento não encontrado!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(departamentoOptional.get());
     }
