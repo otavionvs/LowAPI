@@ -16,7 +16,7 @@ public class RecursoService {
         return recursoRepository.findAll();
     }
 
-    public <S extends Recurso> S save(S entity) {
+    public Recurso save(Recurso entity) {
         return recursoRepository.save(entity);
     }
 
