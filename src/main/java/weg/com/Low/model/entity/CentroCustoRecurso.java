@@ -1,28 +1,27 @@
 package weg.com.Low.model.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import javax.persistence.*;
 
 @Entity
 @Data
+@AllArgsConstructor
 @Table(name = "centro_pagante_recurso")
 public class CentroCustoRecurso {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column()
-    private int codigoCentroCustoRecurso;
+    @Column
+    private Integer codigoCentroCustoRecurso;
 
     @ManyToOne
-    @JoinColumn(name = "centros_pagantes")
+    @JoinColumn(name = "centros_pagante_codigo", nullable = false)
     private CentroCusto centroPagante;
 
     @ManyToOne
-    @JoinColumn(name = "recursos")
+    @JoinColumn(name = "recurso_codigo", nullable = false)
     private Recurso recurso;
 
-
     @Column(nullable = false)
-    private double porcentagemCusto;
-
+    private Double porcentagemCusto;
 }

@@ -1,6 +1,7 @@
 package weg.com.Low.dto;
 
 import lombok.Getter;
+import weg.com.Low.model.entity.DemandaAnalista;
 import weg.com.Low.model.entity.Recurso;
 import weg.com.Low.model.entity.Usuario;
 
@@ -16,16 +17,18 @@ public class PropostaDTO {
     @FutureOrPresent
     private Date prazoProposta;
     @NotNull
-    private int codigoPPMProposta;
+    private Integer codigoPPMProposta;
     @NotNull
     private String jiraProposta;
     @FutureOrPresent
     private Date periodoExeDemandaInicioProposta;
     @Future
     private Date periodoExeDemandaFimProposta;
+    @NotNull
+    private DemandaAnalista demandaAnalistaProposta;
     private Double paybackProposta;
     private Usuario responsavelProposta;
     private String areaResponsavelProposta;
-    private List<Recurso> recursosProposta;
+    private List<RecursoDTO> recursosProposta;
 //    private Arquivo arquivoProposta;
 }

@@ -7,9 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.SessaoDTO;
-import weg.com.Low.dto.UsuarioDTO;
 import weg.com.Low.model.entity.Sessao;
-import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.service.SessaoService;
 
 import javax.validation.Valid;

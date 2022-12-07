@@ -10,13 +10,12 @@ import weg.com.Low.dto.CentroCustoDTO;
 import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.model.service.CentroCustoService;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.util.List;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("low-api/centro-custo")
+@RequestMapping("/centro-custo")
 public class CentroCustoController {
     private CentroCustoService centroCustoService;
 

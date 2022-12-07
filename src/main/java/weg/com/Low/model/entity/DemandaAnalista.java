@@ -15,7 +15,7 @@ public class DemandaAnalista{
     @Column(nullable = false)
     private TamanhoDemanda tamanhoDemandaAnalista;
     @OneToOne
-    @JoinColumn(name = "BU_solicitante", nullable = false)
+    @JoinColumn(name = "bu_solicitante", nullable = false)
     private BusinessUnit BUsolicitanteDemandaAnalista;
     @ManyToMany
     @JoinTable(name = "bu_beneficiada", joinColumns =
