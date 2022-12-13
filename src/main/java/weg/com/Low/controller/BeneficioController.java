@@ -16,7 +16,7 @@ import java.util.Optional;
 @CrossOrigin
 @AllArgsConstructor
 @Controller
-@RequestMapping("/beneficio")
+@RequestMapping("beneficio")
 public class BeneficioController {
     private BeneficioService beneficioService;
 

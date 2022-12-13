@@ -1,9 +1,12 @@
 package weg.com.Low.model.entity;
 
+import lombok.Data;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "business_unit")
+@Data
 public class BusinessUnit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
