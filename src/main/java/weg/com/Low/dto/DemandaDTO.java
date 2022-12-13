@@ -2,10 +2,13 @@ package weg.com.Low.dto;
 
 import lombok.Getter;
 import weg.com.Low.model.entity.Beneficio;
+import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.model.entity.Usuario;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 public class DemandaDTO {
@@ -20,9 +23,11 @@ public class DemandaDTO {
     @NotBlank
     private String BeneficioQualitativoDemanda;
     @NotNull
-    private Beneficio beneficioPotencialDemanda;
+    private BeneficioDTO beneficioPotencialDemanda;
     @NotNull
-    private Beneficio beneficioRealDemanda;
+    private BeneficioDTO beneficioRealDemanda;
     @NotNull
     private Usuario solicitanteDemanda;
+    @NotEmpty
+    private List<CentroCusto> centroCustos;
 }

@@ -21,11 +21,11 @@ public class RecursoDTO {
     @NotNull
     private TipoDespesa tipoDespesaRecurso;
     @NotNull
-    private PerfilDespesa perfilDespesa;
+    private PerfilDespesa perfilDespesaRecurso;
     @NotNull
     private Integer periodoExecucaoRecurso;
     @NotEmpty
     private List<CentroCusto> centroDeCustoRecurso;
     @NotEmpty
-    private List<Double> custo;
+    private List<Double> porcentagemCustoRecurso;
 }
