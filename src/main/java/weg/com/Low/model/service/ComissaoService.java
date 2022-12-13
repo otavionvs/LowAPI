@@ -5,28 +5,30 @@ import weg.com.Low.model.entity.Comissao;
 import weg.com.Low.repository.ComissaoRepository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class ComissaoService {
     private ComissaoRepository comissaoRepository;
 
-    public void deleteById(Integer integer) {
-        comissaoRepository.deleteById(integer);
+    public void deleteById(Integer codigo) {
+        comissaoRepository.deleteById(codigo);
     }
 
     public List<Comissao> findAll() {
         return comissaoRepository.findAll();
     }
 
-    public <S extends Comissao> S save(S entity) {
+    public Comissao save(Comissao entity) {
         return comissaoRepository.save(entity);
     }
 
-    public boolean existsById(Integer integer) {
-        return comissaoRepository.existsById(integer);
+    public boolean existsById(Integer codigo) {
+        return comissaoRepository.existsById(codigo);
     }
 
-    public void delete(Comissao entity) {
-        comissaoRepository.delete(entity);
+    public Optional<Comissao> findById(Integer codigo) {
+        return comissaoRepository.findById(codigo);
     }
 
     public boolean existsByNome(String nome) {

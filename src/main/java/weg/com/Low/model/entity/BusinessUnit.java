@@ -8,7 +8,7 @@ public class BusinessUnit {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
-    private int codigoBussinessUnit;
+    private int codigoBusinessUnit;
     @Column(nullable = false)
-    private String nomeBussinessUnit;
+    private String nomeBusinessUnit;
 }

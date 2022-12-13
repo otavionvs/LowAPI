@@ -37,8 +37,9 @@ public class Proposta {
     @JoinColumn(name = "codigo_responsavel")
     private Usuario responsavelProposta;
 
-//    @Column()
-//    private String areaResponsavelProposta;
+    @OneToOne
+    @JoinColumn(name = "codigo_demandaAnalista")
+    private DemandaAnalista demandaAnalistaProposta;
 
     @ManyToMany
     @JoinTable(name = "proposta_recurso", joinColumns =

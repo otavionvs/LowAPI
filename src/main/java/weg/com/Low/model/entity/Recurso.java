@@ -9,23 +9,22 @@ import javax.persistence.criteria.CriteriaBuilder;
 @Table(name = "recurso")
 @Data
 public class Recurso {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
+    @Column
     private Integer codigoRecurso;
-    @Column(nullable = false, length = 10)
+    @Column(nullable = false, length = 65)
+    private String nomeRecurso;
+    @Column(nullable = false, length = 5)
     private  Integer quantidadeHorasRecurso;
     @Column(nullable = false)
     private Double valorHoraRecurso;
-    @Column(nullable = false, length = 80)
-    private String nomeRecurso;
     @Column(nullable = false)
-    private String tipoDespesaRecurso;
+    @Enumerated(value = EnumType.STRING)
+    private TipoDespesa tipoDespesaRecurso;
     @Column(nullable = false)
-    private  String perfilDespesa;
+    private PerfilDespesa perfilDespesa;
     @Column(nullable = false)
-    private String periodoExecucaoRecurso;
-
+    private Integer periodoExecucaoRecurso;
 
 }

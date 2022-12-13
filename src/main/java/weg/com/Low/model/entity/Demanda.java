@@ -38,11 +38,11 @@ public class Demanda {
 //    @OneToOne
 //    @JoinColumn(name = "conversa_demanda", nullable = false)
 //    private Conversa conversaDemanda;
-//    @ManyToMany
-//    @JoinTable(name = "centro_custos_demanda", joinColumns =
-//    @JoinColumn(name = "codigo_demanda", nullable = false),
-//            inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo", nullable = false))
-//    private List<CentroCusto> centroCustos;
+    @ManyToMany
+    @JoinTable(name = "centro_custos_demanda", joinColumns =
+    @JoinColumn(name = "codigo_demanda", nullable = false),
+            inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo", nullable = false))
+    private List<CentroCusto> centroCustos;
 //    @ManyToMany
 //    @JoinTable(name = "historico_demanda", joinColumns =
 //    @JoinColumn(name = "codigo_demanda", nullable = false),

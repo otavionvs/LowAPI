@@ -17,7 +17,7 @@ import java.util.Optional;
 @CrossOrigin
 @AllArgsConstructor
 @Controller
-@RequestMapping("/usuario")
+@RequestMapping("/BU")
 public class BusinessUnitController {
     private BusinessUnitService businessUnitService;
 

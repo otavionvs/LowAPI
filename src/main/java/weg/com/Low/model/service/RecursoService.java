@@ -20,7 +20,7 @@ public class RecursoService {
         return recursoRepository.save(entity);
     }
 
-    public void deleteById(Integer integer) {
-        recursoRepository.deleteById(integer);
+    public void deleteById(Integer codigo) {
+        recursoRepository.deleteById(codigo);
     }
 }

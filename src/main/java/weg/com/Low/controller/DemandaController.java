@@ -7,8 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.DemandaDTO;
+import weg.com.Low.model.entity.Beneficio;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.service.BeneficioService;
 import weg.com.Low.model.service.DemandaService;
+import weg.com.Low.model.service.UsuarioService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,6 +23,8 @@ import java.util.Optional;
 @RequestMapping("/demanda")
 public class DemandaController {
     private DemandaService demandaService;
+    private BeneficioService beneficioService;
+    private UsuarioService usuarioService;
 
     @GetMapping
     public ResponseEntity<List<Demanda>> findAll() {
@@ -37,8 +42,24 @@ public class DemandaController {
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid DemandaDTO demandaDTO) {
+//        if(usuarioService.existsById(demandaDTO.get))
+
+
         Demanda demanda = new Demanda();
         BeanUtils.copyProperties(demandaDTO, demanda);
+
+        Beneficio beneficioPotencial = new Beneficio();
+        Beneficio beneficioReal = new Beneficio();
+
+        BeanUtils.copyProperties(demandaDTO.getBeneficioPotencialDemanda(), beneficioPotencial);
+        BeanUtils.copyProperties(demandaDTO.getBeneficioRealDemanda(), beneficioReal);
+
+        beneficioPotencial = beneficioService.save(beneficioPotencial);
+        beneficioReal = beneficioService.save(beneficioReal);
+
+        demanda.setBeneficioPotencialDemanda(beneficioPotencial);
+        demanda.setBeneficioRealDemanda(beneficioReal);
+
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
