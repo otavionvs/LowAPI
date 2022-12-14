@@ -8,7 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.DemandaAnalistaDTO;
 import weg.com.Low.model.entity.DemandaAnalista;
+import weg.com.Low.model.entity.NivelAcesso;
+import weg.com.Low.model.entity.Status;
+import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.service.DemandaAnalistaService;
+import weg.com.Low.model.service.DemandaService;
+import weg.com.Low.model.service.UsuarioService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,6 +25,8 @@ import java.util.Optional;
 @RequestMapping("/demandaAnalista")
 public class DemandaAnalistaController {
     private DemandaAnalistaService demandaAnalistaService;
+    private UsuarioService usuarioService;
+    private DemandaService demandaService;
 
     @GetMapping
     public ResponseEntity<List<DemandaAnalista>> findAll() {
@@ -41,9 +48,23 @@ public class DemandaAnalistaController {
     //verificar se demanda não esta sendo usada (status)
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid DemandaAnalistaDTO demandaAnalistaDTO) {
+        if(usuarioService.existsById(demandaAnalistaDTO.getAnalista().getCodigoUsuario())){
+            Usuario usuario = (Usuario) usuarioService.findById(demandaAnalistaDTO.getAnalista().getCodigoUsuario()).get();
+            if(usuario.getNivelAcessoUsuario() != NivelAcesso.Analista && usuario.getNivelAcessoUsuario() != NivelAcesso.GestorTI){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Acesso a criação de demanda negado!");
+            }
+        }
+        if(!demandaService.existsById(demandaAnalistaDTO.getDemandaDemandaAnalista().getCodigoDemanda())){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
+        }
+
+        if(demandaAnalistaDTO.getDemandaDemandaAnalista().getStatus() != Status.BACKLOG_CLASSIFICACAO){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda já foi classificada!");
+        }
 
         DemandaAnalista demandaAnalista = new DemandaAnalista();
         BeanUtils.copyProperties(demandaAnalistaDTO, demandaAnalista);
+        demandaAnalistaDTO.getDemandaDemandaAnalista().setStatus(Status.BACKLOG_APROVACAO);
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.save(demandaAnalista));
     }
 
@@ -55,7 +76,6 @@ public class DemandaAnalistaController {
         if (!demandaAnalistaService.existsById(codigo)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demandaAnalista não existe!");
         }
-
         DemandaAnalista demandaAnalista = demandaAnalistaService.findById(codigo).get();
         BeanUtils.copyProperties(demandaAnalistaDTO, demandaAnalista);
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.save(demandaAnalista));

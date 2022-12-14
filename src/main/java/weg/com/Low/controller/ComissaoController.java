@@ -36,7 +36,7 @@ public class ComissaoController {
 
     @GetMapping
     public ResponseEntity<List<Comissao>> findAll() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(comissaoService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(comissaoService.findAll());
     }
 
     @GetMapping("/{codigo}")
