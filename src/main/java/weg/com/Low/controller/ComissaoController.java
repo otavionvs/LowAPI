@@ -1,5 +1,6 @@
 package weg.com.Low.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +14,9 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Controller
+@RequestMapping("/comissao")
 public class ComissaoController {
     private ComissaoService comissaoService;
 

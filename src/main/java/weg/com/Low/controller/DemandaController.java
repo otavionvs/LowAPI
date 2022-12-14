@@ -8,8 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.Beneficio;
+import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.service.BeneficioService;
+import weg.com.Low.model.service.CentroCustoService;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.UsuarioService;
 
@@ -25,6 +27,7 @@ public class DemandaController {
     private DemandaService demandaService;
     private BeneficioService beneficioService;
     private UsuarioService usuarioService;
+    private CentroCustoService centroCustoService;
 
     @GetMapping
     public ResponseEntity<List<Demanda>> findAll() {
@@ -42,8 +45,15 @@ public class DemandaController {
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid DemandaDTO demandaDTO) {
-//        if(usuarioService.existsById(demandaDTO.get))
-
+        if(!usuarioService.existsById(demandaDTO.getSolicitanteDemanda().getCodigoUsuario())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
+        }
+        List<CentroCusto> centroCustos = demandaDTO.getCentroCustos();
+        for (int i = 0; i < demandaDTO.getCentroCustos().size(); i ++){
+            if(!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
+            }
+        }
 
         Demanda demanda = new Demanda();
         BeanUtils.copyProperties(demandaDTO, demanda);
@@ -78,9 +88,13 @@ public class DemandaController {
 
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-        if (!demandaService.existsById(codigo)) {
+        Optional demandaOptional = demandaService.findById(codigo);
+        if(demandaOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
         }
+        Demanda demanda = (Demanda) demandaOptional.get();
+        beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
+        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
 
         demandaService.deleteById(codigo);
         return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");

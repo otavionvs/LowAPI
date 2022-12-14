@@ -19,4 +19,8 @@ public class BeneficioService {
     public Optional<Beneficio> findById(Integer codigo) {
         return beneficioRepository.findById(codigo);
     }
+
+    public void deleteById(Integer codigo) {
+        beneficioRepository.deleteById(codigo);
+    }
 }

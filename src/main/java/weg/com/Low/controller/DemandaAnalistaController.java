@@ -41,6 +41,7 @@ public class DemandaAnalistaController {
     //verificar se demanda não esta sendo usada (status)
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid DemandaAnalistaDTO demandaAnalistaDTO) {
+
         DemandaAnalista demandaAnalista = new DemandaAnalista();
         BeanUtils.copyProperties(demandaAnalistaDTO, demandaAnalista);
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.save(demandaAnalista));

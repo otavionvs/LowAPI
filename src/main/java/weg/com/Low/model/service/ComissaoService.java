@@ -1,5 +1,6 @@
 package weg.com.Low.model.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Comissao;
 import weg.com.Low.repository.ComissaoRepository;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class ComissaoService {
     private ComissaoRepository comissaoRepository;
 

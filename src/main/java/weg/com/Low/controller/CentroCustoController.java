@@ -19,7 +19,6 @@ import java.util.List;
 public class CentroCustoController {
     private CentroCustoService centroCustoService;
 
-
     @PostMapping
     public ResponseEntity<Object> save(
             @RequestBody @Valid CentroCustoDTO centroCustoDTO) {
