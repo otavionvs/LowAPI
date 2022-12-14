@@ -1,7 +1,6 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.repository.CentroCustoRepository;
@@ -9,6 +8,7 @@ import weg.com.Low.repository.CentroCustoRepository;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CentroCustoService {
     private CentroCustoRepository centroCustoRepository;
 
