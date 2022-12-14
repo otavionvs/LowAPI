@@ -1,5 +1,6 @@
 package weg.com.Low.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +13,8 @@ import weg.com.Low.model.service.ComissaoService;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-
+@RequestMapping("/comissao")
+@AllArgsConstructor
 @Controller
 public class ComissaoController {
     private ComissaoService comissaoService;
@@ -20,15 +22,15 @@ public class ComissaoController {
     @PostMapping
     public ResponseEntity<Object> save(
             @RequestBody @Valid ComissaoDTO comissaoDTO) {
-        if (comissaoService.existsByNome(comissaoDTO.getNome())) {
-            return ResponseEntity.badRequest().body("Comissão já existente");
-        }
-
+        System.out.println(comissaoDTO.getNome());
+//        if (comissaoService.existsByNome(comissaoDTO.getNome())) {
+//            return ResponseEntity.badRequest().body("Comissão já existente");
+//        }
         Comissao comissao = new Comissao();
         BeanUtils.copyProperties(comissaoDTO, comissao);
+        comissao = comissaoService.save(comissao);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                comissaoService.save(comissao));
+        return ResponseEntity.status(HttpStatus.OK).body(comissao);
     }
 
     @GetMapping
