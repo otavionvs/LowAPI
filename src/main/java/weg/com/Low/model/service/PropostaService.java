@@ -1,5 +1,6 @@
 package weg.com.Low.model.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Proposta;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class PropostaService {
     private PropostaRepository propostaRepository;
 

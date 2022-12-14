@@ -13,9 +13,9 @@ import weg.com.Low.model.service.ComissaoService;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-@RequestMapping("/comissao")
 @AllArgsConstructor
 @Controller
+@RequestMapping("/comissao")
 public class ComissaoController {
     private ComissaoService comissaoService;
 
