@@ -1,6 +1,7 @@
 package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ import java.util.Optional;
 @CrossOrigin
 @AllArgsConstructor
 @Controller
-@RequestMapping("/BU")
+@RequestMapping("bu")
 public class BusinessUnitController {
     private BusinessUnitService businessUnitService;
 

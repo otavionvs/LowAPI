@@ -12,6 +12,7 @@ import java.util.List;
 public class CentroCustoService {
     private CentroCustoRepository centroCustoRepository;
 
+
     public List<CentroCusto> findAll() {
         return centroCustoRepository.findAll();
     }
