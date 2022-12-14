@@ -13,6 +13,7 @@ import weg.com.Low.model.service.ComissaoService;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
+@CrossOrigin
 @AllArgsConstructor
 @Controller
 @RequestMapping("/comissao")
@@ -35,7 +36,7 @@ public class ComissaoController {
 
     @GetMapping
     public ResponseEntity<List<Comissao>> findAll() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(comissaoService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(comissaoService.findAll());
     }
 
     @GetMapping("/{codigo}")
