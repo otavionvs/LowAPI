@@ -13,7 +13,7 @@ import weg.com.Low.model.service.ComissaoService;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
-
+@CrossOrigin
 @AllArgsConstructor
 @Controller
 @RequestMapping("/comissao")
@@ -29,9 +29,9 @@ public class ComissaoController {
 
         Comissao comissao = new Comissao();
         BeanUtils.copyProperties(comissaoDTO, comissao);
+        comissao = comissaoService.save(comissao);
 
-        return ResponseEntity.status(HttpStatus.OK).body(
-                comissaoService.save(comissao));
+        return ResponseEntity.status(HttpStatus.OK).body(comissao);
     }
 
     @GetMapping

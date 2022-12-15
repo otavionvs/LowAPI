@@ -13,6 +13,7 @@ import weg.com.Low.model.service.CentroCustoService;
 import javax.validation.Valid;
 import java.util.List;
 
+@CrossOrigin
 @Controller
 @AllArgsConstructor
 @RequestMapping("/centro-custo")
