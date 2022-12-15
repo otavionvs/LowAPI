@@ -5,7 +5,6 @@ import weg.com.Low.model.entity.Departamento;
 import weg.com.Low.model.entity.NivelAcesso;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -20,6 +19,6 @@ public class UsuarioDTO {
     private String senhaUsuario;
     @NotNull
     private NivelAcesso nivelAcessoUsuario;
-    @NotEmpty
+    @NotNull
     private Departamento departamentoUsuario;
 }

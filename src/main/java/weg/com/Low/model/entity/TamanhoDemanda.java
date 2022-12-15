@@ -10,7 +10,7 @@ public enum TamanhoDemanda {
     Pequeno("Pequeno"),
     Medio("Médio"),
     Grande("Grande"),
-    MuitoGrande("MuitoGrande");
+    MuitoGrande("Muito Grande");
 
     String tamanho;
 }

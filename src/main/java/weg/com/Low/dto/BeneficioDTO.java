@@ -5,6 +5,7 @@ import weg.com.Low.model.entity.Moeda;
 
 import javax.validation.constraints.NegativeOrZero;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 public class BeneficioDTO {
@@ -13,6 +14,6 @@ public class BeneficioDTO {
     @NotNull
     private String memoriaCalculo;
     @NotNull
-    @NegativeOrZero
+    @PositiveOrZero
     private Double valor;
 }
