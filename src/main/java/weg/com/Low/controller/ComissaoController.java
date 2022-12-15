@@ -23,7 +23,7 @@ public class ComissaoController {
     @PostMapping
     public ResponseEntity<Object> save(
             @RequestBody @Valid ComissaoDTO comissaoDTO) {
-        if (comissaoService.existsByNome(comissaoDTO.getNome())) {
+        if (comissaoService.existsByNomeComissao(comissaoDTO.getNomeComissao())) {
             return ResponseEntity.badRequest().body("Comissão já existente");
         }
 

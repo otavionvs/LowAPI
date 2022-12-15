@@ -7,5 +7,5 @@ import weg.com.Low.model.entity.Comissao;
 
 @Repository
 public interface ComissaoRepository extends JpaRepository<Comissao, Integer> {
-    boolean existsByNome(String nome);
+    boolean existsByNomeComissao(String nome);
 }

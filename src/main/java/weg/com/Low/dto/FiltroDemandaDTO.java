@@ -5,7 +5,7 @@ import lombok.Getter;
 import javax.validation.constraints.NotBlank;
 
 @Getter
-public class DepartamentoDTO {
-    @NotBlank
-    private String nomeDepartamento;
+public class FiltroDemandaDTO {
+    private String nome_usuario;
+    private String email_usuario;
 }

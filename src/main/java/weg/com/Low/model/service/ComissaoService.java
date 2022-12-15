@@ -33,7 +33,7 @@ public class ComissaoService {
         return comissaoRepository.findById(codigo);
     }
 
-    public boolean existsByNome(String nome) {
-        return comissaoRepository.existsByNome(nome);
+    public boolean existsByNomeComissao(String nome) {
+        return comissaoRepository.existsByNomeComissao(nome);
     }
 }
