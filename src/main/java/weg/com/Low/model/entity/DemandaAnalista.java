@@ -16,12 +16,12 @@ public class DemandaAnalista{
     private TamanhoDemanda tamanhoDemandaAnalista;
     @OneToOne
     @JoinColumn(name = "bu_solicitante", nullable = false)
-    private BusinessUnit BUsolicitanteDemandaAnalista;
+    private BusinessUnit buSolicitanteDemandaAnalista;
     @ManyToMany
     @JoinTable(name = "bu_beneficiada", joinColumns =
     @JoinColumn(name = "codigo_demanda_analista", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "codigo_business_unit", nullable = false))
-    private List<BusinessUnit> BUsBeneficiadasDemandaAnalista;
+    private List<BusinessUnit> busBeneficiadasDemandaAnalista;
 
 //    @ManyToOne
 //    @JoinColumn(name = "codigo_arquivo")

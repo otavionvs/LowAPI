@@ -20,12 +20,12 @@ public class Demanda {
     @Column(nullable = false)
     private String objetivoDemanda;
     @Column(nullable = false)
-    private String FrequenciaDeUsoDemanda;
+    private String frequenciaDeUsoDemanda;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private Status status;
+    private Status statusDemanda;
     @Column(nullable = false)
-    private String BeneficioQualitativoDemanda;
+    private String beneficioQualitativoDemanda;
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda", nullable = false)
     private Beneficio beneficioPotencialDemanda;

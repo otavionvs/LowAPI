@@ -8,5 +8,5 @@ import javax.validation.constraints.NotBlank;
 @Getter
 public class BusinessUnitDTO {
     @NotBlank
-    private String nomeBussinessUnit;
+    private String nomeBusinessUnit;
 }

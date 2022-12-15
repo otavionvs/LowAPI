@@ -24,9 +24,9 @@ public class ComissaoController {
     public ResponseEntity<Object> save(
             @RequestBody @Valid ComissaoDTO comissaoDTO) {
         System.out.println(comissaoDTO.getNome());
-//        if (comissaoService.existsByNome(comissaoDTO.getNome())) {
-//            return ResponseEntity.badRequest().body("Comissão já existente");
-//        }
+        if (comissaoService.existsByNome(comissaoDTO.getNome())) {
+            return ResponseEntity.badRequest().body("Comissão já existente");
+        }
         Comissao comissao = new Comissao();
         BeanUtils.copyProperties(comissaoDTO, comissao);
         comissao = comissaoService.save(comissao);

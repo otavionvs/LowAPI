@@ -12,13 +12,13 @@ public class DemandaAnalistaDTO {
     @NotNull
     private TamanhoDemanda tamanhoDemandaAnalista;
     @NotNull
-    private BusinessUnit BUsolicitanteDemandaAnalista;
+    private BusinessUnit buSolicitanteDemandaAnalista;
     @NotEmpty
-    private List<BusinessUnit> BUsBeneficiadasDemandaAnalista;
+    private List<BusinessUnit> busBeneficiadasDemandaAnalista;
     @NotNull
     private Demanda demandaDemandaAnalista;
     @NotNull
     private Usuario analista;
     @NotNull
-    private Sessao sessao;
+    private Sessao sessaoDemandaAnalista;
 }

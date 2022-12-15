@@ -36,7 +36,7 @@ public class CentroCustoController {
 
     @GetMapping
     public ResponseEntity<List<CentroCusto>> findAll() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(centroCustoService.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(centroCustoService.findAll());
     }
 
     @DeleteMapping("/{codigoCentroCusto}")

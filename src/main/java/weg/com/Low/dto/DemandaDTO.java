@@ -19,9 +19,9 @@ public class DemandaDTO {
     @NotBlank
     private String objetivoDemanda;
     @NotBlank
-    private String FrequenciaDeUsoDemanda;
+    private String frequenciaDeUsoDemanda;
     @NotBlank
-    private String BeneficioQualitativoDemanda;
+    private String beneficioQualitativoDemanda;
     @NotNull
     private BeneficioDTO beneficioPotencialDemanda;
     @NotNull

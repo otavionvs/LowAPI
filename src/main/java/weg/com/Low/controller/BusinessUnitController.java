@@ -38,7 +38,7 @@ public class BusinessUnitController {
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid BusinessUnitDTO businessUnitDTO) {
-        if(businessUnitService.existsBynomeBusinessUnit(businessUnitDTO.getNomeBussinessUnit())){
+        if(businessUnitService.existsBynomeBusinessUnit(businessUnitDTO.getNomeBusinessUnit())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Este nome já existe, Tente Outro!");
         }
         BusinessUnit businessUnit = new BusinessUnit();

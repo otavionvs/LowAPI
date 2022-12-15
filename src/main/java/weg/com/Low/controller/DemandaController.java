@@ -10,6 +10,7 @@ import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.Beneficio;
 import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.entity.Status;
 import weg.com.Low.model.service.BeneficioService;
 import weg.com.Low.model.service.CentroCustoService;
 import weg.com.Low.model.service.DemandaService;
@@ -49,6 +50,7 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
         List<CentroCusto> centroCustos = demandaDTO.getCentroCustos();
+        System.out.println(centroCustos.get(0).getCodigoCentroCusto());
         for (int i = 0; i < demandaDTO.getCentroCustos().size(); i ++){
             if(!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
@@ -69,11 +71,12 @@ public class DemandaController {
 
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
+        demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
-    @PutMapping("/{codigo}")
+    @PutMapping("update/{codigo}")
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid DemandaDTO demandaDTO) {
