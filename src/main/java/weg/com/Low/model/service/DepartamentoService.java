@@ -17,11 +17,11 @@ public class DepartamentoService {
         return departamentoRepository.findAll();
     }
 
-    public Departamento save(Departamento entity) {
-        return departamentoRepository.save(entity);
-    }
-
     public Optional<Departamento> findById(Integer codigo) {
         return departamentoRepository.findById(codigo);
+    }
+
+    public Departamento save(Departamento entity) {
+        return departamentoRepository.save(entity);
     }
 }

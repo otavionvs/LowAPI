@@ -11,8 +11,8 @@ public class Comissao {
     @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
-    private int codigoComissao;
+    private Integer codigoComissao;
 
-    @Column
-    private String nome;
+    @Column(nullable = false)
+    private String nomeComissao;
 }

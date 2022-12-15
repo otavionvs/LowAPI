@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.DemandaDTO;
+import weg.com.Low.dto.FiltroDemandaDTO;
 import weg.com.Low.model.entity.Beneficio;
 import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.model.entity.Demanda;
@@ -43,6 +44,19 @@ public class DemandaController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(demandaOptional.get());
     }
+
+    //    @GetMapping("/filtro")
+//    public ResponseEntity<List<Produto>> teste(@PageableDefault(sort = "nome",
+//            direction = Sort.Direction.ASC,
+//            page = 0,
+//            size = 10) Pageable page) {
+////        PageRequest pageRequest = PageRequest.of(10, 1, Sort.Direction.ASC, "nome");
+////        pageRequest = pageRequest.
+//
+//        List<Produto> produtos = produtoService.findAll(page).getContent();
+//        return ResponseEntity.status(HttpStatus.OK).body(produtos);
+//    }
+
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid DemandaDTO demandaDTO) {
