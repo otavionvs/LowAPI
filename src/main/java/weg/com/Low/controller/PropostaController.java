@@ -55,7 +55,7 @@ public class PropostaController {
         for (int i = 0; i < recursosDTO.size(); i++) {
             Recurso recurso = new Recurso();
             RecursoDTO recursoDTO = recursosDTO.get(i);
-            BeanUtils.copyProperties(recurso, recursoDTO);
+            BeanUtils.copyProperties(recursoDTO, recurso);
             recurso = recursoService.save(recurso);
             for (int i2 = 0; i2 < recursoDTO.getCentroDeCustoRecurso().size(); i2++) {
                 CentroCustoRecurso centroCustoRecurso = new CentroCustoRecurso(null,
