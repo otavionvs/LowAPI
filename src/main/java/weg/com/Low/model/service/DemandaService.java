@@ -41,9 +41,4 @@ public class DemandaService {
         return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, tamanho, page);
     }
 
-    public Page<Demanda> search(
-            String tituloDemanda, String solicitante, String codigoDemanda, String status, Pageable page) {
-        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, page);
-    }
-
 }

@@ -54,8 +54,7 @@ public class DemandaController {
             @PageableDefault(
                     page = 0,
                     size = 10) Pageable page){
-
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda, status, page));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda, status, tamanho, page));
     }
 
 

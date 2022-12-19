@@ -15,14 +15,6 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
 
     @Query(value = "select * from demanda d " +
             "INNER JOIN usuario u ON d.solicitante_demanda = u.codigo_usuario " +
-            "WHERE LOWER(d.titulo_demanda) like %:tituloDemanda% " +
-            "AND LOWER(d.codigo_demanda) like %:codigoDemanda% " +
-            "AND LOWER(u.nome_usuario) like %:solicitante% " +
-            "AND LOWER(d.status_demanda) like %:status%", nativeQuery = true)
-    Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status, Pageable pageable);
-
-    @Query(value = "select * from demanda d " +
-            "INNER JOIN usuario u ON d.solicitante_demanda = u.codigo_usuario " +
             "INNER JOIN demanda_analista da ON d.codigo_demanda = da.demanda_codigo " +
             "WHERE LOWER(d.titulo_demanda) like %:tituloDemanda% " +
             "AND LOWER(d.codigo_demanda) like %:codigoDemanda% " +
