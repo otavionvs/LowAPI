@@ -28,8 +28,8 @@ public class DemandaAnalista{
 //    private Arquivo arquivoDemandaAnalista;
 
     @OneToOne
-    @JoinColumn(name = "sessao_codigo", nullable = false)
-    private Sessao sessaoDemandaAnalista;
+    @JoinColumn(name = "secao_codigo", nullable = false)
+    private Secao secaoDemandaAnalista;
 
     @OneToOne
     @JoinColumn(name = "demanda_codigo", nullable = false)

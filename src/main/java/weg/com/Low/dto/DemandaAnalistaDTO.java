@@ -1,13 +1,13 @@
 package weg.com.Low.dto;
 
-import lombok.Getter;
+import lombok.Data;
 import weg.com.Low.model.entity.*;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@Getter
+@Data
 public class DemandaAnalistaDTO {
     @NotNull
     private TamanhoDemanda tamanhoDemandaAnalista;
@@ -20,5 +20,5 @@ public class DemandaAnalistaDTO {
     @NotNull
     private Usuario analista;
     @NotNull
-    private Sessao sessaoDemandaAnalista;
+    private Secao secaoDemandaAnalista;
 }

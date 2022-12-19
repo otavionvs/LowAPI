@@ -6,12 +6,12 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "sessao")
-public class Sessao {
+@Table(name = "secao")
+public class Secao {
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
-    int codigoSessao;
+    int codigoSecao;
     @Column(nullable = false)
-    String nomeSessao;
+    String nomeSecao;
 }
