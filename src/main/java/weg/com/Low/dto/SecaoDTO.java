@@ -5,7 +5,7 @@ import lombok.Getter;
 import javax.validation.constraints.NotBlank;
 
 @Getter
-public class SessaoDTO {
+public class SecaoDTO {
     @NotBlank
-    private String nomeSessao;
+    private String nomeSecao;
 }
