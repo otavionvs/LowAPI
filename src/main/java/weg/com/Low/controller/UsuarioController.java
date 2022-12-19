@@ -3,6 +3,9 @@ package weg.com.Low.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -50,18 +53,17 @@ public class UsuarioController {
     }
 
     @GetMapping("/search")
-    public List<Usuario> search(
-            @RequestParam("searchTerm") String searchTerm,
-            @RequestParam(
-                    value = "page",
-                    required = false,
-                    defaultValue = "0") int page,
-            @RequestParam(
-                    value = "size",
-                    required = false,
-                    defaultValue = "10") int size) {
-        return usuarioService.search(searchTerm);
-
+    public ResponseEntity<Page<Usuario>> search(
+            @RequestParam("nome") String nome,
+            @RequestParam("email") String email,
+            @RequestParam("usuario") String usuario,
+            @RequestParam("departamento") String departamento,
+            @PageableDefault(sort = "user_usuario",
+            direction = Sort.Direction.ASC,
+            page = 0,
+            size = 10) Pageable page){
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.search(nome, email, usuario, departamento, page));
+//        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findByLastname(nome, email, page));
     }
 
 

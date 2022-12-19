@@ -58,13 +58,13 @@ public class DemandaAnalistaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
         }
 
-        if(demandaAnalistaDTO.getDemandaDemandaAnalista().getStatus() != Status.BACKLOG_CLASSIFICACAO){
+        if(demandaAnalistaDTO.getDemandaDemandaAnalista().getStatusDemanda() != Status.BACKLOG_CLASSIFICACAO){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda já foi classificada!");
         }
 
         DemandaAnalista demandaAnalista = new DemandaAnalista();
         BeanUtils.copyProperties(demandaAnalistaDTO, demandaAnalista);
-        demandaAnalistaDTO.getDemandaDemandaAnalista().setStatus(Status.BACKLOG_APROVACAO);
+        demandaAnalistaDTO.getDemandaDemandaAnalista().setStatusDemanda(Status.BACKLOG_APROVACAO);
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.save(demandaAnalista));
     }
 
