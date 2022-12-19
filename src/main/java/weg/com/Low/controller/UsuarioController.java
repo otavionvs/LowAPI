@@ -63,7 +63,6 @@ public class UsuarioController {
             page = 0,
             size = 10) Pageable page){
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.search(nome, email, usuario, departamento, page));
-//        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.findByLastname(nome, email, page));
     }
 
 

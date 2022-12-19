@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.DemandaAnalistaDTO;
-import weg.com.Low.model.entity.DemandaAnalista;
-import weg.com.Low.model.entity.NivelAcesso;
-import weg.com.Low.model.entity.Status;
-import weg.com.Low.model.entity.Usuario;
+import weg.com.Low.model.entity.*;
 import weg.com.Low.model.service.DemandaAnalistaService;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.UsuarioService;
@@ -54,17 +51,19 @@ public class DemandaAnalistaController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Acesso a criação de demanda negado!");
             }
         }
-        if(!demandaService.existsById(demandaAnalistaDTO.getDemandaDemandaAnalista().getCodigoDemanda())){
+        Optional demandaOptional = demandaService.findById(demandaAnalistaDTO.getDemandaDemandaAnalista().getCodigoDemanda());
+        if(demandaOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
         }
 
-        if(demandaAnalistaDTO.getDemandaDemandaAnalista().getStatusDemanda() != Status.BACKLOG_CLASSIFICACAO){
+        Demanda demanda = (Demanda) demandaOptional.get();
+        if(demanda.getStatusDemanda() != Status.BACKLOG_CLASSIFICACAO){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda já foi classificada!");
         }
 
         DemandaAnalista demandaAnalista = new DemandaAnalista();
         BeanUtils.copyProperties(demandaAnalistaDTO, demandaAnalista);
-        demandaAnalistaDTO.getDemandaDemandaAnalista().setStatusDemanda(Status.BACKLOG_APROVACAO);
+        demandaAnalista.getDemandaDemandaAnalista().setStatusDemanda(Status.BACKLOG_APROVACAO);
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.save(demandaAnalista));
     }
 
