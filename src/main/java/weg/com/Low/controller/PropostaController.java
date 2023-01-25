@@ -16,6 +16,7 @@ import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.RecursoService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,7 @@ public class PropostaController {
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid PropostaDTO propostaDTO) {
         List<RecursoDTO> recursosDTO = propostaDTO.getRecursosProposta();
-        List<Recurso> recursos = null;
+        List<Recurso> recursos = new ArrayList<>();
 
         Proposta proposta = new Proposta();
         BeanUtils.copyProperties(propostaDTO, proposta);
@@ -55,14 +56,18 @@ public class PropostaController {
         for (int i = 0; i < recursosDTO.size(); i++) {
             Recurso recurso = new Recurso();
             RecursoDTO recursoDTO = recursosDTO.get(i);
-            BeanUtils.copyProperties(recurso, recursoDTO);
+            BeanUtils.copyProperties(recursoDTO, recurso);
             recurso = recursoService.save(recurso);
             for (int i2 = 0; i2 < recursoDTO.getCentroDeCustoRecurso().size(); i2++) {
                 CentroCustoRecurso centroCustoRecurso = new CentroCustoRecurso(null,
                         recursoDTO.getCentroDeCustoRecurso().get(i2), recurso, recursoDTO.getPorcentagemCustoRecurso().get(i2));
                 centroCustoRecursoService.save(centroCustoRecurso);
+
             }
+            System.out.println("Passou");
+            System.out.println(recurso.getNomeRecurso());
             recursos.add(recurso);
+            System.out.println("Passou 1");
         }
         proposta.setRecursosProposta(recursos);
 

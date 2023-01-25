@@ -23,7 +23,8 @@ public class Recurso {
     @Enumerated(value = EnumType.STRING)
     private TipoDespesa tipoDespesaRecurso;
     @Column(nullable = false)
-    private PerfilDespesa perfilDespesa;
+    @Enumerated(value = EnumType.STRING)
+    private PerfilDespesa perfilDespesaRecurso;
     @Column(nullable = false)
     private Integer periodoExecucaoRecurso;
 
