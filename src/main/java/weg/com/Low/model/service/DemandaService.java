@@ -1,8 +1,11 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.entity.Status;
 import weg.com.Low.repository.DemandaRepository;
 
 import java.util.List;
@@ -31,6 +34,11 @@ public class DemandaService {
 
     public void deleteById(Integer codigo) {
         demandaRepository.deleteById(codigo);
+    }
+
+    public Page<Demanda> search(
+            String tituloDemanda, String solicitante, String codigoDemanda, String status, String tamanho, Pageable page) {
+        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, tamanho, page);
     }
 
 }

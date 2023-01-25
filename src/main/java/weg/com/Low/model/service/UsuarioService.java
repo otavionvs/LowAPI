@@ -3,6 +3,7 @@ package weg.com.Low.model.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Usuario;
@@ -40,16 +41,8 @@ public class UsuarioService {
         return usuarioRepository.existsByEmailUsuario(email);
     }
 
-    public List<Usuario> search(
-            String searchTerm){
-//            int page,
-//            int size) {
-//        PageRequest pageRequest = PageRequest.of(
-//                page,
-//                size);
-
-        return usuarioRepository.search(
-                searchTerm.toLowerCase());
+    public Page<Usuario> search(
+            String nome, String email, String usuario, String departamento, Pageable page) {
+        return usuarioRepository.search(nome.toLowerCase(), email.toLowerCase(), usuario.toLowerCase(), departamento, page);
     }
-
 }

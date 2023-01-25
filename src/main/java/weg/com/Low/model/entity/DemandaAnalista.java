@@ -12,6 +12,7 @@ public class DemandaAnalista{
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Integer codigoDemandaAnalista;
+    @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private TamanhoDemanda tamanhoDemandaAnalista;
     @OneToOne
