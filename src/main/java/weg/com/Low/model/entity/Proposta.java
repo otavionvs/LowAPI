@@ -25,17 +25,19 @@ public class Proposta {
     private String jiraProposta;
 
     @Column
-    private Date periodoExeDemandaInicioProposta;
+    private Date inicioExDemandaProposta;
 
     @Column
-    private Date periodoExeDemandaFimProposta;
+    private Date fimExDemandaProposta;
 
     @Column
     private Double paybackProposta;
 
-    @OneToOne
-    @JoinColumn(name = "codigo_responsavel")
-    private Usuario responsavelProposta;
+    @ManyToMany
+    @JoinTable(name = "responsavel_proposta", joinColumns =
+    @JoinColumn(name = "codigo_responsavel"),
+            inverseJoinColumns = @JoinColumn(name = "codigo_proposta"))
+    private List<Usuario> responsavelProposta;
 
     @OneToOne
     @JoinColumn(name = "codigo_demandaAnalista")

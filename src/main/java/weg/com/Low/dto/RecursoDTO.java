@@ -23,7 +23,7 @@ public class RecursoDTO {
     @NotNull
     private PerfilDespesa perfilDespesaRecurso;
     @NotNull
-    private Integer periodoExecucaoRecurso;
+    private Integer periodoExMesesRecurso;
 
 
 

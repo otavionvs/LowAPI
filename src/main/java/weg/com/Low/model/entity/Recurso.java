@@ -25,6 +25,6 @@ public class Recurso {
     @Column(nullable = false)
     private PerfilDespesa perfilDespesaRecurso;
     @Column(nullable = false)
-    private Integer periodoExecucaoRecurso;
+    private Integer periodoExMesesRecurso;
 
 }
