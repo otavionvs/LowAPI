@@ -20,15 +20,19 @@ public class PropostaDTO {
     private Integer codigoPPMProposta;
     @NotNull
     private String jiraProposta;
+    @NotNull
+    private List<RecursoDTO> recursosProposta;
+    @NotNull
+    private String escopoDemandaProposta;
     @FutureOrPresent
-    private Date periodoExeDemandaInicioProposta;
+    private Date inicioExDemandaProposta;
     @Future
-    private Date periodoExeDemandaFimProposta;
+    private Date fimExDemandaProposta;
+    @NotNull
+    private Double paybackDemandaProposta;
+    @NotNull
+    private Usuario responsaveisNegocioDemanda;
     @NotNull
     private DemandaAnalista demandaAnalistaProposta;
-    private Double paybackProposta;
-    private Usuario responsavelProposta;
-    private String areaResponsavelProposta;
-    private List<RecursoDTO> recursosProposta;
 //    private Arquivo arquivoProposta;
 }
