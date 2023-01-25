@@ -20,7 +20,7 @@ public class Reuniao {
     @Enumerated(EnumType.STRING)
     StatusReuniao statusReuniao;
     @ManyToOne
-    @JoinColumn(name = "codigo_comissao")
+    @JoinColumn(name = "codigo_comissao", nullable = false)
     private Comissao comissaoReuniao;
     @OneToOne
     @JoinColumn(name = "ata")
