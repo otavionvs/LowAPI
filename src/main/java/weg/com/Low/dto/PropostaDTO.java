@@ -34,5 +34,5 @@ public class PropostaDTO {
     private Usuario responsaveisNegocioDemanda;
     @NotNull
     private DemandaAnalista demandaAnalistaProposta;
-//    private Arquivo arquivoProposta;
+//    private Arquivo arquivoProposta
 }
