@@ -1,4 +1,5 @@
 package weg.com.Low.repository;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,13 +13,15 @@ import java.util.List;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     boolean existsByUserUsuario(String user);
+
     boolean existsByEmailUsuario(String email);
 
-    @Query(value = "select * from Usuario u " +
-            "WHERE LOWER(u.nome_usuario) like %:searchTerm% " +
-            "OR LOWER(u.email_usuario) like %:searchTerm%", nativeQuery = true)
-    List<Usuario> search(String searchTerm);
-//    Page<Usuario> search(
-//            @Param("searchTerm") String searchTerm,
-//            Pageable pageable);
+    @Query(value = "select * from usuario u " +
+            "INNER JOIN departamento d ON u.departamento_codigo = d.codigo_departamento " +
+            "WHERE LOWER(u.nome_usuario) like %:nome% " +
+            "AND LOWER(u.email_usuario) like %:email% " +
+            "AND LOWER(u.user_usuario) like %:usuario% " +
+            "AND LOWER(d.nome_departamento) like %:departamento%", nativeQuery = true)
+    Page<Usuario> search(String nome, String email, String usuario, String departamento, Pageable pageable);
+
 }
