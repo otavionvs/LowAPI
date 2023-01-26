@@ -26,6 +26,6 @@ public class Recurso {
     @Enumerated(value = EnumType.STRING)
     private PerfilDespesa perfilDespesaRecurso;
     @Column(nullable = false)
-    private Integer periodoExecucaoRecurso;
+    private Integer periodoExMesesRecurso;
 
 }

@@ -25,10 +25,10 @@ public class Proposta {
     private String jiraProposta;
 
     @Column
-    private Date periodoExeDemandaInicioProposta;
+    private Date inicioExDemandaProposta;
 
     @Column
-    private Date periodoExeDemandaFimProposta;
+    private Date fimExDemandaProposta;
 
     @Column
     private Double paybackProposta;
