@@ -31,7 +31,7 @@ public class PropostaDTO {
     @NotNull
     private Double paybackDemandaProposta;
     @NotNull
-    private List<Usuario> responsaveisNegocioDemanda;
+    private Usuario responsavelProposta;
     @NotNull
     private DemandaAnalista demandaAnalistaProposta;
 //    private Arquivo arquivoProposta

@@ -33,11 +33,9 @@ public class Proposta {
     @Column
     private Double paybackProposta;
 
-    @ManyToMany
-    @JoinTable(name = "responsavel_proposta", joinColumns =
-    @JoinColumn(name = "codigo_responsavel"),
-            inverseJoinColumns = @JoinColumn(name = "codigo_proposta"))
-    private List<Usuario> responsavelProposta;
+    @OneToOne
+    @JoinColumn(name = "codigo_responsavel")
+    private Usuario responsavelProposta;
 
     @OneToOne
     @JoinColumn(name = "codigo_demandaAnalista")
