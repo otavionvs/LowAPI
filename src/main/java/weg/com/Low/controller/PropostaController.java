@@ -64,10 +64,8 @@ public class PropostaController {
                 centroCustoRecursoService.save(centroCustoRecurso);
 
             }
-            System.out.println("Passou");
             System.out.println(recurso.getNomeRecurso());
             recursos.add(recurso);
-            System.out.println("Passou 1");
         }
         proposta.setRecursosProposta(recursos);
 

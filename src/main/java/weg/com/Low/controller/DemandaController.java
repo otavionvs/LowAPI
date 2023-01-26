@@ -17,6 +17,7 @@ import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.UsuarioService;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +58,21 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda, status, tamanho, page));
     }
 
+    //Retorna uma quantidade de demandas de cada status
+    @GetMapping("/status")
+    public ResponseEntity<List<Page<Demanda>>> search(
+            @PageableDefault(
+                    page = 0,
+                    size = 12) Pageable page){
+        List<Page<Demanda>> listaDemandas = new ArrayList<>();
+        
+        //envia o nome de cada status, usando o metodo search
+        for(int i = 0; i < 10; i ++){
+            listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
+    }
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid DemandaDTO demandaDTO) {
