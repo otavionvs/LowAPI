@@ -23,4 +23,8 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(da.tamanho_demanda_analista) like %:tamanho% ", nativeQuery = true)
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status, String tamanho, Pageable pageable);
 
+    @Query(value = "select * from demanda d " +
+            "WHERE LOWER(d.status_demanda) like %:status% ", nativeQuery = true)
+    Page<Demanda> search(String status, Pageable pageable);
+
 }
