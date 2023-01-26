@@ -29,7 +29,7 @@ public class PropostaDTO {
     @Future
     private Date fimExDemandaProposta;
     @NotNull
-    private Double paybackDemandaProposta;
+    private Double paybackProposta;
     @NotNull
     private Usuario responsavelProposta;
     @NotNull
