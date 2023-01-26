@@ -54,7 +54,7 @@ public class DemandaController {
             @RequestParam("tamanho") String tamanho,
             @PageableDefault(
                     page = 0,
-                    size = 10) Pageable page){
+                    size = 10) Pageable page) {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda, status, tamanho, page));
     }
 
@@ -63,11 +63,11 @@ public class DemandaController {
     public ResponseEntity<List<Page<Demanda>>> search(
             @PageableDefault(
                     page = 0,
-                    size = 12) Pageable page){
+                    size = 12) Pageable page) {
         List<Page<Demanda>> listaDemandas = new ArrayList<>();
-        
+
         //envia o nome de cada status, usando o metodo search
-        for(int i = 0; i < 10; i ++){
+        for (int i = 0; i < 10; i++) {
             listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
         }
 
@@ -76,13 +76,13 @@ public class DemandaController {
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid DemandaDTO demandaDTO) {
-        if(!usuarioService.existsById(demandaDTO.getSolicitanteDemanda().getCodigoUsuario())){
+        if (!usuarioService.existsById(demandaDTO.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
         List<CentroCusto> centroCustos = demandaDTO.getCentroCustos();
         System.out.println(centroCustos.get(0).getCodigoCentroCusto());
-        for (int i = 0; i < demandaDTO.getCentroCustos().size(); i ++){
-            if(!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())){
+        for (int i = 0; i < demandaDTO.getCentroCustos().size(); i++) {
+            if (!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
             }
         }
@@ -119,10 +119,33 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
+    @PutMapping("update/backlog/{codigo}")
+    public ResponseEntity<Object> updateAprovacao(
+            @PathVariable(value = "codigo") Integer codigoDemanda,
+            @RequestParam("decisao") String decisao) {
+        System.out.println("deciiiiiiiiii" + decisao);
+
+        if (!demandaService.existsById(codigoDemanda)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe");
+        }
+
+        Demanda demanda = demandaService.findById(codigoDemanda).get();
+
+        System.out.println("ok" + demanda);
+
+        if (decisao == "Aprovado") {
+            demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+        } else {
+            demanda.setStatusDemanda(Status.CANCELLED);
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+    }
+
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
         Optional demandaOptional = demandaService.findById(codigo);
-        if(demandaOptional.isEmpty()){
+        if (demandaOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
         }
         Demanda demanda = (Demanda) demandaOptional.get();
@@ -132,8 +155,6 @@ public class DemandaController {
         demandaService.deleteById(codigo);
         return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
     }
-
-
 
 
 }
