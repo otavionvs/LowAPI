@@ -9,12 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.service.BeneficioService;
 import weg.com.Low.model.service.CentroCustoService;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.UsuarioService;
+import weg.com.Low.util.DemandaUtil;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -35,6 +37,8 @@ public class DemandaController {
     public ResponseEntity<List<Demanda>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.findAll());
     }
+
+
 
     @GetMapping("/{codigo}")
     public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
@@ -75,26 +79,28 @@ public class DemandaController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody @Valid DemandaDTO demandaDTO) {
-        if (!usuarioService.existsById(demandaDTO.getSolicitanteDemanda().getCodigoUsuario())) {
+    public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
+        DemandaUtil demandaUtil = new DemandaUtil();
+        Demanda demanda =  demandaUtil.convertJsonToModel(demandaJson);
+        System.out.println(arquivos);
+        demanda.setArquivos(arquivos);
+        System.out.println(demanda.getArquivosDemanda());
+        if(!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
-        List<CentroCusto> centroCustos = demandaDTO.getCentroCustos();
-        System.out.println(centroCustos.get(0).getCodigoCentroCusto());
-        for (int i = 0; i < demandaDTO.getCentroCustos().size(); i++) {
-            if (!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())) {
+        List<CentroCusto> centroCustos = demanda.getCentroCustos();
+        for (int i = 0; i < demanda.getCentroCustos().size(); i ++){
+            if(!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
             }
         }
 
-        Demanda demanda = new Demanda();
-        BeanUtils.copyProperties(demandaDTO, demanda);
 
         Beneficio beneficioPotencial = new Beneficio();
         Beneficio beneficioReal = new Beneficio();
 
-        BeanUtils.copyProperties(demandaDTO.getBeneficioPotencialDemanda(), beneficioPotencial);
-        BeanUtils.copyProperties(demandaDTO.getBeneficioRealDemanda(), beneficioReal);
+        BeanUtils.copyProperties(demanda.getBeneficioPotencialDemanda(), beneficioPotencial);
+        BeanUtils.copyProperties(demanda.getBeneficioRealDemanda(), beneficioReal);
 
         beneficioPotencial = beneficioService.save(beneficioPotencial);
         beneficioReal = beneficioService.save(beneficioReal);
