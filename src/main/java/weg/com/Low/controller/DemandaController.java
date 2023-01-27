@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.DemandaDTO;
+import weg.com.Low.dto.StatusDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.service.BeneficioService;
 import weg.com.Low.model.service.CentroCustoService;
@@ -37,8 +38,6 @@ public class DemandaController {
     public ResponseEntity<List<Demanda>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.findAll());
     }
-
-
 
     @GetMapping("/{codigo}")
     public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
@@ -128,21 +127,20 @@ public class DemandaController {
     @PutMapping("update/backlog/{codigo}")
     public ResponseEntity<Object> updateAprovacao(
             @PathVariable(value = "codigo") Integer codigoDemanda,
-            @RequestParam("decisao") String decisao) {
-        System.out.println("deciiiiiiiiii" + decisao);
-
+            @RequestParam @Valid String decisao) {
         if (!demandaService.existsById(codigoDemanda)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe");
         }
-
         Demanda demanda = demandaService.findById(codigoDemanda).get();
 
-        System.out.println("ok" + demanda);
-
-        if (decisao == "Aprovado") {
-            demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+        if(demanda.getStatusDemanda().getStatus().equals(Status.BACKLOG_APROVACAO.getStatus())){
+            if (decisao.equals("Aprovado")) {
+                demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+            } else {
+                demanda.setStatusDemanda(Status.CANCELLED);
+            }
         } else {
-            demanda.setStatusDemanda(Status.CANCELLED);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
