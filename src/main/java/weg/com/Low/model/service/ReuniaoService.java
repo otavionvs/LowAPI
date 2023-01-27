@@ -1,6 +1,8 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Reuniao;
 import weg.com.Low.repository.ReuniaoRepository;
@@ -31,5 +33,11 @@ public class ReuniaoService {
 
     public void deleteById(Integer codigo) {
         reuniaoRepository.deleteById(codigo);
+    }
+
+    public Page<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
+            String ppmProposta, String analista, String solicitante, Pageable page) {
+        return reuniaoRepository.search(nomeComissao.toLowerCase(), dataReuniao, statusReuniao, ppmProposta,
+                analista.toLowerCase(), solicitante.toLowerCase(), page);
     }
 }
