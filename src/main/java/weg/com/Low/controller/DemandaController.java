@@ -136,6 +136,9 @@ public class DemandaController {
         if(demanda.getStatusDemanda().getStatus().equals(Status.BACKLOG_APROVACAO.getStatus())){
             if (decisao.equals("Aprovado")) {
                 demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+                //Falta save????
+                //Realmente ta setando o status?
+                //Usar o console aqui
             } else {
                 demanda.setStatusDemanda(Status.CANCELLED);
             }
