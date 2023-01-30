@@ -1,8 +1,11 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -35,7 +38,7 @@ public class Demanda {
     @OneToOne
     @JoinColumn(name = "solicitante_demanda", nullable = false)
     private Usuario solicitanteDemanda;
-//    @OneToOne
+    //    @OneToOne
 //    @JoinColumn(name = "conversa_demanda", nullable = false)
 //    private Conversa conversaDemanda;
     @ManyToMany
@@ -43,11 +46,27 @@ public class Demanda {
     @JoinColumn(name = "codigo_demanda", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo", nullable = false))
     private List<CentroCusto> centroCustos;
-//    @ManyToMany
+    //    @ManyToMany
 //    @JoinTable(name = "historico_demanda", joinColumns =
 //    @JoinColumn(name = "codigo_demanda", nullable = false),
 //            inverseJoinColumns = @JoinColumn(name = "codigo_historico", nullable = false))
 //    private List<Historico> historicos;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "arquivo_demanda")
+    private List<Arquivo> arquivosDemanda = new ArrayList<>();
 
+    public void setArquivos(MultipartFile[] files) {
+        try {
+            for (MultipartFile file : files) {
+                arquivosDemanda.add(new Arquivo(null,
+                        file.getOriginalFilename(),
+                        file.getContentType(),
+                        file.getBytes()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }
