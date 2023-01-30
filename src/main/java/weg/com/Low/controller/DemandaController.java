@@ -81,7 +81,6 @@ public class DemandaController {
     public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda =  demandaUtil.convertJsonToModel(demandaJson);
-        System.out.println(arquivos);
         demanda.setArquivos(arquivos);
         System.out.println(demanda.getArquivosDemanda());
         if(!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())){
