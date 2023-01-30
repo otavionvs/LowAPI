@@ -126,25 +126,30 @@ public class DemandaController {
     @PutMapping("update/backlog/{codigo}")
     public ResponseEntity<Object> updateAprovacao(
             @PathVariable(value = "codigo") Integer codigoDemanda,
-            @RequestParam @Valid String decisao) {
+            @RequestBody @Valid Integer decisao) {
         if (!demandaService.existsById(codigoDemanda)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe");
         }
         Demanda demanda = demandaService.findById(codigoDemanda).get();
 
+        System.out.println("Demanda " + demanda);
+
         if(demanda.getStatusDemanda().getStatus().equals(Status.BACKLOG_APROVACAO.getStatus())){
-            if (decisao.equals("Aprovado")) {
+            if (decisao == 1) {
                 demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
                 //Falta save????
                 //Realmente ta setando o status?
                 //Usar o console aqui
+                System.out.println("Mudar status 1 " + demanda);
             } else {
                 demanda.setStatusDemanda(Status.CANCELLED);
+                System.out.println("Mudar status 2 " + demanda);
             }
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
 
+        System.out.println("Demanda 2 " + demanda);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
