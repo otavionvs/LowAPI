@@ -3,6 +3,7 @@ package weg.com.Low.model.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import weg.com.Low.model.entity.DemandaAnalista;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.repository.PropostaRepository;
 
@@ -32,5 +33,9 @@ public class PropostaService {
 
     public boolean existsById(Integer integer) {
         return propostaRepository.existsById(integer);
+    }
+
+    public Proposta findByDemandaAnalistaProposta(DemandaAnalista demandaAnalista) {
+        return propostaRepository.findByDemandaAnalistaProposta(demandaAnalista);
     }
 }

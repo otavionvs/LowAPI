@@ -41,7 +41,7 @@ public class ReuniaoController {
     }
 
     @GetMapping("/filtro")
-    public ResponseEntity<Page<Reuniao>> search(
+    public ResponseEntity<List<Reuniao>> search(
             @RequestParam("nomeComissao") String nomeComissao,
             @RequestParam("dataReuniao") String dataReuniao,
             @RequestParam("statusReuniao") String statusReuniao,
@@ -52,7 +52,7 @@ public class ReuniaoController {
                     page = 0,
                     size = 10) Pageable page){
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.search(nomeComissao, dataReuniao, statusReuniao,
-                ppmProposta, analista, solicitante, page));
+                ppmProposta, analista, solicitante, page.getOffset(), page.getPageSize()));
     }
 
 //    String nomeComissao, String dataReuniao, String statusReuniao,
@@ -72,7 +72,7 @@ public class ReuniaoController {
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
     }
 
-    @PutMapping("/{codigo}")
+    @PutMapping("/update/{codigo}")
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid ReuniaoDTO reuniaoDTO) {

@@ -30,4 +30,5 @@ public class DemandaDTO {
     private Usuario solicitanteDemanda;
     @NotEmpty
     private List<CentroCusto> centroCustos;
+    private Integer codigoDemanda;
 }

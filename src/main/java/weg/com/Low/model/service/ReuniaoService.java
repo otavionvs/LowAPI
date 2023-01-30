@@ -35,9 +35,9 @@ public class ReuniaoService {
         reuniaoRepository.deleteById(codigo);
     }
 
-    public Page<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
-            String ppmProposta, String analista, String solicitante, Pageable page) {
+    public List<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
+            String ppmProposta, String analista, String solicitante, Long page, int size) {
         return reuniaoRepository.search(nomeComissao.toLowerCase(), dataReuniao, statusReuniao, ppmProposta,
-                analista.toLowerCase(), solicitante.toLowerCase(), page);
+                analista.toLowerCase(), solicitante.toLowerCase(), page, size);
     }
 }

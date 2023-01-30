@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Reuniao;
 
+import java.util.List;
+
 @Repository
 public interface ReuniaoRepository extends JpaRepository<Reuniao, Integer> {
 
@@ -23,7 +25,7 @@ public interface ReuniaoRepository extends JpaRepository<Reuniao, Integer> {
             "AND LOWER(r.status_reuniao) like %:statusReuniao% " +
             "AND LOWER(p.ppm_proposta) like %:ppmProposta% " +
             "AND LOWER(a.nome_usuario) like %:analista% " +
-            "AND LOWER(s.nome_usuario) like %:solicitante% ", nativeQuery = true)
-    Page<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
-                         String ppmProposta, String analista, String solicitante, Pageable pageable);
+            "AND LOWER(s.nome_usuario) like %:solicitante% LIMIT :size OFFSET :page ", nativeQuery = true)
+    List<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
+                         String ppmProposta, String analista, String solicitante, Long page, int size);
 }

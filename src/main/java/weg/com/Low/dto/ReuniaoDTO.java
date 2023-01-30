@@ -4,6 +4,7 @@ import lombok.Getter;
 import weg.com.Low.model.entity.Ata;
 import weg.com.Low.model.entity.Comissao;
 import weg.com.Low.model.entity.Proposta;
+import weg.com.Low.model.entity.StatusReuniao;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotEmpty;
@@ -21,4 +22,5 @@ public class ReuniaoDTO {
     @NotEmpty
     private List<Proposta> propostasReuniao;
     private Ata ataReuniao;
+    private StatusReuniao statusReuniao;
 }
