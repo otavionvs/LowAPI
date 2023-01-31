@@ -2,6 +2,9 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -37,6 +40,24 @@ public class ReuniaoController {
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoOptional.get());
     }
 
+    @GetMapping("/filtro")
+    public ResponseEntity<List<Reuniao>> search(
+            @RequestParam("nomeComissao") String nomeComissao,
+            @RequestParam("dataReuniao") String dataReuniao,
+            @RequestParam("statusReuniao") String statusReuniao,
+            @RequestParam("ppmProposta") String ppmProposta,
+            @RequestParam("analista") String analista,
+            @RequestParam("solicitante") String solicitante,
+            @PageableDefault(
+                    page = 0,
+                    size = 10) Pageable page){
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.search(nomeComissao, dataReuniao, statusReuniao,
+                ppmProposta, analista, solicitante, page.getOffset(), page.getPageSize()));
+    }
+
+//    String nomeComissao, String dataReuniao, String statusReuniao,
+//    String ppmProposta, String analista, String solicitante, Pageable page
+
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid ReuniaoDTO reuniaoDTO) {
@@ -51,7 +72,7 @@ public class ReuniaoController {
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
     }
 
-    @PutMapping("/{codigo}")
+    @PutMapping("/update/{codigo}")
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid ReuniaoDTO reuniaoDTO) {
