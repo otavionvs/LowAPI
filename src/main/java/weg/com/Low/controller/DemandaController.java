@@ -38,8 +38,6 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.findAll());
     }
 
-
-
     @GetMapping("/{codigo}")
     public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
         Optional<Demanda> demandaOptional = demandaService.findById(codigo);
