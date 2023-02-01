@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.DemandaDTO;
+import weg.com.Low.dto.StatusDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.service.BeneficioService;
 import weg.com.Low.model.service.CentroCustoService;
@@ -37,8 +38,6 @@ public class DemandaController {
     public ResponseEntity<List<Demanda>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.findAll());
     }
-
-
 
     @GetMapping("/{codigo}")
     public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
@@ -75,7 +74,6 @@ public class DemandaController {
                     page = 0,
                     size = 12) Pageable page){
         List<List<Demanda>> listaDemandas = new ArrayList<>();
-        
         //envia o nome de cada status, usando o metodo search
         for(int i = 0; i < 10; i ++){
             listaDemandas.add(demandaService.search(Status.values()[i] + "", page.getOffset(), page.getPageSize()));
@@ -130,11 +128,40 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
+    @PutMapping("update/backlog/{codigo}")
+    public ResponseEntity<Object> updateAprovacao(
+            @PathVariable(value = "codigo") Integer codigoDemanda,
+            @RequestBody @Valid Integer decisao) {
+        if (!demandaService.existsById(codigoDemanda)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe");
+        }
+        Demanda demanda = demandaService.findById(codigoDemanda).get();
+
+        System.out.println("Demanda " + demanda);
+
+        if(demanda.getStatusDemanda().getStatus().equals(Status.BACKLOG_APROVACAO.getStatus())){
+            if (decisao == 1) {
+                demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+                //Falta save????
+                //Realmente ta setando o status?
+                //Usar o console aqui
+                System.out.println("Mudar status 1 " + demanda);
+            } else {
+                demanda.setStatusDemanda(Status.CANCELLED);
+                System.out.println("Mudar status 2 " + demanda);
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
+        }
+
+        System.out.println("Demanda 2 " + demanda);
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+    }
 
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
         Optional demandaOptional = demandaService.findById(codigo);
-        if(demandaOptional.isEmpty()){
+        if (demandaOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
         }
         Demanda demanda = (Demanda) demandaOptional.get();
@@ -144,8 +171,6 @@ public class DemandaController {
         demandaService.deleteById(codigo);
         return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
     }
-
-
 
 
 }
