@@ -36,13 +36,18 @@ public class DemandaService {
         demandaRepository.deleteById(codigo);
     }
 
-    public Page<Demanda> search(
-            String tituloDemanda, String solicitante, String codigoDemanda, String status, String tamanho, Pageable page) {
-        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, tamanho, page);
+    public List<Demanda> search(
+            String tituloDemanda, String solicitante, String codigoDemanda, String status, String tamanho, Long page, int size) {
+        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, tamanho, page, size);
     }
 
-    public Page<Demanda> search(String status, Pageable page) {
-        return demandaRepository.search(status, page);
+    public List<Demanda> search(
+            String tituloDemanda, String solicitante, String codigoDemanda, String status, Long page, int size) {
+        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, page, size);
+    }
+
+    public List<Demanda> search(String status, Long page, int size) {
+        return demandaRepository.search(status, page, size);
     }
 
 }

@@ -49,7 +49,7 @@ public class DemandaController {
     }
 
     @GetMapping("/filtro")
-    public ResponseEntity<Page<Demanda>> search(
+    public ResponseEntity<List<Demanda>> search(
             @RequestParam("tituloDemanda") String tituloDemanda,
             @RequestParam("solicitante") String solicitante,
             @RequestParam("codigoDemanda") String codigoDemanda,
@@ -57,21 +57,26 @@ public class DemandaController {
             @RequestParam("tamanho") String tamanho,
             @PageableDefault(
                     page = 0,
-                    size = 10) Pageable page) {
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda, status, tamanho, page));
+                    size = 24) Pageable page){
+        if(tamanho.equals("")){
+            return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
+                    status, page.getOffset(), page.getPageSize()));
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
+                    status, tamanho, page.getOffset(), page.getPageSize()));
+        }
     }
 
     //Retorna uma quantidade de demandas de cada status
     @GetMapping("/status")
-    public ResponseEntity<List<Page<Demanda>>> search(
+    public ResponseEntity<List<List<Demanda>>> search(
             @PageableDefault(
                     page = 0,
-                    size = 12) Pageable page) {
-        List<Page<Demanda>> listaDemandas = new ArrayList<>();
-
+                    size = 12) Pageable page){
+        List<List<Demanda>> listaDemandas = new ArrayList<>();
         //envia o nome de cada status, usando o metodo search
-        for (int i = 0; i < 10; i++) {
-            listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
+        for(int i = 0; i < 10; i ++){
+            listaDemandas.add(demandaService.search(Status.values()[i] + "", page.getOffset(), page.getPageSize()));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
@@ -110,7 +115,7 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
-    @PutMapping("update/{codigo}")
+    @PutMapping("/update/{codigo}")
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid DemandaDTO demandaDTO) {
