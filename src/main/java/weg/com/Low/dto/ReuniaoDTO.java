@@ -1,10 +1,8 @@
 package weg.com.Low.dto;
 
 import lombok.Getter;
-import weg.com.Low.model.entity.Ata;
-import weg.com.Low.model.entity.Comissao;
-import weg.com.Low.model.entity.Proposta;
-import weg.com.Low.model.entity.StatusReuniao;
+import lombok.Setter;
+import weg.com.Low.model.entity.*;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotEmpty;
@@ -13,14 +11,19 @@ import java.util.Date;
 import java.util.List;
 
 @Getter
+@Setter
 public class ReuniaoDTO {
     @NotNull
     @FutureOrPresent
     Date dataReuniao;
     @NotNull
     private Comissao comissaoReuniao;
-    @NotEmpty
+
+    private List<Demanda> demandasReuniao;
     private List<Proposta> propostasReuniao;
+
     private Ata ataReuniao;
     private StatusReuniao statusReuniao;
+
+    private Integer codigoReuniao;
 }
