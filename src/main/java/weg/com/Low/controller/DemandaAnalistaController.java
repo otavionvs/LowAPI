@@ -29,6 +29,16 @@ public class DemandaAnalistaController {
     public ResponseEntity<List<DemandaAnalista>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findAll());
     }
+    @GetMapping("/demanda/{codigo}")
+    public ResponseEntity<Object> findAll(@PathVariable(value = "codigo")Integer codigo) {
+        if(!demandaService.existsById(codigo)){
+            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
+        }
+        Demanda demanda = (Demanda) demandaService.findById(codigo).get();
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findByDemandaDemandaAnalista(demanda));
+    }
+
 
     @GetMapping("/{codigo}")
     public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
