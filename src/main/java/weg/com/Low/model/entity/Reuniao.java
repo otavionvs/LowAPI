@@ -13,12 +13,12 @@ public class Reuniao {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
-    int codigoReuniao;
+    private Integer codigoReuniao;
     @Column(nullable = false)
-    Date dataReuniao;
+    private Date dataReuniao;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    StatusReuniao statusReuniao;
+    private StatusReuniao statusReuniao;
     @ManyToOne
     @JoinColumn(name = "codigo_comissao", nullable = false)
     private Comissao comissaoReuniao;

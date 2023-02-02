@@ -25,8 +25,6 @@ public class PropostaController {
     private PropostaService propostaService;
     private RecursoService recursoService;
     private CentroCustoRecursoService centroCustoRecursoService;
-    private DemandaAnalistaService demandaAnalistaService;
-    private DemandaService demandaService;
 
     @GetMapping
     public ResponseEntity<List<Proposta>> findAll() {
@@ -40,16 +38,6 @@ public class PropostaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proposta não encontrado!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(propostaOptional.get());
-    }
-
-    //Retorna as proposta referente as demandas selecionadas para reuniao
-    @PostMapping("/porDemanda")
-    public ResponseEntity<List<Proposta>> findByDemandaAnalista(@RequestBody @Valid List<DemandaDTO> demandaDTOs){
-        List<Proposta> propostas = new ArrayList<>();
-        for(int i = 0; i < demandaDTOs.size(); i ++){
-            propostas.add(propostaService.porDemanda(demandaDTOs.get(i).getCodigoDemanda() + ""));
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(propostas);
     }
 
     //ver como fica com status de aprovação
