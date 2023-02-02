@@ -60,10 +60,10 @@ public class DemandaAnalistaController {
         if(demanda.getStatusDemanda() != Status.BACKLOG_CLASSIFICACAO){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda já foi classificada!");
         }
-
+        demanda.setStatusDemanda(Status.BACKLOG_APROVACAO);
+        demandaService.save(demanda);
         DemandaAnalista demandaAnalista = new DemandaAnalista();
         BeanUtils.copyProperties(demandaAnalistaDTO, demandaAnalista);
-        demandaAnalista.getDemandaDemandaAnalista().setStatusDemanda(Status.BACKLOG_APROVACAO);
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.save(demandaAnalista));
     }
 
