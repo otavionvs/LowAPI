@@ -11,6 +11,6 @@ public class CentroCusto {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Integer codigoCentroCusto;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String nome;
 }

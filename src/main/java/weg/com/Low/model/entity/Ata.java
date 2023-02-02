@@ -12,10 +12,10 @@ import javax.persistence.*;
 public class Ata {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column()
-    int idAta;
+    @Column
+    Integer idAta;
     @Column()
     String tipoAta;
-    @Column()
+    @Column(nullable = false, length = 100)
     String tituloAta;
 }

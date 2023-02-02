@@ -12,6 +12,6 @@ public class Secao {
     @Column
     @GeneratedValue(strategy = GenerationType.AUTO)
     int codigoSecao;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     String nomeSecao;
 }

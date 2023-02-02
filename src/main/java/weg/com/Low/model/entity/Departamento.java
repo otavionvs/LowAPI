@@ -12,6 +12,6 @@ public class Departamento {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Integer codigoDepartamento;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String nomeDepartamento;
 }

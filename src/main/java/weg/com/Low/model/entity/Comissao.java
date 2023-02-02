@@ -13,6 +13,6 @@ public class Comissao {
     @Id
     private Integer codigoComissao;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String nomeComissao;
 }
