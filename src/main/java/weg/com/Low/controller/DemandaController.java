@@ -77,10 +77,10 @@ public class DemandaController {
     public ResponseEntity<List<List<Demanda>>> search(
             @PageableDefault(
                     page = 0,
-                    size = 12) Pageable page){
+                    size = 12) Pageable page) {
         List<List<Demanda>> listaDemandas = new ArrayList<>();
         //envia o nome de cada status, usando o metodo search
-        for(int i = 0; i < 10; i ++){
+        for (int i = 0; i < 10; i++) {
             listaDemandas.add(demandaService.search(Status.values()[i] + "", page.getOffset(), page.getPageSize()));
         }
 
@@ -90,15 +90,15 @@ public class DemandaController {
     @PostMapping
     public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
         DemandaUtil demandaUtil = new DemandaUtil();
-        Demanda demanda =  demandaUtil.convertJsonToModel(demandaJson);
+        Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
         demanda.setArquivos(arquivos);
         System.out.println(demanda.getArquivosDemanda());
-        if(!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())){
+        if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
         List<CentroCusto> centroCustos = demanda.getCentroCustos();
-        for (int i = 0; i < demanda.getCentroCustos().size(); i ++){
-            if(!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())){
+        for (int i = 0; i < demanda.getCentroCustos().size(); i++) {
+            if (!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
             }
         }
@@ -133,7 +133,9 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
-    @PutMapping("update/backlog/{codigo}")
+    //Caso seja passado por parametro 1 - passa para o proximo status
+    //Parametro != 1 - Cancela a demanda
+    @PutMapping("update/status/{codigo}")
     public ResponseEntity<Object> updateAprovacao(
             @PathVariable(value = "codigo") Integer codigoDemanda,
             @RequestBody @Valid Integer decisao) {
@@ -141,19 +143,31 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe");
         }
         Demanda demanda = demandaService.findById(codigoDemanda).get();
+        String demandaStatus = demanda.getStatusDemanda().getStatus();
 
-        System.out.println("Demanda " + demanda);
-
-        if(demanda.getStatusDemanda().getStatus().equals(Status.BACKLOG_APROVACAO.getStatus())){
+        if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
             if (decisao == 1) {
                 demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
-                //Falta save????
-                //Realmente ta setando o status?
-                //Usar o console aqui
-                System.out.println("Mudar status 1 " + demanda);
             } else {
                 demanda.setStatusDemanda(Status.CANCELLED);
-                System.out.println("Mudar status 2 " + demanda);
+            }
+        } else if (demandaStatus.equals(Status.TO_DO.getStatus())) {
+            if (decisao == 1) {
+                demanda.setStatusDemanda(Status.DESIGN_AND_BUILD);
+            } else {
+                demanda.setStatusDemanda(Status.CANCELLED);
+            }
+        } else if (demandaStatus.equals(Status.DESIGN_AND_BUILD.getStatus())) {
+            if (decisao == 1) {
+                demanda.setStatusDemanda(Status.SUPPORT);
+            } else {
+                demanda.setStatusDemanda(Status.CANCELLED);
+            }
+        } else if (demandaStatus.equals(Status.SUPPORT.getStatus())) {
+            if (decisao == 1) {
+                demanda.setStatusDemanda(Status.DONE);
+            } else {
+                demanda.setStatusDemanda(Status.CANCELLED);
             }
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");

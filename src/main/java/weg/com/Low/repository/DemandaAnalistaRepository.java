@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface DemandaAnalistaRepository extends JpaRepository<DemandaAnalista, Integer> {
     List<DemandaAnalista> findByAnalista(Usuario analista);
+    DemandaAnalista findByDemandaDemandaAnalista(Demanda demanda);
 }
