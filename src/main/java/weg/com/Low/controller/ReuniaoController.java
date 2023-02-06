@@ -98,8 +98,8 @@ public class ReuniaoController {
 
         Reuniao reuniao = reuniaoService.findById(codigo).get();
         BeanUtils.copyProperties(reuniaoDTO, reuniao);
-        if (!reuniaoDTO.getStatusReuniao().equals(StatusReuniao.CANCELADO)) {
-            System.out.println("aaaa");
+        if (!reuniaoDTO.getStatusReuniao().equals(StatusReuniao.CANCELADO) &&
+        !reuniaoDTO.getStatusReuniao().equals(StatusReuniao.CONCLUIDO)) {
             Long tempo = reuniao.getDataReuniao().getTime() - new Date().getTime();
             if (tempo > 0 && tempo < 1300000000) {
                 reuniao.setStatusReuniao(StatusReuniao.PROXIMO);

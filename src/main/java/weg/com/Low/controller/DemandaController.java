@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,13 +58,17 @@ public class DemandaController {
             @RequestParam("tamanho") String tamanho,
             @PageableDefault(
                     page = 0,
-                    size = 24) Pageable page) {
-        if (tamanho.equals("")) {
+                    size = 24,
+                    sort = "titulo_demanda",
+                    direction = Sort.Direction.ASC) Pageable page){
+        String sort = page.getSort().toString().split(":")[0] + page.getSort().toString().split(":")[1];
+        System.out.println(sort);
+        if(tamanho.equals("")){
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, page.getOffset(), page.getPageSize()));
-        } else {
+                    status, page.getOffset(), page.getPageSize(), sort));
+        }else{
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, tamanho, page.getOffset(), page.getPageSize()));
+                    status, tamanho, page.getOffset(), page.getPageSize(), sort));
         }
     }
 
@@ -128,6 +133,8 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
+    //Caso seja passado por parametro 1 - passa para o proximo status
+    //Parametro != 1 - Cancela a demanda
     @PutMapping("update/status/{codigo}")
     public ResponseEntity<Object> updateAprovacao(
             @PathVariable(value = "codigo") Integer codigoDemanda,

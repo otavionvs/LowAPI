@@ -3,6 +3,7 @@ package weg.com.Low.model.service;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Status;
@@ -37,13 +38,13 @@ public class DemandaService {
     }
 
     public List<Demanda> search(
-            String tituloDemanda, String solicitante, String codigoDemanda, String status, String tamanho, Long page, int size) {
-        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, tamanho, page, size);
+            String tituloDemanda, String solicitante, String codigoDemanda, String status, String tamanho, Long page, int size, String sort) {
+        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, tamanho, page, size, sort);
     }
 
     public List<Demanda> search(
-            String tituloDemanda, String solicitante, String codigoDemanda, String status, Long page, int size) {
-        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, page, size);
+            String tituloDemanda, String solicitante, String codigoDemanda, String status, Long page, int size, String sort) {
+        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, page, size, sort);
     }
 
     public List<Demanda> search(String status, Long page, int size) {

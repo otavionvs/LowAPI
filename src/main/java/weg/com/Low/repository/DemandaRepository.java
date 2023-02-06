@@ -23,9 +23,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(d.codigo_demanda) like %:codigoDemanda% " +
             "AND LOWER(u.nome_usuario) like %:solicitante% " +
             "AND LOWER(d.status_demanda) like %:status% " +
-            "AND LOWER(da.tamanho_demanda_analista) like %:tamanho% LIMIT :size OFFSET :page ", nativeQuery = true)
+            "AND LOWER(da.tamanho_demanda_analista) like %:tamanho% order by :sort LIMIT :size OFFSET :page ", nativeQuery = true)
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
-                         String tamanho, Long page, int size);
+                         String tamanho, Long page, int size, String sort);
 
     //Para o caso da demanda não ter demanda analista
     @Query(value = "select * from demanda d " +
@@ -33,8 +33,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "WHERE LOWER(d.titulo_demanda) like %:tituloDemanda% " +
             "AND LOWER(d.codigo_demanda) like %:codigoDemanda% " +
             "AND LOWER(u.nome_usuario) like %:solicitante% " +
-            "AND LOWER(d.status_demanda) like %:status% LIMIT :size OFFSET :page ", nativeQuery = true)
-    List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status, Long page, int size);
+            "AND LOWER(d.status_demanda) like %:status% order by :sort LIMIT :size OFFSET :page ", nativeQuery = true)
+    List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
+                         String status, Long page, int size, String sort);
 
     @Query(value = "select * from demanda d " +
             "WHERE LOWER(d.status_demanda) like %:status% LIMIT :size OFFSET :page", nativeQuery = true)

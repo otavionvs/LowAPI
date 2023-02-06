@@ -13,15 +13,15 @@ public class Proposta {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
-    private int codigoProposta;
+    private Integer codigoProposta;
 
     @Column(nullable = false)
     private Date prazoProposta;
 
     @Column(nullable = false)
-    private int ppmProposta;
+    private Integer ppmProposta;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String jiraProposta;
 
     @Column
