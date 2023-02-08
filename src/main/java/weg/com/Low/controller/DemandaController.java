@@ -56,19 +56,17 @@ public class DemandaController {
             @RequestParam("codigoDemanda") String codigoDemanda,
             @RequestParam("status") String status,
             @RequestParam("tamanho") String tamanho,
+            @RequestParam("analista") String analista,
+            @RequestParam("departamento") String departamento,
             @PageableDefault(
                     page = 0,
-                    size = 24,
-                    sort = "titulo_demanda",
-                    direction = Sort.Direction.ASC) Pageable page){
-        String sort = page.getSort().toString().split(":")[0] + page.getSort().toString().split(":")[1];
-        System.out.println(sort);
-        if(tamanho.equals("")){
+                    size = 24) Pageable page){
+        if(tamanho.equals("") && analista.equals("")){
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, page.getOffset(), page.getPageSize(), sort));
+                    status, departamento, page));
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, tamanho, page.getOffset(), page.getPageSize(), sort));
+                    status, tamanho, analista, departamento, page));
         }
     }
 
@@ -77,14 +75,26 @@ public class DemandaController {
     public ResponseEntity<List<List<Demanda>>> search(
             @PageableDefault(
                     page = 0,
-                    size = 12) Pageable page) {
+                    size = 12,
+            sort = "status_demanda",
+            direction = Sort.Direction.ASC) Pageable page) {
         List<List<Demanda>> listaDemandas = new ArrayList<>();
         //envia o nome de cada status, usando o metodo search
         for (int i = 0; i < 10; i++) {
-            listaDemandas.add(demandaService.search(Status.values()[i] + "", page.getOffset(), page.getPageSize()));
+            listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
+    }
+
+    @GetMapping("/filtro/status")
+    public ResponseEntity<List<Demanda>> search(
+            @RequestParam("status1") String status1,
+            @RequestParam("status2") String status2,
+            @PageableDefault(
+                    page = 0,
+                    size = 10) Pageable page){
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(status1,status2,page));
     }
 
     @PostMapping

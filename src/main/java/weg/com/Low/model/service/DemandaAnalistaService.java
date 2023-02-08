@@ -42,4 +42,5 @@ public class DemandaAnalistaService {
     public DemandaAnalista findByDemandaDemandaAnalista(Demanda demanda) {
         return demandaAnalistaRepository.findByDemandaDemandaAnalista(demanda);
     }
+
 }
