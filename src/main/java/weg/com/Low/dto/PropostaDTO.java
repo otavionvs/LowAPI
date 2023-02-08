@@ -22,8 +22,8 @@ public class PropostaDTO {
     private String jiraProposta;
     @NotNull
     private List<RecursoDTO> recursosProposta;
-//    @NotNull
-//    private String escopoDemandaProposta;
+    @NotNull
+    private String escopoDemandaProposta;
     @FutureOrPresent
     private Date inicioExDemandaProposta;
     @Future
