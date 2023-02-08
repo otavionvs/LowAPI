@@ -75,6 +75,7 @@ public class PropostaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
         }
 
+
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }
 
