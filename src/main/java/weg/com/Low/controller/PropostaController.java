@@ -66,6 +66,7 @@ public class PropostaController {
         }
         proposta.setRecursosProposta(recursos);
 
+
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }
 
