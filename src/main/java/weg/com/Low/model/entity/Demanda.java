@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -16,19 +17,23 @@ public class Demanda {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Integer codigoDemanda;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String tituloDemanda;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String situacaoAtualDemanda;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String objetivoDemanda;
     @Column(nullable = false)
     private String frequenciaDeUsoDemanda;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Status statusDemanda;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String beneficioQualitativoDemanda;
+    @Column()
+    private Date dataCriacaoDemanda = new Date();
+    @Column(length = 1000)
+    private String motivoReprovacaoDemanda;
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda", nullable = false)
     private Beneficio beneficioPotencialDemanda;

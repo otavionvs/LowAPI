@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public enum PerfilDespesa {
     hardware("Hardware"),
-    software("Software"),
+        software("Software"),
     corporativo("Corporativo");
 
     String perfilDespesa;

@@ -12,6 +12,6 @@ public class BusinessUnit {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
     private Integer codigoBusinessUnit;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String nomeBusinessUnit;
 }

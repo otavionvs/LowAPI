@@ -56,11 +56,8 @@ public class ReuniaoController {
                     page = 0,
                     size = 10) Pageable page){
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.search(nomeComissao, dataReuniao, statusReuniao,
-                ppmProposta, analista, solicitante, page.getOffset(), page.getPageSize()));
+                ppmProposta, analista, solicitante, page));
     }
-
-//    String nomeComissao, String dataReuniao, String statusReuniao,
-//    String ppmProposta, String analista, String solicitante, Pageable page
 
 
     @PostMapping
@@ -98,8 +95,8 @@ public class ReuniaoController {
 
         Reuniao reuniao = reuniaoService.findById(codigo).get();
         BeanUtils.copyProperties(reuniaoDTO, reuniao);
-        if (!reuniaoDTO.getStatusReuniao().equals(StatusReuniao.CANCELADO)) {
-            System.out.println("aaaa");
+        if (!reuniaoDTO.getStatusReuniao().equals(StatusReuniao.CANCELADO) &&
+        !reuniaoDTO.getStatusReuniao().equals(StatusReuniao.CONCLUIDO)) {
             Long tempo = reuniao.getDataReuniao().getTime() - new Date().getTime();
             if (tempo > 0 && tempo < 1300000000) {
                 reuniao.setStatusReuniao(StatusReuniao.PROXIMO);

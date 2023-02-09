@@ -60,7 +60,11 @@ public class DemandaAnalistaController {
             if(usuario.getNivelAcessoUsuario() != NivelAcesso.Analista && usuario.getNivelAcessoUsuario() != NivelAcesso.GestorTI){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Acesso a criação de demanda negado!");
             }
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
         }
+
+
         Optional demandaOptional = demandaService.findById(demandaAnalistaDTO.getDemandaDemandaAnalista().getCodigoDemanda());
         if(demandaOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
@@ -70,10 +74,10 @@ public class DemandaAnalistaController {
         if(demanda.getStatusDemanda() != Status.BACKLOG_CLASSIFICACAO){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda já foi classificada!");
         }
-        demanda.setStatusDemanda(Status.BACKLOG_APROVACAO);
-        demandaService.save(demanda);
         DemandaAnalista demandaAnalista = new DemandaAnalista();
         BeanUtils.copyProperties(demandaAnalistaDTO, demandaAnalista);
+        demanda.setStatusDemanda(Status.BACKLOG_APROVACAO);
+        demandaService.save(demanda);
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.save(demandaAnalista));
     }
 

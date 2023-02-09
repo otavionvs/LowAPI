@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,7 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaOptional.get());
     }
 
+    //É necessário ter todos os campos mesmos que vazios("")
     @GetMapping("/filtro")
     public ResponseEntity<List<Demanda>> search(
             @RequestParam("tituloDemanda") String tituloDemanda,
@@ -55,15 +57,18 @@ public class DemandaController {
             @RequestParam("codigoDemanda") String codigoDemanda,
             @RequestParam("status") String status,
             @RequestParam("tamanho") String tamanho,
+            @RequestParam("analista") String analista,
+            @RequestParam("departamento") String departamento,
             @PageableDefault(
                     page = 0,
-                    size = 24) Pageable page) {
-        if (tamanho.equals("")) {
+                    size = 24) Pageable page){
+        //requisições com tamanho e analista, exigem demanda analista(Backlog_Aprovação)
+        if(tamanho.equals("") && analista.equals("")){
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, page.getOffset(), page.getPageSize()));
-        } else {
+                    status, departamento, page));
+        }else{
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, tamanho, page.getOffset(), page.getPageSize()));
+                    status, tamanho, analista, departamento, page));
         }
     }
 
@@ -72,18 +77,33 @@ public class DemandaController {
     public ResponseEntity<List<List<Demanda>>> search(
             @PageableDefault(
                     page = 0,
-                    size = 12) Pageable page) {
+                    size = 12,
+            sort = "status_demanda",
+            direction = Sort.Direction.ASC) Pageable page) {
         List<List<Demanda>> listaDemandas = new ArrayList<>();
         //envia o nome de cada status, usando o metodo search
         for (int i = 0; i < 10; i++) {
-            listaDemandas.add(demandaService.search(Status.values()[i] + "", page.getOffset(), page.getPageSize()));
+            listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
 
+    //Retorna uma lista com até dois status enviados
+    @GetMapping("/filtro/status")
+    public ResponseEntity<List<Demanda>> search(
+            @RequestParam("status1") String status1,
+            @RequestParam("status2") String status2,
+            @PageableDefault(
+                    page = 0,
+                    size = 10) Pageable page){
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(status1,status2,page));
+    }
+
+    //Exige de outro formato para enviar as informações (body - form data)
     @PostMapping
     public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
+        //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
         demanda.setArquivos(arquivos);
@@ -98,7 +118,7 @@ public class DemandaController {
             }
         }
 
-
+        //Registra os beneficios enviados - evita repetir estrutura
         Beneficio beneficioPotencial = new Beneficio();
         Beneficio beneficioReal = new Beneficio();
 
@@ -128,6 +148,8 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
+    //Caso seja passado por parametro 1 - passa para o proximo status
+    //Parametro != 1 - Cancela a demanda
     @PutMapping("update/status/{codigo}")
     public ResponseEntity<Object> updateAprovacao(
             @PathVariable(value = "codigo") Integer codigoDemanda,
