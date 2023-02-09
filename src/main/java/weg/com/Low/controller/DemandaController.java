@@ -49,6 +49,7 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaOptional.get());
     }
 
+    //É necessário ter todos os campos mesmos que vazios("")
     @GetMapping("/filtro")
     public ResponseEntity<List<Demanda>> search(
             @RequestParam("tituloDemanda") String tituloDemanda,
@@ -61,6 +62,7 @@ public class DemandaController {
             @PageableDefault(
                     page = 0,
                     size = 24) Pageable page){
+        //requisições com tamanho e analista, exigem demanda analista(Backlog_Aprovação)
         if(tamanho.equals("") && analista.equals("")){
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
                     status, departamento, page));
@@ -87,6 +89,7 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
 
+    //Retorna uma lista com até dois status enviados
     @GetMapping("/filtro/status")
     public ResponseEntity<List<Demanda>> search(
             @RequestParam("status1") String status1,
@@ -97,8 +100,10 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(status1,status2,page));
     }
 
+    //Exige de outro formato para enviar as informações (body - form data)
     @PostMapping
     public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
+        //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
         demanda.setArquivos(arquivos);
@@ -113,7 +118,7 @@ public class DemandaController {
             }
         }
 
-
+        //Registra os beneficios enviados - evita repetir estrutura
         Beneficio beneficioPotencial = new Beneficio();
         Beneficio beneficioReal = new Beneficio();
 

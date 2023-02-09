@@ -59,9 +59,6 @@ public class ReuniaoController {
                 ppmProposta, analista, solicitante, page.getOffset(), page.getPageSize()));
     }
 
-//    String nomeComissao, String dataReuniao, String statusReuniao,
-//    String ppmProposta, String analista, String solicitante, Pageable page
-
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid ReuniaoDTO reuniaoDTO) {
