@@ -19,7 +19,7 @@ public class Proposta {
     private Date prazoProposta;
 
     @Column(nullable = false)
-    private Integer ppmProposta;
+    private Integer codigoPPMProposta;
 
     @Column(nullable = false, length = 1000)
     private String jiraProposta;

@@ -60,6 +60,8 @@ public class DemandaAnalistaController {
             if(usuario.getNivelAcessoUsuario() != NivelAcesso.Analista && usuario.getNivelAcessoUsuario() != NivelAcesso.GestorTI){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Acesso a criação de demanda negado!");
             }
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
         }
 
 

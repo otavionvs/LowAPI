@@ -25,6 +25,8 @@ public class PropostaController {
     private PropostaService propostaService;
     private RecursoService recursoService;
     private CentroCustoRecursoService centroCustoRecursoService;
+    private DemandaService demandaService;
+    private DemandaAnalistaService demandaAnalistaService;
 
     @GetMapping
     public ResponseEntity<List<Proposta>> findAll() {
@@ -61,10 +63,17 @@ public class PropostaController {
                 centroCustoRecursoService.save(centroCustoRecurso);
 
             }
-            System.out.println(recurso.getNomeRecurso());
             recursos.add(recurso);
         }
         proposta.setRecursosProposta(recursos);
+        try{
+            DemandaAnalista demandaAnalista =  demandaAnalistaService.findById(proposta.getDemandaAnalistaProposta().getCodigoDemandaAnalista()).get();
+            Demanda demanda = demandaService.findById(demandaAnalista.getDemandaDemandaAnalista().getCodigoDemanda()).get();
+            demanda.setStatusDemanda(Status.TO_DO);
+            demandaService.save(demanda);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
+        }
 
 
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
