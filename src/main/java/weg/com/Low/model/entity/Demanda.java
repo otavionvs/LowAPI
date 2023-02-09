@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -29,6 +30,8 @@ public class Demanda {
     private Status statusDemanda;
     @Column(nullable = false, length = 1000)
     private String beneficioQualitativoDemanda;
+    @Column()
+    private Date dataCriacaoDemanda = new Date();
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda", nullable = false)
     private Beneficio beneficioPotencialDemanda;

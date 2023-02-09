@@ -8,11 +8,12 @@ import javax.validation.Valid;
 
 public class DemandaUtil {
     private ObjectMapper objectMapper = new ObjectMapper();
+
     public Demanda convertJsonToModel(String demandaJson){
         DemandaDTO demandaDTO = convertJsonToDto(demandaJson);
         return convertDtoToModel(demandaDTO);
     }
-
+    //Usado para fazer uma verificação com o valid
     private DemandaDTO convertJsonToDto(String demandaJson){
         try {
             return this.objectMapper.readValue(demandaJson, DemandaDTO.class);
