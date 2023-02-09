@@ -56,7 +56,7 @@ public class ReuniaoController {
                     page = 0,
                     size = 10) Pageable page){
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.search(nomeComissao, dataReuniao, statusReuniao,
-                ppmProposta, analista, solicitante, page.getOffset(), page.getPageSize()));
+                ppmProposta, analista, solicitante, page));
     }
 
 

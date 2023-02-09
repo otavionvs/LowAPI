@@ -36,8 +36,8 @@ public class ReuniaoService {
     }
 
     public List<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
-            String ppmProposta, String analista, String solicitante, Long page, int size) {
+            String ppmProposta, String analista, String solicitante, Pageable page) {
         return reuniaoRepository.search(nomeComissao.toLowerCase(), dataReuniao, statusReuniao, ppmProposta,
-                analista.toLowerCase(), solicitante.toLowerCase(), page, size);
+                analista.toLowerCase(), solicitante.toLowerCase(), page);
     }
 }

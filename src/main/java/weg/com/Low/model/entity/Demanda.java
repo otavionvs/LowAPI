@@ -32,6 +32,8 @@ public class Demanda {
     private String beneficioQualitativoDemanda;
     @Column()
     private Date dataCriacaoDemanda = new Date();
+    @Column(length = 1000)
+    private String motivoReprovacaoDemanda;
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda", nullable = false)
     private Beneficio beneficioPotencialDemanda;
