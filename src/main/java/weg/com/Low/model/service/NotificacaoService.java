@@ -17,6 +17,6 @@ public class NotificacaoService {
         notificacaoDTO.setHoraNotificacao(now);
         notificacaoDTO.setTituloDemandaNotificacao("asdsfda");
         notificacaoDTO.setDescricaoNotificacao("teste");
-        this.messagingTemplate.convertAndSend("/topic/demand-status/" + notificacaoDTO);
+        this.messagingTemplate.convertAndSend("/topic/notifications" + notificacaoDTO);
     }
 }

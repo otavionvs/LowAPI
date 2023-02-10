@@ -16,10 +16,7 @@ import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.dto.NotificacaoDTO;
 import weg.com.Low.dto.StatusDTO;
 import weg.com.Low.model.entity.*;
-import weg.com.Low.model.service.BeneficioService;
-import weg.com.Low.model.service.CentroCustoService;
-import weg.com.Low.model.service.DemandaService;
-import weg.com.Low.model.service.UsuarioService;
+import weg.com.Low.model.service.*;
 import weg.com.Low.util.DemandaUtil;
 
 import javax.validation.Valid;
@@ -36,6 +33,7 @@ public class DemandaController {
     private BeneficioService beneficioService;
     private UsuarioService usuarioService;
     private CentroCustoService centroCustoService;
+    private NotificacaoService notificacaoService;
 
     @GetMapping
     public ResponseEntity<List<Demanda>> findAll() {
@@ -133,7 +131,7 @@ public class DemandaController {
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
-
+        notificacaoService.sendNotification("titulo", "desc");
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
