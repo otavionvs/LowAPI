@@ -8,10 +8,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.DemandaDTO;
+import weg.com.Low.dto.NotificacaoDTO;
 import weg.com.Low.dto.StatusDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.service.BeneficioService;
@@ -131,6 +133,7 @@ public class DemandaController {
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
+
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
