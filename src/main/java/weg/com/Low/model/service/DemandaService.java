@@ -13,12 +13,13 @@ import java.util.Optional;
 @AllArgsConstructor
 public class DemandaService {
     private DemandaRepository demandaRepository;
+   private NotificacaoService notificacaoService;
     public List<Demanda> findAll() {
         return demandaRepository.findAll();
     }
 
     public Demanda save(Demanda entity) {
-
+        
         return demandaRepository.save(entity);
     }
 
