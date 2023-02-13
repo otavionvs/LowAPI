@@ -2,7 +2,6 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.ReuniaoDTO;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
-import weg.com.Low.model.entity.StatusReuniao;
+import weg.com.Low.model.enums.StatusReuniao;
 import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.ReuniaoService;
 

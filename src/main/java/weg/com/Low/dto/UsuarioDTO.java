@@ -2,7 +2,7 @@ package weg.com.Low.dto;
 
 import lombok.Getter;
 import weg.com.Low.model.entity.Departamento;
-import weg.com.Low.model.entity.NivelAcesso;
+import weg.com.Low.model.enums.NivelAcesso;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

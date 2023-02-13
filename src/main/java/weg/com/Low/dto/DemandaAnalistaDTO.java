@@ -2,6 +2,7 @@ package weg.com.Low.dto;
 
 import lombok.Data;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.TamanhoDemanda;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
