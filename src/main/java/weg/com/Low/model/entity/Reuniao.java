@@ -1,7 +1,7 @@
 package weg.com.Low.model.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import weg.com.Low.model.enums.StatusReuniao;
 
 import javax.persistence.*;
 import java.util.Date;

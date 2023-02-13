@@ -1,9 +1,8 @@
 package weg.com.Low.dto;
 
 import lombok.Getter;
-import weg.com.Low.model.entity.Moeda;
+import weg.com.Low.model.enums.Moeda;
 
-import javax.validation.constraints.NegativeOrZero;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 

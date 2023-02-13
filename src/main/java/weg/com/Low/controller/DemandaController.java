@@ -2,20 +2,17 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.DemandaDTO;
-import weg.com.Low.dto.NotificacaoDTO;
-import weg.com.Low.dto.StatusDTO;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.service.*;
 import weg.com.Low.util.DemandaUtil;
 

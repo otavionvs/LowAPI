@@ -1,4 +1,4 @@
-package weg.com.Low.model.entity;
+package weg.com.Low.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
