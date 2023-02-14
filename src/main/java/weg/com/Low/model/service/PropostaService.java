@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
-import weg.com.Low.model.entity.DemandaAnalista;
-import weg.com.Low.model.entity.Notificacao;
-import weg.com.Low.model.entity.Proposta;
-import weg.com.Low.model.entity.Usuario;
+import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.StatusNotificacao;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.PropostaRepository;
@@ -22,6 +19,8 @@ import java.util.Optional;
 public class PropostaService {
     private PropostaRepository propostaRepository;
     private NotificacaoService notificacaoService;
+    private DemandaAnalistaService demandaAnalistaService;
+    private DemandaService demandaService;
 
     public List<Proposta> findAll() {
         return propostaRepository.findAll();
@@ -31,17 +30,25 @@ public class PropostaService {
         return propostaRepository.findById(integer);
     }
 
-//    public Proposta save(Proposta proposta) {
-//        notificacaoService.save(new Notificacao(
-//                proposta.getDemandaAnalistaProposta().getDemandaDemandaAnalista().getTituloDemanda(),
-//                proposta.getDemandaAnalistaProposta().getDemandaDemandaAnalista().getCodigoDemanda(),
-//                TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-//                "Sua demanda objete um progresso!",
-//                LocalDateTime.now(),
-//                LocalDate.now(),
-//                StatusNotificacao.ATIVADA,
-//                proposta.getRecursosProposta()
-//        ));
+    public Proposta save(Proposta proposta) {
+        List<Usuario> usuarios = null;
+        DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getDemandaAnalistaProposta().getCodigoDemandaAnalista()).get();
+        usuarios.add(demandaAnalista.getAnalista());
+        usuarios.add(demandaAnalista.getGerenteNegocio());
+        Demanda demanda = demandaService.findById(demandaAnalista.getDemandaDemandaAnalista().getCodigoDemanda()).get();
+        usuarios.add(demanda.getSolicitanteDemanda());
+
+        notificacaoService.save(new Notificacao(
+                null,
+                demanda.getTituloDemanda(),
+                        demanda.getCodigoDemanda(),
+                TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+                "Sua demanda progrediu de estado!",
+                LocalDateTime.now(),
+                LocalDate.now(),
+                StatusNotificacao.ATIVADA,
+                usuarios
+        ));
 
         return propostaRepository.save(proposta);
     }
