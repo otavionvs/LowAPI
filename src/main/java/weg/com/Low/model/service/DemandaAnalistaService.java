@@ -40,6 +40,7 @@ public class DemandaAnalistaService {
                 LocalDateTime.now(),
                 LocalDate.now(),
                 StatusNotificacao.ATIVADA, usuarios));
+
         return demandaAnalistaRepository.save(entity);
     }
 
