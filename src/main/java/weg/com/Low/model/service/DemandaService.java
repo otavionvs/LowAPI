@@ -12,6 +12,7 @@ import weg.com.Low.repository.DemandaRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,8 @@ public class DemandaService {
     }
 
     public Demanda save(Demanda demanda) {
+        ArrayList<Usuario> listaUsuarios = new ArrayList<>();
+        listaUsuarios.add(demanda.getSolicitanteDemanda());
         switch (demanda.getStatusDemanda()) {
             case BACKLOG_CLASSIFICACAO -> {
                 notificacaoService.save(new Notificacao(
@@ -37,7 +40,7 @@ public class DemandaService {
                         LocalDateTime.now(),
                         LocalDate.now(),
                         StatusNotificacao.ATIVADA,
-                        (List<Usuario>) demanda.getSolicitanteDemanda()));
+                        listaUsuarios));
             }
             case CANCELLED -> {
                 notificacaoService.save(new Notificacao(
@@ -49,7 +52,7 @@ public class DemandaService {
                         LocalDateTime.now(),
                         LocalDate.now(),
                         StatusNotificacao.ATIVADA,
-                        (List<Usuario>) demanda.getSolicitanteDemanda()));
+                        listaUsuarios));
             }
             default -> {
                 notificacaoService.save(new Notificacao(
@@ -61,7 +64,7 @@ public class DemandaService {
                         LocalDateTime.now(),
                         LocalDate.now(),
                         StatusNotificacao.ATIVADA,
-                        (List<Usuario>) demanda.getSolicitanteDemanda()));
+                        listaUsuarios));
 
         }
         }
