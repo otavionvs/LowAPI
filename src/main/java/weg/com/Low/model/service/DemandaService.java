@@ -19,7 +19,7 @@ public class DemandaService {
     }
 
     public Demanda save(Demanda entity) {
-        
+
         return demandaRepository.save(entity);
     }
 
