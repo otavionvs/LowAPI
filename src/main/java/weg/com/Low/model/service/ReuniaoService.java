@@ -4,9 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import weg.com.Low.model.entity.Reuniao;
+import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.StatusNotificacao;
+import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.ReuniaoRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,13 +18,36 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ReuniaoService {
     private ReuniaoRepository reuniaoRepository;
+    private NotificacaoService notificacaoService;
+    private DemandaAnalistaService demandaAnalistaService;
+    private DemandaService demandaService;
 
     public List<Reuniao> findAll() {
         return reuniaoRepository.findAll();
     }
 
-    public Reuniao save(Reuniao entity) {
-        return reuniaoRepository.save(entity);
+    public Reuniao save(Reuniao reuniao) {
+        List<Proposta> propostas = reuniao.getPropostasReuniao();
+        List<Usuario> usuarios = null;
+        for (Proposta proposta: propostas){
+            DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getDemandaAnalistaProposta().getCodigoDemandaAnalista()).get();
+            usuarios.add(demandaAnalista.getAnalista());
+            usuarios.add(demandaAnalista.getGerenteNegocio());
+            Demanda demanda = demandaService.findById(demandaAnalista.getDemandaDemandaAnalista().getCodigoDemanda()).get();
+            usuarios.add(demanda.getSolicitanteDemanda());
+        }
+        notificacaoService.save(new Notificacao(
+                null,
+                reuniao.getDataReuniao().toString(),
+                reuniao.getCodigoReuniao(),
+                TipoNotificacao.MARCOU_REUNIAO,
+                "Uma reunião de uma demanda que você está envolvido foi marcada! ",
+                LocalDateTime.now(),
+                LocalDate.now(),
+                StatusNotificacao.ATIVADA,
+                usuarios
+                ));
+        return reuniaoRepository.save(reuniao);
     }
 
     public Optional<Reuniao> findById(Integer codigo) {
