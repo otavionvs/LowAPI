@@ -69,7 +69,8 @@ public class PropostaController {
         try{
             DemandaAnalista demandaAnalista =  demandaAnalistaService.findById(proposta.getDemandaAnalistaProposta().getCodigoDemandaAnalista()).get();
             Demanda demanda = demandaService.findById(demandaAnalista.getDemandaDemandaAnalista().getCodigoDemanda()).get();
-            demanda.setStatusDemanda(Status.TO_DO);
+            demanda.setStatusDemanda(Status.ASSESSMENT);
+
             demandaService.save(demanda);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");

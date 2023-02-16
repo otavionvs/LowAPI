@@ -11,6 +11,7 @@ import weg.com.Low.repository.PropostaRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class PropostaService {
     }
 
     public Proposta save(Proposta proposta) {
-        List<Usuario> usuarios = null;
+        ArrayList<Usuario> usuarios = new ArrayList<>();
         DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getDemandaAnalistaProposta().getCodigoDemandaAnalista()).get();
         usuarios.add(demandaAnalista.getAnalista());
         usuarios.add(demandaAnalista.getGerenteNegocio());

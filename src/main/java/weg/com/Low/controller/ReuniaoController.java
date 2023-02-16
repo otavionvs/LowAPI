@@ -9,9 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.ReuniaoDTO;
+import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.entity.DemandaAnalista;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
+import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.enums.StatusReuniao;
+import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.ReuniaoService;
 
@@ -28,6 +32,7 @@ import java.util.Optional;
 public class ReuniaoController {
     private ReuniaoService reuniaoService;
     private PropostaService propostaService;
+    private DemandaService demandaService;
 
     @GetMapping
     public ResponseEntity<List<Reuniao>> findAll() {
@@ -66,6 +71,12 @@ public class ReuniaoController {
             List<Proposta> propostas = new ArrayList<>();
             for(int i = 0; i < reuniaoDTO.getDemandasReuniao().size(); i ++){
                 propostas.add(propostaService.porDemanda(reuniaoDTO.getDemandasReuniao().get(i).getCodigoDemanda() + ""));
+
+            }
+            for (Proposta proposta: propostas){
+                Demanda demanda = proposta.getDemandaAnalistaProposta().getDemandaDemandaAnalista();
+                demanda.setStatusDemanda(Status.TO_DO);
+                demandaService.save(demanda);
             }
             reuniaoDTO.setPropostasReuniao(propostas);
         }

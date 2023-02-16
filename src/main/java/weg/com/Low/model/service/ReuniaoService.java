@@ -11,6 +11,7 @@ import weg.com.Low.repository.ReuniaoRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ public class ReuniaoService {
 
     public Reuniao save(Reuniao reuniao) {
         List<Proposta> propostas = reuniao.getPropostasReuniao();
-        List<Usuario> usuarios = null;
+        ArrayList<Usuario> usuarios = new ArrayList<>();
         for (Proposta proposta: propostas){
             DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getDemandaAnalistaProposta().getCodigoDemandaAnalista()).get();
             usuarios.add(demandaAnalista.getAnalista());
