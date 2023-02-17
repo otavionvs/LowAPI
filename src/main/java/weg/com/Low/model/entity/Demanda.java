@@ -19,16 +19,16 @@ public class Demanda {
     private Integer codigoDemanda;
     @Column(nullable = false, length = 100)
     private String tituloDemanda;
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 3000)
     private String situacaoAtualDemanda;
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 3000)
     private String objetivoDemanda;
     @Column(nullable = false)
     private String frequenciaDeUsoDemanda;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Status statusDemanda;
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 3000)
     private String beneficioQualitativoDemanda;
     @Column()
     private Date dataCriacaoDemanda = new Date();

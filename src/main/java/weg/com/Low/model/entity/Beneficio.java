@@ -13,7 +13,7 @@ public class Beneficio {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Integer codigoBeneficio;
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 3000)
     private String memoriaDeCalculoBeneficio;
     @Column(nullable = false)
     private Double valorBeneficio;
