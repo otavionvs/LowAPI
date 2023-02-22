@@ -1,9 +1,10 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
+import weg.com.Low.model.enums.PerfilDespesa;
+import weg.com.Low.model.enums.TipoDespesa;
 
 import javax.persistence.*;
-import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
 @Table(name = "recurso")

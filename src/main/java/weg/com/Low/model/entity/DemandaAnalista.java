@@ -1,6 +1,8 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
+import weg.com.Low.model.enums.TamanhoDemanda;
+
 import javax.persistence.*;
 import java.util.List;
 

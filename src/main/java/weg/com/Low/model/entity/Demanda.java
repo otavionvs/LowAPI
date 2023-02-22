@@ -2,10 +2,10 @@ package weg.com.Low.model.entity;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
+import weg.com.Low.model.enums.Status;
 
 import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 

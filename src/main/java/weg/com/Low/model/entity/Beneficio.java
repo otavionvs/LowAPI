@@ -1,6 +1,7 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
+import weg.com.Low.model.enums.Moeda;
 
 import javax.persistence.*;
 

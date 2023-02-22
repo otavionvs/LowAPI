@@ -2,9 +2,9 @@ package weg.com.Low.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import weg.com.Low.model.enums.NivelAcesso;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "usuario")

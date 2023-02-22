@@ -2,7 +2,6 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -12,8 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.DemandaDTO;
-import weg.com.Low.dto.StatusDTO;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.service.*;
 import weg.com.Low.util.DemandaUtil;
 
@@ -32,6 +31,8 @@ public class DemandaController {
     private UsuarioService usuarioService;
     private CentroCustoService centroCustoService;
     private DemandaHistoricoService demandaHistoricoService;
+    private NotificacaoService notificacaoService;
+
 
     @GetMapping
     public ResponseEntity<List<Demanda>> findAll() {
@@ -130,6 +131,7 @@ public class DemandaController {
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
+        notificacaoService.sendNotification("titulo", "desc");
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
