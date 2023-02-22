@@ -14,10 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.dto.StatusDTO;
 import weg.com.Low.model.entity.*;
-import weg.com.Low.model.service.BeneficioService;
-import weg.com.Low.model.service.CentroCustoService;
-import weg.com.Low.model.service.DemandaService;
-import weg.com.Low.model.service.UsuarioService;
+import weg.com.Low.model.service.*;
 import weg.com.Low.util.DemandaUtil;
 
 import javax.validation.Valid;
@@ -34,6 +31,7 @@ public class DemandaController {
     private BeneficioService beneficioService;
     private UsuarioService usuarioService;
     private CentroCustoService centroCustoService;
+    private DemandaHistoricoService demandaHistoricoService;
 
     @GetMapping
     public ResponseEntity<List<Demanda>> findAll() {
@@ -112,6 +110,7 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
         List<CentroCusto> centroCustos = demanda.getCentroCustos();
+        System.out.println(centroCustos.toString());
         for (int i = 0; i < demanda.getCentroCustos().size(); i++) {
             if (!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
@@ -144,7 +143,29 @@ public class DemandaController {
         }
 
         Demanda demanda = demandaService.findById(codigo).get();
+//        DemandaHistorico demandaHistorico = new DemandaHistorico();
+//        BeanUtils.copyProperties(demanda, demandaHistorico);
+//        demandaHistorico.setCentroCustosHistorico(new ArrayList<>());
+//        for(CentroCusto centroCusto: demanda.getCentroCustos()){
+//            CentroCustoHistorico centroCustoHistorico = new CentroCustoHistorico();
+//            centroCustoHistorico.setNomeCentroCustoHistorico(centroCusto.getNome());
+//            demandaHistorico.getCentroCustosHistorico().add(centroCustoHistorico);
+//        }
+
+//        demandaHistorico.setDemandaDemandaHistorico(demanda);
+//        demandaHistorico.setVersaoDemandaHistorico((demandaHistoricoService.findByDemandaDemandaHistorico(demanda).size() + 1));
+//        demandaHistorico.setArquivosDemandaHistorico(demanda.getArquivosDemanda());
+//        System.out.println(demandaHistorico.toString());
+//        try {
+//            demandaHistoricoService.save(demandaHistorico);
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
+
+
         BeanUtils.copyProperties(demandaDTO, demanda);
+        demanda.setCodigoDemanda(codigo);
+
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 

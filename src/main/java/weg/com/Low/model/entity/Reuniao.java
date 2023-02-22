@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class Reuniao {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoReuniao;
     @Column(nullable = false)
@@ -25,7 +25,7 @@ public class Reuniao {
     @OneToOne
     @JoinColumn(name = "ata")
     private Ata ataReuniao;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "proposta_reuniao", joinColumns =
     @JoinColumn(name = "codigo_reuniao", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "codigo_proposta", nullable = false))

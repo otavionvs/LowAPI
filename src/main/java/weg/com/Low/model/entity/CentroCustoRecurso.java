@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "centro_pagante_recurso")
 public class CentroCustoRecurso {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoCentroCustoRecurso;
 

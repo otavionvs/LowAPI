@@ -12,11 +12,16 @@ import java.util.List;
 @Entity
 @Table(name = "demanda")
 @Data
+@IdClass(DemandaId.class)
 public class Demanda {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoDemanda;
+//    @EmbeddedId
+//    private DemandaId codigoDemanda;
+    @Id
+    private Integer version;
     @Column(nullable = false, length = 100)
     private String tituloDemanda;
     @Column(nullable = false, length = 1000)

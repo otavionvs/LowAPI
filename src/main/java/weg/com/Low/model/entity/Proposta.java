@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 public class Proposta {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoProposta;
 
@@ -41,7 +41,7 @@ public class Proposta {
     @JoinColumn(name = "codigo_demandaAnalista")
     private DemandaAnalista demandaAnalistaProposta;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "proposta_recurso", joinColumns =
     @JoinColumn(name = "codigo_proposta"),
             inverseJoinColumns = @JoinColumn(name = "codigo_recurso"))

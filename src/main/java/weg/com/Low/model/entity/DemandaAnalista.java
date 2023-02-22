@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class DemandaAnalista{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer codigoDemandaAnalista;
     @Enumerated(value = EnumType.STRING)
@@ -18,7 +18,7 @@ public class DemandaAnalista{
     @OneToOne
     @JoinColumn(name = "bu_solicitante", nullable = false)
     private BusinessUnit buSolicitanteDemandaAnalista;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "bu_beneficiada", joinColumns =
     @JoinColumn(name = "codigo_demanda_analista", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "codigo_business_unit", nullable = false))

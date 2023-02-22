@@ -10,7 +10,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 @Data
 public class Recurso {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoRecurso;
     @Column(nullable = false, length = 65)

@@ -57,4 +57,7 @@ public class DemandaService {
         return demandaRepository.search(status1, status2, page);
     }
 
+    public Long countAllByCodigoDemanda(Integer codigoDemanda) {
+        return demandaRepository.countAllByCodigoDemanda(codigoDemanda);
+    }
 }

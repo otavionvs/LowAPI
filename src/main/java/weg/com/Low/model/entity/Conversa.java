@@ -10,10 +10,10 @@ import java.util.List;
 @Data
 public class Conversa {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoConversa;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "mensagens_Conversa", joinColumns =
     @JoinColumn(name = "codigo_conversa", nullable = false),
     inverseJoinColumns = @JoinColumn(name = "codigo_mensagem", nullable = false))

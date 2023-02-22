@@ -1,21 +1,17 @@
 package weg.com.Low.model.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "ata")
-@AllArgsConstructor
+@Table(name = "centro_custo_historico")
 @Data
-public class Ata {
+public class CentroCustoHistorico {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    Integer idAta;
-    @Column()
-    String tipoAta;
+    private Integer codigoCentroCustoHistorico;
     @Column(nullable = false, length = 100)
-    String tituloAta;
+    private String nomeCentroCustoHistorico;
 }
