@@ -30,7 +30,7 @@ public class DemandaController {
     private BeneficioService beneficioService;
     private UsuarioService usuarioService;
     private CentroCustoService centroCustoService;
-    private DemandaHistoricoService demandaHistoricoService;
+//    private DemandaHistoricoService demandaHistoricoService;
     private NotificacaoService notificacaoService;
 
 
@@ -163,7 +163,6 @@ public class DemandaController {
 //        }catch (Exception e){
 //            System.out.println(e.getMessage());
 //        }
-
 
         BeanUtils.copyProperties(demandaDTO, demanda);
         demanda.setCodigoDemanda(codigo);

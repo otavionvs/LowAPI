@@ -8,11 +8,12 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.springframework.data.annotation.Version;
 
 @Entity
 @Table(name = "demanda")
 @Data
-@IdClass(DemandaId.class)
+//@IdClass(DemandaId.class)
 public class Demanda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +21,7 @@ public class Demanda {
     private Integer codigoDemanda;
 //    @EmbeddedId
 //    private DemandaId codigoDemanda;
-    @Id
+    @Column
     private Integer version;
     @Column(nullable = false, length = 100)
     private String tituloDemanda;
@@ -76,7 +77,6 @@ public class Demanda {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 }

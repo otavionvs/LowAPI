@@ -9,11 +9,14 @@ import java.util.List;
 @Entity
 @Table(name = "demanda_analista")
 @Data
-public class DemandaAnalista{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
-    private Integer codigoDemandaAnalista;
+public class DemandaAnalista extends Demanda{
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(nullable = false)
+//    private Integer codigoDemandaAnalista;
+//    @EmbeddedId
+//    DemandaId codigoDemandaAnalista;
+
     @Enumerated(value = EnumType.STRING)
     @Column(nullable = false)
     private TamanhoDemanda tamanhoDemandaAnalista;
@@ -34,9 +37,9 @@ public class DemandaAnalista{
     @JoinColumn(name = "secao_codigo", nullable = false)
     private Secao secaoDemandaAnalista;
 
-    @OneToOne
-    @JoinColumn(name = "demanda_codigo", nullable = false)
-    private Demanda demandaDemandaAnalista;
+//    @OneToOne
+//    @JoinColumn(name = "demanda_codigo", nullable = false)
+//    private Demanda demandaDemandaAnalista;
 
     @OneToOne
     @JoinColumn(name = "analista_codigo", nullable = false)

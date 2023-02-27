@@ -30,11 +30,11 @@ public class DemandaAnalistaService {
         ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
         usuarios.add(entity.getAnalista());
         usuarios.add(entity.getGerenteNegocio());
-        usuarios.add(entity.getDemandaDemandaAnalista().getSolicitanteDemanda());
+        usuarios.add(entity.getSolicitanteDemanda());
 
         notificacaoService.save(new Notificacao(null,
-                entity.getDemandaDemandaAnalista().getTituloDemanda(),
-                entity.getDemandaDemandaAnalista().getCodigoDemanda(),
+                entity.getTituloDemanda(),
+                entity.getCodigoDemanda(),
                 TipoNotificacao.AVANCOU_STATUS_DEMANDA,
                 "Sua demanda foi classificada!",
                 LocalDateTime.now(),

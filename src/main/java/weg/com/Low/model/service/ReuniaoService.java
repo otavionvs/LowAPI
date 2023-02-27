@@ -30,10 +30,10 @@ public class ReuniaoService {
         List<Proposta> propostas = reuniao.getPropostasReuniao();
         List<Usuario> usuarios = null;
         for (Proposta proposta: propostas){
-            DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getDemandaAnalistaProposta().getCodigoDemandaAnalista()).get();
+            DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
             usuarios.add(demandaAnalista.getAnalista());
             usuarios.add(demandaAnalista.getGerenteNegocio());
-            Demanda demanda = demandaService.findById(demandaAnalista.getDemandaDemandaAnalista().getCodigoDemanda()).get();
+            Demanda demanda = demandaService.findById(demandaAnalista.getCodigoDemanda()).get();
             usuarios.add(demanda.getSolicitanteDemanda());
         }
         notificacaoService.save(new Notificacao(

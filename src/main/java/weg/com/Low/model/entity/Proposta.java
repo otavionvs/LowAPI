@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Table(name = "proposta")
 @Entity
-public class Proposta {
+public class Proposta extends DemandaAnalista{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -37,9 +37,9 @@ public class Proposta {
     @JoinColumn(name = "codigo_responsavel")
     private Usuario responsavelProposta;
 
-    @OneToOne
-    @JoinColumn(name = "codigo_demandaAnalista")
-    private DemandaAnalista demandaAnalistaProposta;
+//    @OneToOne
+//    @JoinColumn(name = "codigo_demandaAnalista")
+//    private DemandaAnalista demandaAnalistaProposta;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "proposta_recurso", joinColumns =
