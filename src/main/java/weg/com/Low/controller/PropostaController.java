@@ -6,10 +6,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.dto.PropostaDTO;
 import weg.com.Low.dto.RecursoDTO;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.service.*;
 
 import javax.validation.Valid;
