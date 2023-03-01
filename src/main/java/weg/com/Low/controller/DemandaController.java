@@ -48,7 +48,7 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaOptional.get());
     }
 
-    @GetMapping("versões/{codigo}")
+    @GetMapping("versoes/{codigo}")
     public ResponseEntity<Object> findByIdAll(@PathVariable(value = "codigo") Integer codigo) {
         List<Demanda> demandas = demandaService.findByCodigoDemanda(codigo);
         if (demandas.isEmpty()) {
@@ -151,30 +151,13 @@ public class DemandaController {
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid DemandaDTO demandaDTO) {
-//        if (!demandaService.existsById(codigo)) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
-//        }
+        if (!demandaService.existsById(codigo)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
+        }
 
         Demanda demanda = demandaService.findLastDemandaById(codigo).get();
         Demanda demandaNova = new Demanda();
-//        DemandaHistorico demandaHistorico = new DemandaHistorico();
-//        BeanUtils.copyProperties(demanda, demandaHistorico);
-//        demandaHistorico.setCentroCustosHistorico(new ArrayList<>());
-//        for(CentroCusto centroCusto: demanda.getCentroCustos()){
-//            CentroCustoHistorico centroCustoHistorico = new CentroCustoHistorico();
-//            centroCustoHistorico.setNomeCentroCustoHistorico(centroCusto.getNome());
-//            demandaHistorico.getCentroCustosHistorico().add(centroCustoHistorico);
-//        }
 
-//        demandaHistorico.setDemandaDemandaHistorico(demanda);
-//        demandaHistorico.setVersaoDemandaHistorico((demandaHistoricoService.findByDemandaDemandaHistorico(demanda).size() + 1));
-//        demandaHistorico.setArquivosDemandaHistorico(demanda.getArquivosDemanda());
-//        System.out.println(demandaHistorico.toString());
-//        try {
-//            demandaHistoricoService.save(demandaHistorico);
-//        }catch (Exception e){
-//            System.out.println(e.getMessage());
-//        }
 
         BeanUtils.copyProperties(demandaDTO, demanda);
         demanda.setCodigoDemanda(codigo);
@@ -229,20 +212,20 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
-    //Não Deleta todas as demandas do codigo
-    @DeleteMapping("/{codigo}")
-    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-        Optional demandaOptional = demandaService.findLastDemandaById(codigo);
-        if (demandaOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
-        }
-        Demanda demanda = (Demanda) demandaOptional.get();
-        beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
-        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
-
-        demandaService.deleteById(codigo);
-        return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
-    }
+//    //Não Deleta todas as demandas do codigo
+//    @DeleteMapping("/{codigo}")
+//    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
+//        Optional demandaOptional = demandaService.findLastDemandaById(codigo);
+//        if (demandaOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
+//        }
+//        Demanda demanda = (Demanda) demandaOptional.get();
+//        beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
+//        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
+//
+//        demandaService.deleteById(codigo);
+//        return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
+//    }
 
 
 }

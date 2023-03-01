@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     Optional<Demanda> findFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
     List<Demanda> findByCodigoDemanda(Integer codigo);
+    boolean existsByCodigoDemanda(Integer codigo);
     Long countAllByCodigoDemanda(Integer codigoDemanda);
     //É necessario que todas as informações existam para que ele busque
     @Query(value = "select * from demanda " +

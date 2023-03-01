@@ -81,7 +81,7 @@ public class DemandaService {
     }
 
     public boolean existsById(Integer codigo) {
-        return demandaRepository.existsById(codigo);
+        return demandaRepository.existsByCodigoDemanda(codigo);
     }
 
     public void deleteById(Integer codigo) {
