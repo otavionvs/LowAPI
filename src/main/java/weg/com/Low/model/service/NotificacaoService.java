@@ -1,7 +1,6 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import weg.com.Low.dto.NotificacaoDTO;
 import weg.com.Low.model.entity.Notificacao;

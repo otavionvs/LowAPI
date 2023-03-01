@@ -72,8 +72,12 @@ public class DemandaService {
 //        return demandaRepository.save(demanda);
 //    }
 
-    public Optional<Demanda> findById(Integer codigo) {
-        return demandaRepository.findById(codigo);
+    public List<Demanda> findByCodigoDemanda(Integer codigo) {
+        return demandaRepository.findByCodigoDemanda(codigo);
+    }
+
+    public Optional<Demanda> findLastDemandaById(Integer codigo) {
+        return demandaRepository.findFirstByCodigoDemandaOrderByVersionDesc(codigo);
     }
 
     public boolean existsById(Integer codigo) {

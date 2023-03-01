@@ -33,7 +33,7 @@ public class ReuniaoService {
             DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
             usuarios.add(demandaAnalista.getAnalista());
             usuarios.add(demandaAnalista.getGerenteNegocio());
-            Demanda demanda = demandaService.findById(demandaAnalista.getCodigoDemanda()).get();
+            Demanda demanda = demandaService.findLastDemandaById(demandaAnalista.getCodigoDemanda()).get();
             usuarios.add(demanda.getSolicitanteDemanda());
         }
         notificacaoService.save(new Notificacao(

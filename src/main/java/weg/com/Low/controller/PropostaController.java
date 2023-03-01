@@ -68,7 +68,7 @@ public class PropostaController {
         proposta.setRecursosProposta(recursos);
         try{
             DemandaAnalista demandaAnalista =  demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
-            Demanda demanda = demandaService.findById(demandaAnalista.getCodigoDemanda()).get();
+            Demanda demanda = demandaService.findLastDemandaById(demandaAnalista.getCodigoDemanda()).get();
             demanda.setStatusDemanda(Status.TO_DO);
             demandaService.save(demanda);
         }catch (Exception e){

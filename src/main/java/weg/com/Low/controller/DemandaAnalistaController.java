@@ -36,9 +36,10 @@ public class DemandaAnalistaController {
         if(!demandaService.existsById(codigo)){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
         }
-        Demanda demanda = (Demanda) demandaService.findById(codigo).get();
+        Demanda demanda = (Demanda) demandaService.findLastDemandaById(codigo).get();
 
-        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findByDemandaDemandaAnalista(demanda));
+//        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findByDemandaDemandaAnalista(demanda));
+        return ResponseEntity.status(HttpStatus.OK).body("Temporario");
     }
 
 
@@ -68,7 +69,7 @@ public class DemandaAnalistaController {
 
 
 //        Optional demandaOptional = demandaService.findById(demandaAnalistaDTO.getDemandaDemandaAnalista().getCodigoDemanda());
-        Optional demandaOptional = demandaService.findById(demandaAnalistaDTO.getDemandaDemandaAnalista().getCodigoDemanda());
+        Optional demandaOptional = demandaService.findLastDemandaById(demandaAnalistaDTO.getDemandaDemandaAnalista().getCodigoDemanda());
         if(demandaOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
         }

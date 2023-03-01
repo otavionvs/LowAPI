@@ -18,14 +18,14 @@ public class DemandaAnalista extends Demanda{
 //    DemandaId codigoDemandaAnalista;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private TamanhoDemanda tamanhoDemandaAnalista;
     @OneToOne
-    @JoinColumn(name = "bu_solicitante", nullable = false)
+    @JoinColumn(name = "bu_solicitante")
     private BusinessUnit buSolicitanteDemandaAnalista;
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "bu_beneficiada", joinColumns =
-    @JoinColumn(name = "codigo_demanda_analista", nullable = false),
+    @JoinTable(name = "bu_beneficiada", joinColumns = {
+    @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda", nullable = false), @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)},
             inverseJoinColumns = @JoinColumn(name = "codigo_business_unit", nullable = false))
     private List<BusinessUnit> busBeneficiadasDemandaAnalista;
 
@@ -34,7 +34,7 @@ public class DemandaAnalista extends Demanda{
 //    private Arquivo arquivoDemandaAnalista;
 
     @OneToOne
-    @JoinColumn(name = "secao_codigo", nullable = false)
+    @JoinColumn(name = "secao_codigo")
     private Secao secaoDemandaAnalista;
 
 //    @OneToOne
@@ -42,7 +42,7 @@ public class DemandaAnalista extends Demanda{
 //    private Demanda demandaDemandaAnalista;
 
     @OneToOne
-    @JoinColumn(name = "analista_codigo", nullable = false)
+    @JoinColumn(name = "analista_codigo")
     private Usuario analista;
 
     @OneToOne

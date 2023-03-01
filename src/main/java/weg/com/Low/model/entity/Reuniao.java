@@ -28,7 +28,18 @@ public class Reuniao {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "proposta_reuniao", joinColumns =
     @JoinColumn(name = "codigo_reuniao", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "codigo_proposta", nullable = false))
+            inverseJoinColumns = {@JoinColumn(name = "codigo_proposta", referencedColumnName = "codigo_demanda", nullable = false),
+            @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)})
     private List<Proposta> propostasReuniao;
 
 }
+
+//@ManyToMany
+//@JoinTable(
+//        name = "tabela_secundaria",
+//        joinColumns = @JoinColumn(name = "entidade_b_id"),
+//        inverseJoinColumns = {
+//                @JoinColumn(name = "entidade_a_chave1"),
+//                @JoinColumn(name = "entidade_a_chave2")
+//        }
+//)
