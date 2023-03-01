@@ -7,11 +7,14 @@ import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Demanda;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
 public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
-
+    Optional<Demanda> findFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
+    List<Demanda> findByCodigoDemanda(Integer codigo);
+    Long countAllByCodigoDemanda(Integer codigoDemanda);
     //É necessario que todas as informações existam para que ele busque
     @Query(value = "select * from demanda " +
             "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +

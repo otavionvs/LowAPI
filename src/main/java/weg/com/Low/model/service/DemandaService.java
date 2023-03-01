@@ -25,51 +25,59 @@ public class DemandaService {
         return demandaRepository.findAll();
     }
 
-    public Demanda save(Demanda demanda) {
-        switch (demanda.getStatusDemanda()) {
-            case BACKLOG_CLASSIFICACAO -> {
-                notificacaoService.save(new Notificacao(
-                        null,
-                        demanda.getTituloDemanda(),
-                        demanda.getCodigoDemanda(),
-                        TipoNotificacao.CRIOU_DEMANDA,
-                        "Sua demanda foi criada!",
-                        LocalDateTime.now(),
-                        LocalDate.now(),
-                        StatusNotificacao.ATIVADA,
-                        (List<Usuario>) demanda.getSolicitanteDemanda()));
-            }
-            case CANCELLED -> {
-                notificacaoService.save(new Notificacao(
-                        null,
-                        demanda.getTituloDemanda(),
-                        demanda.getCodigoDemanda(),
-                        TipoNotificacao.CANCELOU_DEMANDA,
-                        "Sua demanda foi cancelada!",
-                        LocalDateTime.now(),
-                        LocalDate.now(),
-                        StatusNotificacao.ATIVADA,
-                        (List<Usuario>) demanda.getSolicitanteDemanda()));
-            }
-            default -> {
-                notificacaoService.save(new Notificacao(
-                        null,
-                        demanda.getTituloDemanda(),
-                        demanda.getCodigoDemanda(),
-                        TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-                        "Sua demanda progrediu de status!",
-                        LocalDateTime.now(),
-                        LocalDate.now(),
-                        StatusNotificacao.ATIVADA,
-                        (List<Usuario>) demanda.getSolicitanteDemanda()));
-
-        }
-        }
-        return demandaRepository.save(demanda);
+    public Demanda save(Demanda entity) {
+        return demandaRepository.save(entity);
     }
 
-    public Optional<Demanda> findById(Integer codigo) {
-        return demandaRepository.findById(codigo);
+    //    public Demanda save(Demanda demanda) {
+//        switch (demanda.getStatusDemanda()) {
+//            case BACKLOG_CLASSIFICACAO -> {
+//                notificacaoService.save(new Notificacao(
+//                        null,
+//                        demanda.getTituloDemanda(),
+//                        demanda.getCodigoDemanda(),
+//                        TipoNotificacao.CRIOU_DEMANDA,
+//                        "Sua demanda foi criada!",
+//                        LocalDateTime.now(),
+//                        LocalDate.now(),
+//                        StatusNotificacao.ATIVADA,
+//                        (List<Usuario>) demanda.getSolicitanteDemanda()));
+//            }
+//            case CANCELLED -> {
+//                notificacaoService.save(new Notificacao(
+//                        null,
+//                        demanda.getTituloDemanda(),
+//                        demanda.getCodigoDemanda(),
+//                        TipoNotificacao.CANCELOU_DEMANDA,
+//                        "Sua demanda foi cancelada!",
+//                        LocalDateTime.now(),
+//                        LocalDate.now(),
+//                        StatusNotificacao.ATIVADA,
+//                        (List<Usuario>) demanda.getSolicitanteDemanda()));
+//            }
+//            default -> {
+//                notificacaoService.save(new Notificacao(
+//                        null,
+//                        demanda.getTituloDemanda(),
+//                        demanda.getCodigoDemanda(),
+//                        TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+//                        "Sua demanda progrediu de status!",
+//                        LocalDateTime.now(),
+//                        LocalDate.now(),
+//                        StatusNotificacao.ATIVADA,
+//                        (List<Usuario>) demanda.getSolicitanteDemanda()));
+//
+//        }
+//        }
+//        return demandaRepository.save(demanda);
+//    }
+
+    public List<Demanda> findByCodigoDemanda(Integer codigo) {
+        return demandaRepository.findByCodigoDemanda(codigo);
+    }
+
+    public Optional<Demanda> findLastDemandaById(Integer codigo) {
+        return demandaRepository.findFirstByCodigoDemandaOrderByVersionDesc(codigo);
     }
 
     public boolean existsById(Integer codigo) {
@@ -100,4 +108,7 @@ public class DemandaService {
         return demandaRepository.search(status1, status2, page);
     }
 
+    public Long countAllByCodigoDemanda(Integer codigoDemanda) {
+        return demandaRepository.countAllByCodigoDemanda(codigoDemanda);
+    }
 }

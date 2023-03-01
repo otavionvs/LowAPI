@@ -30,7 +30,9 @@ public class DemandaController {
     private BeneficioService beneficioService;
     private UsuarioService usuarioService;
     private CentroCustoService centroCustoService;
+//    private DemandaHistoricoService demandaHistoricoService;
     private NotificacaoService notificacaoService;
+
 
     @GetMapping
     public ResponseEntity<List<Demanda>> findAll() {
@@ -39,11 +41,20 @@ public class DemandaController {
 
     @GetMapping("/{codigo}")
     public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
-        Optional<Demanda> demandaOptional = demandaService.findById(codigo);
+        Optional<Demanda> demandaOptional = demandaService.findLastDemandaById(codigo);
         if (demandaOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma demanda encontrada!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(demandaOptional.get());
+    }
+
+    @GetMapping("versões/{codigo}")
+    public ResponseEntity<Object> findByIdAll(@PathVariable(value = "codigo") Integer codigo) {
+        List<Demanda> demandas = demandaService.findByCodigoDemanda(codigo);
+        if (demandas.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma demanda encontrada!");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(demandas);
     }
 
     //É necessário ter todos os campos mesmos que vazios("")
@@ -108,12 +119,13 @@ public class DemandaController {
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
-        List<CentroCusto> centroCustos = demanda.getCentroCustos();
-        for (int i = 0; i < demanda.getCentroCustos().size(); i++) {
-            if (!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
-            }
-        }
+//        List<CentroCusto> centroCustos = demanda.getCentroCustos();
+//        System.out.println(centroCustos.toString());
+//        for (int i = 0; i < demanda.getCentroCustos().size(); i++) {
+//            if (!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())) {
+//                return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
+//            }
+//        }
 
         //Registra os beneficios enviados - evita repetir estrutura
         Beneficio beneficioPotencial = new Beneficio();
@@ -130,6 +142,8 @@ public class DemandaController {
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
         notificacaoService.sendNotification("titulo", "desc");
 
+        System.out.println(demanda);
+        demanda.setVersion(0);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
@@ -137,13 +151,38 @@ public class DemandaController {
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid DemandaDTO demandaDTO) {
-        if (!demandaService.existsById(codigo)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
-        }
+//        if (!demandaService.existsById(codigo)) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
+//        }
 
-        Demanda demanda = demandaService.findById(codigo).get();
+        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
+        Demanda demandaNova = new Demanda();
+//        DemandaHistorico demandaHistorico = new DemandaHistorico();
+//        BeanUtils.copyProperties(demanda, demandaHistorico);
+//        demandaHistorico.setCentroCustosHistorico(new ArrayList<>());
+//        for(CentroCusto centroCusto: demanda.getCentroCustos()){
+//            CentroCustoHistorico centroCustoHistorico = new CentroCustoHistorico();
+//            centroCustoHistorico.setNomeCentroCustoHistorico(centroCusto.getNome());
+//            demandaHistorico.getCentroCustosHistorico().add(centroCustoHistorico);
+//        }
+
+//        demandaHistorico.setDemandaDemandaHistorico(demanda);
+//        demandaHistorico.setVersaoDemandaHistorico((demandaHistoricoService.findByDemandaDemandaHistorico(demanda).size() + 1));
+//        demandaHistorico.setArquivosDemandaHistorico(demanda.getArquivosDemanda());
+//        System.out.println(demandaHistorico.toString());
+//        try {
+//            demandaHistoricoService.save(demandaHistorico);
+//        }catch (Exception e){
+//            System.out.println(e.getMessage());
+//        }
+
         BeanUtils.copyProperties(demandaDTO, demanda);
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+        demanda.setCodigoDemanda(codigo);
+        BeanUtils.copyProperties(demanda, demandaNova);
+        demandaNova.setVersion(demandaNova.getVersion() + 1);
+        demandaNova.setCodigoDemanda(codigo);
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
 
     //Caso seja passado por parametro 1 - passa para o proximo status
@@ -155,7 +194,7 @@ public class DemandaController {
         if (!demandaService.existsById(codigoDemanda)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe");
         }
-        Demanda demanda = demandaService.findById(codigoDemanda).get();
+        Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
         if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
@@ -190,9 +229,10 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
+    //Não Deleta todas as demandas do codigo
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-        Optional demandaOptional = demandaService.findById(codigo);
+        Optional demandaOptional = demandaService.findLastDemandaById(codigo);
         if (demandaOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
         }

@@ -9,20 +9,23 @@ import java.util.List;
 @Entity
 @Table(name = "demanda_analista")
 @Data
-public class DemandaAnalista{
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
-    private Integer codigoDemandaAnalista;
+public class DemandaAnalista extends Demanda{
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(nullable = false)
+//    private Integer codigoDemandaAnalista;
+//    @EmbeddedId
+//    DemandaId codigoDemandaAnalista;
+
     @Enumerated(value = EnumType.STRING)
-    @Column(nullable = false)
+    @Column
     private TamanhoDemanda tamanhoDemandaAnalista;
     @OneToOne
-    @JoinColumn(name = "bu_solicitante", nullable = false)
+    @JoinColumn(name = "bu_solicitante")
     private BusinessUnit buSolicitanteDemandaAnalista;
-    @ManyToMany
-    @JoinTable(name = "bu_beneficiada", joinColumns =
-    @JoinColumn(name = "codigo_demanda_analista", nullable = false),
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "bu_beneficiada", joinColumns = {
+    @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda", nullable = false), @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)},
             inverseJoinColumns = @JoinColumn(name = "codigo_business_unit", nullable = false))
     private List<BusinessUnit> busBeneficiadasDemandaAnalista;
 
@@ -31,15 +34,15 @@ public class DemandaAnalista{
 //    private Arquivo arquivoDemandaAnalista;
 
     @OneToOne
-    @JoinColumn(name = "secao_codigo", nullable = false)
+    @JoinColumn(name = "secao_codigo")
     private Secao secaoDemandaAnalista;
 
-    @OneToOne
-    @JoinColumn(name = "demanda_codigo", nullable = false)
-    private Demanda demandaDemandaAnalista;
+//    @OneToOne
+//    @JoinColumn(name = "demanda_codigo", nullable = false)
+//    private Demanda demandaDemandaAnalista;
 
     @OneToOne
-    @JoinColumn(name = "analista_codigo", nullable = false)
+    @JoinColumn(name = "analista_codigo")
     private Usuario analista;
 
     @OneToOne

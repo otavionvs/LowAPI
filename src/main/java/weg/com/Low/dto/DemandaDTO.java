@@ -29,6 +29,6 @@ public class DemandaDTO {
     @NotNull
     private Usuario solicitanteDemanda;
     @NotEmpty
-    private List<CentroCusto> centroCustos;
+    private List<String> centroCustos;
     private Integer codigoDemanda;
 }

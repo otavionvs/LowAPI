@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Data
 public class CentroCusto {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoCentroCusto;
     @Column(nullable = false, length = 100)

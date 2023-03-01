@@ -9,19 +9,19 @@ import java.util.List;
 @Data
 @Table(name = "proposta")
 @Entity
-public class Proposta {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column
-    private Integer codigoProposta;
+public class Proposta extends DemandaAnalista{
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column
+//    private Integer codigoProposta;
 
-    @Column(nullable = false)
+    @Column
     private Date prazoProposta;
 
-    @Column(nullable = false)
+    @Column
     private Integer codigoPPMProposta;
 
-    @Column(nullable = false, length = 1000)
+    @Column(length = 1000)
     private String jiraProposta;
 
     @Column
@@ -37,13 +37,13 @@ public class Proposta {
     @JoinColumn(name = "codigo_responsavel")
     private Usuario responsavelProposta;
 
-    @OneToOne
-    @JoinColumn(name = "codigo_demandaAnalista")
-    private DemandaAnalista demandaAnalistaProposta;
+//    @OneToOne
+//    @JoinColumn(name = "codigo_demandaAnalista")
+//    private DemandaAnalista demandaAnalistaProposta;
 
-    @ManyToMany
-    @JoinTable(name = "proposta_recurso", joinColumns =
-    @JoinColumn(name = "codigo_proposta"),
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "proposta_recurso", joinColumns = {
+    @JoinColumn(name = "codigo_proposta", referencedColumnName = "codigo_demanda"), @JoinColumn(name = "version", referencedColumnName = "version")},
             inverseJoinColumns = @JoinColumn(name = "codigo_recurso"))
     private List<Recurso> recursosProposta;
 
