@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.entity.DemandaAnalista;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +15,11 @@ import java.util.Optional;
 public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     Optional<Demanda> findFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
     List<Demanda> findByCodigoDemanda(Integer codigo);
+    boolean existsByCodigoDemanda(Integer codigo);
     Long countAllByCodigoDemanda(Integer codigoDemanda);
+
+    void deleteFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
+
     //É necessario que todas as informações existam para que ele busque
     @Query(value = "select * from demanda " +
             "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +

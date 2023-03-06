@@ -17,7 +17,7 @@ public class DemandaAnalistaDTO {
     @NotEmpty
     private List<BusinessUnit> busBeneficiadasDemandaAnalista;
     @NotNull
-    private Demanda demandaDemandaAnalista;
+    private Integer codigoDemanda;
     @NotNull
     private Usuario analista;
     @NotNull
