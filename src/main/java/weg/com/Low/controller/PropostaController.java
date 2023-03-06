@@ -26,21 +26,21 @@ public class PropostaController {
     private RecursoService recursoService;
     private CentroCustoRecursoService centroCustoRecursoService;
     private DemandaService demandaService;
-    private DemandaAnalistaService demandaAnalistaService;
+//    private DemandaAnalistaService demandaAnalistaService;
 
-    @GetMapping
-    public ResponseEntity<List<Proposta>> findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(propostaService.findAll());
-    }
-
-    @GetMapping("/{codigo}")
-    public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
-        Optional<Proposta> propostaOptional = propostaService.findById(codigo);
-        if (propostaOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proposta não encontrado!");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(propostaOptional.get());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<Proposta>> findAll() {
+//        return ResponseEntity.status(HttpStatus.OK).body(propostaService.findAll());
+//    }
+//
+//    @GetMapping("/{codigo}")
+//    public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
+//        Optional<Proposta> propostaOptional = propostaService.findById(codigo);
+//        if (propostaOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proposta não encontrado!");
+//        }
+//        return ResponseEntity.status(HttpStatus.OK).body(propostaOptional.get());
+//    }
 
     //ver como fica com status de aprovação
     //verificar se centro de custo existe?
@@ -61,20 +61,14 @@ public class PropostaController {
                 CentroCustoRecurso centroCustoRecurso = new CentroCustoRecurso(null,
                         recursoDTO.getCentroDeCustoRecurso().get(i2), recurso, recursoDTO.getPorcentagemCustoRecurso().get(i2));
                 centroCustoRecursoService.save(centroCustoRecurso);
-
             }
             recursos.add(recurso);
         }
         proposta.setRecursosProposta(recursos);
-        try{
-            DemandaAnalista demandaAnalista =  demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
-            Demanda demanda = demandaService.findLastDemandaById(demandaAnalista.getCodigoDemanda()).get();
-            demanda.setStatusDemanda(Status.TO_DO);
-            demandaService.save(demanda);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
-        }
+        proposta.setStatusDemanda(Status.TO_DO);
 
+        BeanUtils.copyProperties(demandaService.findLastDemandaById(propostaDTO.getCodigoDemanda()).get(), proposta);
+        proposta.setVersion(proposta.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }

@@ -31,27 +31,31 @@ public class PropostaService {
     }
 
     public Proposta save(Proposta proposta) {
-        List<Usuario> usuarios = null;
-        DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
-        usuarios.add(demandaAnalista.getAnalista());
-        usuarios.add(demandaAnalista.getGerenteNegocio());
-        Demanda demanda = demandaService.findLastDemandaById(demandaAnalista.getCodigoDemanda()).get();
-        usuarios.add(demanda.getSolicitanteDemanda());
-
-        notificacaoService.save(new Notificacao(
-                null,
-                demanda.getTituloDemanda(),
-                        demanda.getCodigoDemanda(),
-                TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-                "Sua demanda progrediu de estado!",
-                LocalDateTime.now(),
-                LocalDate.now(),
-                StatusNotificacao.ATIVADA,
-                usuarios
-        ));
-
         return propostaRepository.save(proposta);
     }
+
+    //    public Proposta save(Proposta proposta) {
+//        List<Usuario> usuarios = null;
+//        DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
+//        usuarios.add(demandaAnalista.getAnalista());
+//        usuarios.add(demandaAnalista.getGerenteNegocio());
+//        Demanda demanda = demandaService.findLastDemandaById(demandaAnalista.getCodigoDemanda()).get();
+//        usuarios.add(demanda.getSolicitanteDemanda());
+//
+//        notificacaoService.save(new Notificacao(
+//                null,
+//                demanda.getTituloDemanda(),
+//                        demanda.getCodigoDemanda(),
+//                TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+//                "Sua demanda progrediu de estado!",
+//                LocalDateTime.now(),
+//                LocalDate.now(),
+//                StatusNotificacao.ATIVADA,
+//                usuarios
+//        ));
+//
+//        return propostaRepository.save(proposta);
+//    }
 
     public void deleteById(Integer codigo) {
         propostaRepository.deleteById(codigo);

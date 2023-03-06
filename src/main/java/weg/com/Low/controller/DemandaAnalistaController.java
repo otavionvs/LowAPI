@@ -27,30 +27,32 @@ public class DemandaAnalistaController {
     private UsuarioService usuarioService;
     private DemandaService demandaService;
 
-    @GetMapping
-    public ResponseEntity<List<DemandaAnalista>> findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findAll());
-    }
-    @GetMapping("/demanda/{codigo}")
-    public ResponseEntity<Object> findAll(@PathVariable(value = "codigo")Integer codigo) {
-        if(!demandaService.existsById(codigo)){
-            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
-        }
-        Demanda demanda = (Demanda) demandaService.findLastDemandaById(codigo).get();
+    //Gets são feitos em demanda
 
-//        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findByDemandaDemandaAnalista(demanda));
-        return ResponseEntity.status(HttpStatus.OK).body("Temporario");
-    }
-
-
-    @GetMapping("/{codigo}")
-    public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
-        Optional<DemandaAnalista> demandaAnalistaOptional = demandaAnalistaService.findById(codigo);
-        if (demandaAnalistaOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("DemandaAnalista não encontrada!");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaOptional.get());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<DemandaAnalista>> findAll() {
+//        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findAll());
+//    }
+//    @GetMapping("/demanda/{codigo}")
+//    public ResponseEntity<Object> findAll(@PathVariable(value = "codigo")Integer codigo) {
+//        if(!demandaService.existsById(codigo)){
+//            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
+//        }
+//        Demanda demanda = (Demanda) demandaService.findLastDemandaById(codigo).get();
+//
+////        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findByDemandaDemandaAnalista(demanda));
+//        return ResponseEntity.status(HttpStatus.OK).body("Temporario");
+//    }
+//
+//
+//    @GetMapping("/{codigo}")
+//    public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
+//        Optional<DemandaAnalista> demandaAnalistaOptional = demandaAnalistaService.findById(codigo);
+//        if (demandaAnalistaOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("DemandaAnalista não encontrada!");
+//        }
+//        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaOptional.get());
+//    }
 
     //verificar o analista
     //aprovação do gerente de negocio
@@ -68,8 +70,7 @@ public class DemandaAnalistaController {
         }
 
 
-//        Optional demandaOptional = demandaService.findById(demandaAnalistaDTO.getDemandaDemandaAnalista().getCodigoDemanda());
-        Optional demandaOptional = demandaService.findLastDemandaById(demandaAnalistaDTO.getDemandaDemandaAnalista().getCodigoDemanda());
+        Optional demandaOptional = demandaService.findLastDemandaById(demandaAnalistaDTO.getCodigoDemanda());
         if(demandaOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
         }
@@ -80,8 +81,15 @@ public class DemandaAnalistaController {
         }
         DemandaAnalista demandaAnalista = new DemandaAnalista();
         BeanUtils.copyProperties(demandaAnalistaDTO, demandaAnalista);
-        demanda.setStatusDemanda(Status.BACKLOG_APROVACAO);
-        demandaService.save(demanda);
+        demandaAnalista.setStatusDemanda(Status.BACKLOG_APROVACAO);
+//        demandaAnalista.setCodigoDemanda(null);
+//        demandaAnalista.setVersion(null);
+        BeanUtils.copyProperties(demanda, demandaAnalista);
+        demandaAnalista.getBuSolicitanteDemandaAnalista().setNomeBusinessUnit("primeira bu");
+        demandaAnalista.getBusBeneficiadasDemandaAnalista().get(0).setNomeBusinessUnit("sla");
+        System.out.println(demandaAnalista.getBuSolicitanteDemandaAnalista());
+//        demandaService.deleteById(demanda.getCodigoDemanda());
+        demandaAnalista.setVersion(demandaAnalista.getVersion() + 1);
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.save(demandaAnalista));
     }
 

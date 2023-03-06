@@ -33,6 +33,6 @@ public class PropostaDTO {
     @NotNull
     private Usuario responsavelProposta;
     @NotNull
-    private DemandaAnalista demandaAnalistaProposta;
+    private Integer codigoDemanda;
 //    private Arquivo arquivoProposta
 }

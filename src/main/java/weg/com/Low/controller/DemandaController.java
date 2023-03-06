@@ -213,19 +213,19 @@ public class DemandaController {
     }
 
 //    //Não Deleta todas as demandas do codigo
-//    @DeleteMapping("/{codigo}")
-//    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-//        Optional demandaOptional = demandaService.findLastDemandaById(codigo);
-//        if (demandaOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
-//        }
-//        Demanda demanda = (Demanda) demandaOptional.get();
-//        beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
-//        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
-//
-//        demandaService.deleteById(codigo);
-//        return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
-//    }
+    @DeleteMapping("/{codigo}")
+    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
+        Optional demandaOptional = demandaService.findLastDemandaById(codigo);
+        if (demandaOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
+        }
+        Demanda demanda = (Demanda) demandaOptional.get();
+        beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
+        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
+
+        demandaService.deleteById(codigo);
+        return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
+    }
 
 
 }
