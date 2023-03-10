@@ -40,7 +40,8 @@ public class Demanda implements Serializable {
     private Date dataCriacaoDemanda = new Date();
     @Column(length = 1000)
     private String motivoReprovacaoDemanda;
-    @OneToMany()
+    @OneToMany
+    @JoinColumn(name = "centro_custo")
     private List<CentroCusto> centroCustos;
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda")
