@@ -12,5 +12,8 @@ public class CentroCusto {
     @Column
     private Integer codigoCentroCusto;
     @Column(nullable = false, length = 100)
-    private String nome;
+    private String nomeCentroCusto;
+
+    @Column
+    private Integer porcentagemCentroCusto;
 }

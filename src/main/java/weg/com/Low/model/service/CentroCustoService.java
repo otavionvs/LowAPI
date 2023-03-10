@@ -34,6 +34,6 @@ public class CentroCustoService {
     }
 
     public boolean existsByNome(String nome) {
-        return centroCustoRepository.existsByNome(nome);
+        return centroCustoRepository.existsByNomeCentroCusto(nome);
     }
 }
