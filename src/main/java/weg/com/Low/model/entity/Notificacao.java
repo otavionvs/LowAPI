@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Notificacao {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoNotificacao;
     @Column

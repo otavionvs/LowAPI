@@ -14,9 +14,11 @@ import java.util.List;
 @Table(name = "demanda")
 @Data
 @IdClass(DemandaId.class)
-public class Demanda implements Serializable {
+public class Demanda{
+    //O BD não suporta o Identity nesse caso
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "codigo_demanda")
     private Integer codigoDemanda;
 //    @EmbeddedId
 //    private DemandaId codigoDemanda;
