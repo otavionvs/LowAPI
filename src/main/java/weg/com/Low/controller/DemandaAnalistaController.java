@@ -81,14 +81,10 @@ public class DemandaAnalistaController {
         }
         DemandaAnalista demandaAnalista = new DemandaAnalista();
         BeanUtils.copyProperties(demandaAnalistaDTO, demandaAnalista);
-        demandaAnalista.setStatusDemanda(Status.BACKLOG_APROVACAO);
-//        demandaAnalista.setCodigoDemanda(null);
-//        demandaAnalista.setVersion(null);
         BeanUtils.copyProperties(demanda, demandaAnalista);
+        demandaAnalista.setStatusDemanda(Status.BACKLOG_APROVACAO);
         demandaAnalista.getBuSolicitanteDemandaAnalista().setNomeBusinessUnit("primeira bu");
         demandaAnalista.getBusBeneficiadasDemandaAnalista().get(0).setNomeBusinessUnit("sla");
-        System.out.println(demandaAnalista.getBuSolicitanteDemandaAnalista());
-//        demandaService.deleteById(demanda.getCodigoDemanda());
         demandaAnalista.setVersion(demandaAnalista.getVersion() + 1);
         return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.save(demandaAnalista));
     }

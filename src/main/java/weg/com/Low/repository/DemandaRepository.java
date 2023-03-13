@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.DemandaAnalista;
+import weg.com.Low.model.entity.DemandaId;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     boolean existsByCodigoDemanda(Integer codigo);
     Long countAllByCodigoDemanda(Integer codigoDemanda);
     Integer countByVersionIs(Integer versao);
+
 
     void deleteFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
 
@@ -33,7 +35,8 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(demanda.status_demanda) like %:status% " +
             "AND LOWER(da.tamanho_demanda_analista) like %:tamanho% " +
             "AND LOWER(a.nome_usuario) like %:analista% " +
-            "AND LOWER(de.nome_departamento) like %:departamento%", nativeQuery = true)
+            "AND LOWER(de.nome_departamento) like %:departamento%" +
+            "AND ", nativeQuery = true)
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
                          String tamanho, String analista, String departamento, Pageable page);
 
