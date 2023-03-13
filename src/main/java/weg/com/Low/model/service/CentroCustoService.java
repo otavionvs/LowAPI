@@ -12,6 +12,9 @@ import java.util.List;
 public class CentroCustoService {
     private CentroCustoRepository centroCustoRepository;
 
+    public <S extends CentroCusto> List<S> saveAll(Iterable<S> entities) {
+        return centroCustoRepository.saveAll(entities);
+    }
 
     public List<CentroCusto> findAll() {
         return centroCustoRepository.findAll();
