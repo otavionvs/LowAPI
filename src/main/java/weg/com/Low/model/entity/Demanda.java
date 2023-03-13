@@ -43,7 +43,7 @@ public class Demanda implements Serializable {
     private String motivoReprovacaoDemanda;
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "demanda_centro_custo", joinColumns = {
             @JoinColumn(name = "codigo_centro_custo", referencedColumnName = "codigo_demanda"), @JoinColumn(name = "version", referencedColumnName = "version")},
             inverseJoinColumns = @JoinColumn(name = "codigo_demanda"))

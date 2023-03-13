@@ -28,4 +28,6 @@ public interface ReuniaoRepository extends JpaRepository<Reuniao, Integer> {
             "AND LOWER(s.nome_usuario) like %:solicitante%", nativeQuery = true)
     List<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
                          String ppmProposta, String analista, String solicitante, Pageable page);
+
+
 }

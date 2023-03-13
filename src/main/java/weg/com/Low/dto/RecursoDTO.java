@@ -29,6 +29,4 @@ public class RecursoDTO {
 
     @NotEmpty
     private List<CentroCusto> centroDeCustoRecurso;
-    @NotEmpty
-    private List<Double> porcentagemCustoRecurso;
 }
