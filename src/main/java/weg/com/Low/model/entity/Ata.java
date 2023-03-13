@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Data
 public class Ata {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     Integer idAta;
     @Column()

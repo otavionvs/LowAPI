@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 public class Proposta {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoProposta;
 

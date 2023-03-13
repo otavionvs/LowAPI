@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class DemandaAnalista{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Integer codigoDemandaAnalista;
     @Enumerated(value = EnumType.STRING)

@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class Demanda {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoDemanda;
     @Column(nullable = false, length = 100)
@@ -46,11 +46,14 @@ public class Demanda {
     //    @OneToOne
 //    @JoinColumn(name = "conversa_demanda", nullable = false)
 //    private Conversa conversaDemanda;
-    @ManyToMany
-    @JoinTable(name = "centro_custos_demanda", joinColumns =
-    @JoinColumn(name = "codigo_demanda", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo", nullable = false))
-    private List<CentroCusto> centroCustos;
+//    @ManyToMany
+//    @JoinTable(name = "centro_custos_demanda", joinColumns =
+//    @JoinColumn(name = "codigo_demanda", nullable = false),
+//            inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo", nullable = false))
+//    private List<CentroCusto> centroCustos;
+    @Column
+    @ElementCollection
+    List<String> centroCustos;
     //    @ManyToMany
 //    @JoinTable(name = "historico_demanda", joinColumns =
 //    @JoinColumn(name = "codigo_demanda", nullable = false),

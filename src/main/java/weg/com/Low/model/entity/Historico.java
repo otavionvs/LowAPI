@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class Historico {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoHistorico;
     @Column(nullable = false)

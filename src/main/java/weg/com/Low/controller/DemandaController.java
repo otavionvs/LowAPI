@@ -108,12 +108,12 @@ public class DemandaController {
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
-        List<CentroCusto> centroCustos = demanda.getCentroCustos();
-        for (int i = 0; i < demanda.getCentroCustos().size(); i++) {
-            if (!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
-            }
-        }
+//        List<CentroCusto> centroCustos = demanda.getCentroCustos();
+//        for (int i = 0; i < demanda.getCentroCustos().size(); i++) {
+//            if (!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())) {
+//                return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
+//            }
+//        }
 
         //Registra os beneficios enviados - evita repetir estrutura
         Beneficio beneficioPotencial = new Beneficio();
@@ -128,7 +128,7 @@ public class DemandaController {
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
-        notificacaoService.sendNotification("titulo", "desc");
+//        notificacaoService.sendNotification("titulo", "desc");
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }

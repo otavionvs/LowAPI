@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class Conversa {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoConversa;
     @ManyToMany

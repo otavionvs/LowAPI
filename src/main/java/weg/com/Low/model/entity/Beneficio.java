@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Data
 public class Beneficio {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoBeneficio;
     @Column(nullable = false, length = 1000)
