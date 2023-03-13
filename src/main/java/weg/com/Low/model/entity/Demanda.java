@@ -40,9 +40,17 @@ public class Demanda implements Serializable {
     private Date dataCriacaoDemanda = new Date();
     @Column(length = 1000)
     private String motivoReprovacaoDemanda;
-    @OneToMany
-    @JoinColumn(name = "centro_custo")
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "centro_custo",
+            joinColumns = {
+                    @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"),
+                    @JoinColumn(name = "version", referencedColumnName = "version")
+            }
+    )
     private List<CentroCusto> centroCustos;
+
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda")
     private Beneficio beneficioPotencialDemanda;

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import weg.com.Low.dto.CentroCustoDTO;
 import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.Status;
@@ -119,24 +120,25 @@ public class DemandaController {
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
-//        List<CentroCusto> centroCustos = demanda.getCentroCustos();
-//        System.out.println(centroCustos.toString());
-//        for (int i = 0; i < demanda.getCentroCustos().size(); i++) {
-//            if (!centroCustoService.existsById(centroCustos.get(i).getCodigoCentroCusto())) {
-//                return ResponseEntity.status(HttpStatus.CONFLICT).body("Centro de Custo não encontrado!");
-//            }
-//        }
-
-        //Registra os beneficios enviados - evita repetir estrutura
+        List<CentroCusto> listCentroCusto = new ArrayList<>();
         Beneficio beneficioPotencial = new Beneficio();
         Beneficio beneficioReal = new Beneficio();
 
         BeanUtils.copyProperties(demanda.getBeneficioPotencialDemanda(), beneficioPotencial);
         BeanUtils.copyProperties(demanda.getBeneficioRealDemanda(), beneficioReal);
+        for(CentroCusto c: demanda.getCentroCustos()){
+            CentroCusto centroCusto = new CentroCusto();
+            BeanUtils.copyProperties(c, centroCusto);
+//            listCentroCusto.add(centroCustoService.save(centroCusto));
+        }
+
+        BeanUtils.copyProperties(demanda.getCentroCustos(), listCentroCusto);
+
 
         beneficioPotencial = beneficioService.save(beneficioPotencial);
         beneficioReal = beneficioService.save(beneficioReal);
 
+        demanda.setCentroCustos(listCentroCusto);
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
