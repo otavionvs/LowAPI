@@ -143,7 +143,10 @@ public class DemandaController {
         notificacaoService.sendNotification("titulo", "desc");
 
         System.out.println(demanda);
+        //Geração manual a chave composta
         demanda.setVersion(0);
+        demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
+
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 

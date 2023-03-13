@@ -33,6 +33,12 @@ public class Proposta extends DemandaAnalista{
     @Column
     private Double paybackProposta;
 
+    @Column
+    private String parecerComissaoProposta;
+
+    @Column
+    private String SugestaoProposta;
+
     @OneToOne
     @JoinColumn(name = "codigo_responsavel")
     private Usuario responsavelProposta;

@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Embeddable
 @Data
 public class DemandaId implements Serializable {
-    @Column(name = "codigo_demanda", columnDefinition = "BIGINT UNSIGNED")
+    @Column(name = "codigo_demanda")
     private Integer codigoDemanda;
 
     private Integer version;

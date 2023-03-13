@@ -112,4 +112,8 @@ public class DemandaService {
     public Long countAllByCodigoDemanda(Integer codigoDemanda) {
         return demandaRepository.countAllByCodigoDemanda(codigoDemanda);
     }
+
+    public Integer countByVersion() {
+        return demandaRepository.countByVersionIs(0);
+    }
 }
