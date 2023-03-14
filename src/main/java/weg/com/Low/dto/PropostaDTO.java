@@ -34,5 +34,6 @@ public class PropostaDTO {
     private Usuario responsavelProposta;
     @NotNull
     private Integer codigoDemanda;
+    //parecer e sugestão - adicionar na demanda maior
 //    private Arquivo arquivoProposta
 }
