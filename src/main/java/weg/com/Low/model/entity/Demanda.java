@@ -42,6 +42,8 @@ public class Demanda{
     private Date dataCriacaoDemanda = new Date();
     @Column(length = 1000)
     private String motivoReprovacaoDemanda;
+    @Column(length = 6)
+    private Integer score;
     @Column()
     @ElementCollection
     private List<String> centroCustos;
