@@ -120,7 +120,7 @@ public class DemandaController {
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
-        List<CentroCusto> listCentroCusto = demanda.getCentroCustos();
+//        List<CentroCusto> listCentroCusto = demanda.getCentroCustos();
 
         Beneficio beneficioPotencial = new Beneficio();
         Beneficio beneficioReal = new Beneficio();
@@ -128,13 +128,9 @@ public class DemandaController {
         BeanUtils.copyProperties(demanda.getBeneficioPotencialDemanda(), beneficioPotencial);
         BeanUtils.copyProperties(demanda.getBeneficioRealDemanda(), beneficioReal);
 
+        centroCustoService.saveAll(demanda.getCentroCustos());
 
-
-        centroCustoService.saveAll(listCentroCusto);
-        BeanUtils.copyProperties(demanda.getCentroCustos(), listCentroCusto);
-
-
-
+//        BeanUtils.copyProperties(demanda.getCentroCustos(), listCentroCusto);
 
 
         beneficioPotencial = beneficioService.save(beneficioPotencial);
