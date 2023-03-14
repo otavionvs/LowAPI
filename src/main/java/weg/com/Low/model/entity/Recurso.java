@@ -28,8 +28,6 @@ public class Recurso {
     private PerfilDespesa perfilDespesaRecurso;
     @Column(nullable = false)
     private Integer periodoExMesesRecurso;
-
-
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "recurso_centro_custo", joinColumns = {
 //            @JoinColumn(name = "recurso_codigo", referencedColumnName = "codigo_recurso"), @JoinColumn(name = "version", referencedColumnName = "version")},
