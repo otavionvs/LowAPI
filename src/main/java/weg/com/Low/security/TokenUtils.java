@@ -16,8 +16,8 @@ public class TokenUtils {
     public String gerarToken(Authentication authentication) {
         UserJpa userJpa = (UserJpa) authentication.getPrincipal();
         return Jwts.builder()
-                .setIssuer("Editora de Livros")
-                .setSubject(userJpa.getUsuario().getUserUsuario().toString())
+                .setIssuer("Low API")
+                .setSubject(userJpa.getUsuario().getUserUsuario())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + 1800000))
                 .signWith(SignatureAlgorithm.HS256, senhaForte)
@@ -36,10 +36,12 @@ public class TokenUtils {
     }
 
     public String getUsuarioUsername(String token) {
-        return Jwts.parser()
+        String token2 = Jwts.parser()
                 .setSigningKey(senhaForte)
                 .parseClaimsJws(token)
                 .getBody().getSubject();
+
+        return token2;
     }
 
     public String buscarCookie(HttpServletRequest request) {

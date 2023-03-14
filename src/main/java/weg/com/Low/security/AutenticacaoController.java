@@ -1,8 +1,5 @@
-package br.senai.sc.editoralivros.security;
+package weg.com.Low.security;
 
-import br.senai.sc.editoralivros.model.entity.Pessoa;
-import br.senai.sc.editoralivros.security.service.JpaService;
-import br.senai.sc.editoralivros.security.users.UserJpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import weg.com.Low.model.entity.Usuario;
-import weg.com.Low.security.TokenUtils;
-import weg.com.Low.security.UsuarioLoginDTO;
 import weg.com.Low.security.service.JpaService;
 import weg.com.Low.security.users.UserJpa;
 
