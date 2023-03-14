@@ -17,6 +17,7 @@ import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.service.*;
 import weg.com.Low.util.DemandaUtil;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,41 +117,41 @@ public class DemandaController {
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
         demanda.setArquivos(arquivos);
-        System.out.println(demanda.getArquivosDemanda());
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
         List<CentroCusto> listCentroCusto = demanda.getCentroCustos();
-
         Beneficio beneficioPotencial = new Beneficio();
         Beneficio beneficioReal = new Beneficio();
-
         BeanUtils.copyProperties(demanda.getBeneficioPotencialDemanda(), beneficioPotencial);
         BeanUtils.copyProperties(demanda.getBeneficioRealDemanda(), beneficioReal);
 
-
+        if(!verificaPorcentagemCentroCusto(listCentroCusto)){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("A porcentagem do centro de custo não fecha 100%!");
+        }
 
         centroCustoService.saveAll(listCentroCusto);
         BeanUtils.copyProperties(demanda.getCentroCustos(), listCentroCusto);
-
-
-
-
-
         beneficioPotencial = beneficioService.save(beneficioPotencial);
         beneficioReal = beneficioService.save(beneficioReal);
-
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
-        notificacaoService.sendNotification("titulo", "desc");
-
-        System.out.println(demanda);
-        //Geração manual a chave composta
         demanda.setVersion(0);
         demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+    }
+
+    public boolean verificaPorcentagemCentroCusto(List<CentroCusto> listCentroCusto){
+        int somaPorcentagem = 0;
+        for (CentroCusto centroCusto:listCentroCusto) {
+            somaPorcentagem += centroCusto.getPorcentagemCentroCusto();
+        }
+        if(somaPorcentagem != 100){
+            return false;
+    }
+        return  true;
     }
 
     @PutMapping("/update/{codigo}")
