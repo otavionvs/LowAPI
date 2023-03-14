@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @Table(name = "proposta")
 @Entity
-public class Proposta extends DemandaAnalista{
+public class Proposta extends DemandaClassificada {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column

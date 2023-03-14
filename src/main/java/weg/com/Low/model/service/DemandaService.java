@@ -4,15 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
-import weg.com.Low.model.entity.DemandaAnalista;
-import weg.com.Low.model.entity.Notificacao;
-import weg.com.Low.model.entity.Usuario;
-import weg.com.Low.model.enums.StatusNotificacao;
-import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.DemandaRepository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

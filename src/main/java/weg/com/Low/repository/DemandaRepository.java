@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Demanda;
-import weg.com.Low.model.entity.DemandaAnalista;
-import weg.com.Low.model.entity.DemandaId;
 
 import java.util.List;
 import java.util.Optional;

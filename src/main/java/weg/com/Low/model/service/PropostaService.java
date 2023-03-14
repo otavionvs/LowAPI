@@ -1,16 +1,10 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Example;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.*;
-import weg.com.Low.model.enums.StatusNotificacao;
-import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.PropostaRepository;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +13,7 @@ import java.util.Optional;
 public class PropostaService {
     private PropostaRepository propostaRepository;
     private NotificacaoService notificacaoService;
-    private DemandaAnalistaService demandaAnalistaService;
+    private DemandaClassificadaService demandaClassificadaService;
     private DemandaService demandaService;
 
     public List<Proposta> findAll() {
