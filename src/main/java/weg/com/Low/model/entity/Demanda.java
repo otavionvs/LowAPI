@@ -2,6 +2,7 @@ package weg.com.Low.model.entity;
 
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
+import weg.com.Low.dto.CentroCustoDTO;
 import weg.com.Low.model.enums.Status;
 
 import javax.persistence.*;
@@ -44,9 +45,14 @@ public class Demanda{
     private String motivoReprovacaoDemanda;
     @Column(length = 6)
     private Integer score;
-    @Column()
-    @ElementCollection
-    private List<String> centroCustos;
+//    @Column()
+//    @ElementCollection
+//    private List<String> centroCustos;
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "demanda_centro_custo", joinColumns = {
+            @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"), @JoinColumn(name = "version", referencedColumnName = "version")},
+            inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo"))
+    private List<CentroCusto> centroCustos;
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda")
     private Beneficio beneficioPotencialDemanda;

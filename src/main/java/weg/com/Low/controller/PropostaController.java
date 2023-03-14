@@ -24,7 +24,7 @@ import java.util.Optional;
 public class PropostaController {
     private PropostaService propostaService;
     private RecursoService recursoService;
-    private CentroCustoRecursoService centroCustoRecursoService;
+    private CentroCustoService centroCustoService;
     private DemandaService demandaService;
 //    private DemandaAnalistaService demandaAnalistaService;
 
@@ -56,12 +56,8 @@ public class PropostaController {
             Recurso recurso = new Recurso();
             RecursoDTO recursoDTO = recursosDTO.get(i);
             BeanUtils.copyProperties(recursoDTO, recurso);
+//            centroCustoService.saveAll(recurso.getCentroCustos());
             recurso = recursoService.save(recurso);
-            for (int i2 = 0; i2 < recursoDTO.getCentroDeCustoRecurso().size(); i2++) {
-                CentroCustoRecurso centroCustoRecurso = new CentroCustoRecurso(null,
-                        recursoDTO.getCentroDeCustoRecurso().get(i2), recurso, recursoDTO.getPorcentagemCustoRecurso().get(i2));
-                centroCustoRecursoService.save(centroCustoRecurso);
-            }
             recursos.add(recurso);
         }
         proposta.setRecursosProposta(recursos);

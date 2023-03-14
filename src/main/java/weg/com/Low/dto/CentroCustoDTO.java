@@ -7,5 +7,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class CentroCustoDTO {
     @NotNull
-    private String nome;
+    private String nomeCentroCusto;
+    @NotNull
+    private Integer porcentagemCentroCusto;
 }

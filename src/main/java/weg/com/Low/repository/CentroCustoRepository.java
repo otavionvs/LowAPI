@@ -6,5 +6,5 @@ import weg.com.Low.model.entity.CentroCusto;
 
 @Repository
 public interface CentroCustoRepository  extends JpaRepository<CentroCusto, Integer> {
-    boolean existsByNome(String nome);
+    boolean existsByNomeCentroCusto(String nome);
 }

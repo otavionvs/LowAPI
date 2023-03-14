@@ -5,6 +5,7 @@ import weg.com.Low.model.enums.PerfilDespesa;
 import weg.com.Low.model.enums.TipoDespesa;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "recurso")
@@ -12,7 +13,6 @@ import javax.persistence.*;
 public class Recurso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
     private Integer codigoRecurso;
     @Column(nullable = false, length = 65)
     private String nomeRecurso;
@@ -28,5 +28,10 @@ public class Recurso {
     private PerfilDespesa perfilDespesaRecurso;
     @Column(nullable = false)
     private Integer periodoExMesesRecurso;
+//    @ManyToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "recurso_centro_custo", joinColumns = {
+//            @JoinColumn(name = "recurso_codigo", referencedColumnName = "codigo_recurso"), @JoinColumn(name = "version", referencedColumnName = "version")},
+//            inverseJoinColumns = @JoinColumn(name = "codigo_recurso"))
+//    private List<CentroCusto> centroCustos;
 
 }
