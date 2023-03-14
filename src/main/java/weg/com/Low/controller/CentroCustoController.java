@@ -23,7 +23,7 @@ public class CentroCustoController {
     @PostMapping
     public ResponseEntity<Object> save(
             @RequestBody @Valid CentroCustoDTO centroCustoDTO) {
-        if (centroCustoService.existsByNome(centroCustoDTO.getNome())) {
+        if (centroCustoService.existsByNome(centroCustoDTO.getNomeCentroCusto())) {
             return ResponseEntity.badRequest().body("Centro de Custo já existe");
         }
 

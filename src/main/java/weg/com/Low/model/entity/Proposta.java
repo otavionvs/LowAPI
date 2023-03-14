@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 @Data
-@Table(name = "proposta")
 @Entity
 public class Proposta extends DemandaAnalista{
 //    @Id

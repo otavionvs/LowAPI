@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "demanda_analista")
 @Data
 public class DemandaAnalista extends Demanda{
 //    @Id
