@@ -3,6 +3,7 @@ package weg.com.Low.dto;
 import lombok.Getter;
 import lombok.Setter;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.Comissao;
 import weg.com.Low.model.enums.StatusReuniao;
 
 import javax.validation.constraints.FutureOrPresent;

@@ -1,7 +1,6 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.*;
@@ -19,7 +18,7 @@ import java.util.Optional;
 public class ReuniaoService {
     private ReuniaoRepository reuniaoRepository;
     private NotificacaoService notificacaoService;
-    private DemandaAnalistaService demandaAnalistaService;
+    private DemandaClassificadaService demandaClassificadaService;
     private DemandaService demandaService;
 
     public List<Reuniao> findAll() {
@@ -30,10 +29,10 @@ public class ReuniaoService {
         List<Proposta> propostas = reuniao.getPropostasReuniao();
         List<Usuario> usuarios = null;
         for (Proposta proposta: propostas){
-            DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
-            usuarios.add(demandaAnalista.getAnalista());
-            usuarios.add(demandaAnalista.getGerenteNegocio());
-            Demanda demanda = demandaService.findLastDemandaById(demandaAnalista.getCodigoDemanda()).get();
+            DemandaClassificada demandaClassificada = demandaClassificadaService.findById(proposta.getCodigoDemanda()).get();
+            usuarios.add(demandaClassificada.getAnalista());
+            usuarios.add(demandaClassificada.getGerenteNegocio());
+            Demanda demanda = demandaService.findLastDemandaById(demandaClassificada.getCodigoDemanda()).get();
             usuarios.add(demanda.getSolicitanteDemanda());
         }
         notificacaoService.save(new Notificacao(
