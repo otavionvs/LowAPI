@@ -48,10 +48,15 @@ public class Demanda{
 //    @Column()
 //    @ElementCollection
 //    private List<String> centroCustos;
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "demanda_centro_custo", joinColumns = {
-            @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"), @JoinColumn(name = "version", referencedColumnName = "version")},
-            inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo"))
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "demanda_centro_custo", joinColumns = {
+//            @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"), @JoinColumn(name = "version", referencedColumnName = "version")},
+//            inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo"))
+//    private List<CentroCusto> centroCustos;
+
+
+    @Column
+    @ElementCollection
     private List<CentroCusto> centroCustos;
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda")

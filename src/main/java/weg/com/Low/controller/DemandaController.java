@@ -112,6 +112,7 @@ public class DemandaController {
     //Exige de outro formato para enviar as informações (body - form data)
     @PostMapping
     public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
+        System.out.println(demandaJson);
         //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
@@ -139,7 +140,7 @@ public class DemandaController {
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
-        notificacaoService.sendNotification("titulo", "desc");
+
 
         System.out.println(demanda);
         //Geração manual a chave composta
@@ -164,6 +165,7 @@ public class DemandaController {
         BeanUtils.copyProperties(demandaDTO, demanda);
         demanda.setCodigoDemanda(codigo);
         BeanUtils.copyProperties(demanda, demandaNova);
+        demandaNova.setCentroCustos(demanda.getCentroCustos());
         demandaNova.setVersion(demandaNova.getVersion() + 1);
         demandaNova.setCodigoDemanda(codigo);
 
