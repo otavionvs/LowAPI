@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 @Entity
-public class Proposta extends DemandaAnalista{
+public class Proposta extends DemandaClassificada {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column

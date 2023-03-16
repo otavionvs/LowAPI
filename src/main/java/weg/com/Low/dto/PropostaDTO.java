@@ -1,8 +1,6 @@
 package weg.com.Low.dto;
 
 import lombok.Getter;
-import weg.com.Low.model.entity.DemandaAnalista;
-import weg.com.Low.model.entity.Recurso;
 import weg.com.Low.model.entity.Usuario;
 
 import javax.validation.constraints.Future;

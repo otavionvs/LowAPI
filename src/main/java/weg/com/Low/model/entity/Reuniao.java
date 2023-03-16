@@ -1,6 +1,7 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
+import weg.com.Low.model.enums.Comissao;
 import weg.com.Low.model.enums.StatusReuniao;
 
 import javax.persistence.*;
@@ -19,8 +20,8 @@ public class Reuniao {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusReuniao statusReuniao;
-    @ManyToOne
-    @JoinColumn(name = "codigo_comissao", nullable = false)
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Comissao comissaoReuniao;
     @OneToOne
     @JoinColumn(name = "ata")

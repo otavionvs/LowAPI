@@ -69,12 +69,12 @@ public class PropostaController {
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }
 
-    @DeleteMapping("/{codigo}")
-    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-        if (!propostaService.existsById(codigo)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proposta não encontrada!");
-        }
-        propostaService.deleteById(codigo);
-        return ResponseEntity.status(HttpStatus.OK).body("Proposta Deletada!");
-    }
+//    @DeleteMapping("/{codigo}")
+//    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
+//        if (!propostaService.existsById(codigo)) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proposta não encontrada!");
+//        }
+//        propostaService.deleteById(codigo);
+//        return ResponseEntity.status(HttpStatus.OK).body("Proposta Deletada!");
+//    }
 }
