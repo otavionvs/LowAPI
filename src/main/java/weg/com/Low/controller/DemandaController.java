@@ -113,6 +113,7 @@ public class DemandaController {
     //Exige de outro formato para enviar as informações (body - form data)
     @PostMapping
     public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
+        System.out.println(demandaJson);
         //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
@@ -125,18 +126,20 @@ public class DemandaController {
         Beneficio beneficioReal = new Beneficio();
         BeanUtils.copyProperties(demanda.getBeneficioPotencialDemanda(), beneficioPotencial);
         BeanUtils.copyProperties(demanda.getBeneficioRealDemanda(), beneficioReal);
-
         if(!verificaPorcentagemCentroCusto(listCentroCusto)){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("A porcentagem do centro de custo não fecha 100%!");
         }
 
-        centroCustoService.saveAll(listCentroCusto);
         BeanUtils.copyProperties(demanda.getCentroCustos(), listCentroCusto);
+        centroCustoService.saveAll(listCentroCusto);
+
         beneficioPotencial = beneficioService.save(beneficioPotencial);
         beneficioReal = beneficioService.save(beneficioReal);
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
+
+
         demanda.setVersion(0);
         demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
 
@@ -169,6 +172,7 @@ public class DemandaController {
         BeanUtils.copyProperties(demandaDTO, demanda);
         demanda.setCodigoDemanda(codigo);
         BeanUtils.copyProperties(demanda, demandaNova);
+        demandaNova.setCentroCustos(demanda.getCentroCustos());
         demandaNova.setVersion(demandaNova.getVersion() + 1);
         demandaNova.setCodigoDemanda(codigo);
 

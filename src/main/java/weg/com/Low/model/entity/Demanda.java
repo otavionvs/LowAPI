@@ -43,14 +43,21 @@ public class Demanda{
     private Date dataCriacaoDemanda = new Date();
     @Column(length = 1000)
     private String motivoReprovacaoDemanda;
+    @Column(length = 6)
+    private Integer score;
+//    @Column()
+//    @ElementCollection
+//    private List<String> centroCustos;
+//    @OneToMany(cascade = CascadeType.ALL)
+//    @JoinTable(name = "demanda_centro_custo", joinColumns = {
+//            @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"), @JoinColumn(name = "version", referencedColumnName = "version")},
+//            inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo"))
+//    private List<CentroCusto> centroCustos;
 
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "demanda_centro_custo", joinColumns = {
-            @JoinColumn(name = "codigo_centro_custo", referencedColumnName = "codigo_demanda"), @JoinColumn(name = "version", referencedColumnName = "version")},
-            inverseJoinColumns = @JoinColumn(name = "codigo_demanda"))
+    @Column
+    @ElementCollection
     private List<CentroCusto> centroCustos;
-
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda")
     private Beneficio beneficioPotencialDemanda;
