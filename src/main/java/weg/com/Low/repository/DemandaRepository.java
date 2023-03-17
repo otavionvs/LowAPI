@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.enums.Status;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     boolean existsByCodigoDemanda(Integer codigo);
     Long countAllByCodigoDemanda(Integer codigoDemanda);
     Integer countByVersionIs(Integer versao);
+
 
 
     void deleteFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
@@ -50,8 +52,14 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
                          String status, String departamento, Pageable page);
 
-    @Query(value = "select * from demanda " +
-            "WHERE LOWER(demanda.status_demanda) like %:status%", nativeQuery = true)
+    @Query(value = "SELECT d.* " +
+            "FROM demanda d " +
+            "INNER JOIN (" +
+            "  SELECT codigo_demanda, MAX(version) AS max_version " +
+            "  FROM demanda " +
+            "  GROUP BY codigo_demanda " +
+            ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+            "WHERE d.status_demanda = :status", nativeQuery = true)
     List<Demanda> search(String status, Pageable page);
 
     @Query(value = "select * from demanda " +

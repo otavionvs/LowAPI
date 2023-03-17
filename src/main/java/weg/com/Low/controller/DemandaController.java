@@ -95,6 +95,8 @@ public class DemandaController {
             listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
         }
 
+        System.out.println(listaDemandas);
+
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
 
