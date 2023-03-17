@@ -58,7 +58,9 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandas);
     }
 
-    //É necessário ter todos os campos mesmos que vazios("")
+    //Este filtro deve ser usado para todos os usuários, porém quando for um solicitante ou gerente de negócio,
+    //o fron-end deve mandar sempre o departamento correspondente ao usuário pré-definido, caso for analista, deve
+    //deixar a opção aberta no filtro especializado.
     @GetMapping("/filtro")
     public ResponseEntity<List<Demanda>> search(
             @RequestParam("tituloDemanda") String tituloDemanda,
@@ -81,7 +83,7 @@ public class DemandaController {
         }
     }
 
-    //Retorna uma quantidade de demandas de cada status
+    //Retorna uma quantidade de demandas de cada status - para analista
     @GetMapping("/status")
     public ResponseEntity<List<List<Demanda>>> search(
             @PageableDefault(
@@ -94,6 +96,8 @@ public class DemandaController {
         for (int i = 0; i < 10; i++) {
             listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
         }
+
+        System.out.println(listaDemandas);
 
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
