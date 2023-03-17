@@ -51,7 +51,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(de.nome_departamento) like %:departamento%", nativeQuery = true)
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
                          String status, String departamento, Pageable page);
-
+    //Retorna a última versão de uma demanda de um status
     @Query(value = "SELECT d.* " +
             "FROM demanda d " +
             "INNER JOIN (" +
@@ -61,6 +61,20 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
             "WHERE d.status_demanda = :status", nativeQuery = true)
     List<Demanda> search(String status, Pageable page);
+
+    //Retorna a última versão de uma demanda de um determinado status,
+    //porém somente as do departamento que for repassado abaixo
+    //Utilizado no solicitante especialmente
+    @Query(value = "SELECT d.* " +
+            "FROM demanda d " +
+            "INNER JOIN (" +
+            "  SELECT codigo_demanda, MAX(version) AS max_version " +
+            "  FROM demanda " +
+            "  GROUP BY codigo_demanda " +
+            ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+            "INNER JOIN usuario u ON d.usuario_codigo = u.codigo_usuario " +
+            "WHERE d.status_demanda = :status AND u.departamento_codigo = :departamento ", nativeQuery = true)
+    List<Demanda> search(String status, Integer codigoDepartamento, Pageable page);
 
     @Query(value = "select * from demanda " +
             "WHERE LOWER(demanda.status_demanda) like %:status1% OR " +
