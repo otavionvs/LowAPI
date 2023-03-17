@@ -51,6 +51,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(de.nome_departamento) like %:departamento%", nativeQuery = true)
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
                          String status, String departamento, Pageable page);
+
     //Retorna a última versão de uma demanda de um status
     @Query(value = "SELECT d.* " +
             "FROM demanda d " +
