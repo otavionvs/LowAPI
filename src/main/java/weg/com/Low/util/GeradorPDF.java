@@ -8,12 +8,14 @@ import weg.com.Low.model.entity.Departamento;
 import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.enums.NivelAcesso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 @Component
 public class GeradorPDF {
-    public void gerarPDF(Demanda demanda) {
+    public ByteArrayOutputStream gerarPDF(Demanda demanda) {
         try {
+
             demanda = new Demanda();
             Usuario usuario = new Usuario();
             usuario.setNomeUsuario("João da Silva");
@@ -22,9 +24,12 @@ public class GeradorPDF {
             demanda.setObjetivoDemanda("There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on ");
             demanda.setSituacaoAtualDemanda("There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on");
             demanda.setCodigoDemanda(1);
+            demanda.setTituloDemanda("Teste de PDF");
             // Criação do documento
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream("documento.pdf"));
+            PdfWriter.getInstance(document, baos);
             document.open();
 
 // Adicionando o cabeçalho do documento
@@ -87,10 +92,11 @@ public class GeradorPDF {
 
 // Fechando o documento
             document.close();
-
+            return baos;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
 
