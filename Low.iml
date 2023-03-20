@@ -127,5 +127,6 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-messaging:5.3.23" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-websocket:5.3.23" level="project" />
     <orderEntry type="library" name="Maven: com.itextpdf:itextpdf:5.5.13.2" level="project" />
+    <orderEntry type="library" name="Maven: com.itextpdf:itext-html2pdf:5.5.13" level="project" />
   </component>
 </module>
