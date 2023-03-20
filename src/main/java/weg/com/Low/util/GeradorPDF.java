@@ -8,22 +8,12 @@ import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Departamento;
 import weg.com.Low.model.entity.Usuario;
 
+import javax.websocket.Decoder;
 import java.io.ByteArrayOutputStream;
 @Component
 public class GeradorPDF {
     public ByteArrayOutputStream gerarPDF(Demanda demanda) {
         try {
-
-//            demanda = new Demanda();
-//            Usuario usuario = new Usuario();
-//            usuario.setNomeUsuario("João da Silva");
-//            usuario.setDepartamentoUsuario(new Departamento(1, "TI"));
-//            demanda.setSolicitanteDemanda(usuario);
-//            demanda.setObjetivoDemanda("There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on ");
-//            demanda.setSituacaoAtualDemanda("There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on");
-//            demanda.setCodigoDemanda(1);
-//            demanda.setTituloDemanda("Teste de PDF");
-            // Criação do documento
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Document document = new Document();
@@ -31,16 +21,15 @@ public class GeradorPDF {
             HeaderFooter event = new HeaderFooter();
             writer.setPageEvent(event);
             document.open();
-// Adicionando o cabeçalho do documento
+
             Font fontNegrito = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
-            Paragraph codigo = new Paragraph(demanda.getCodigoDemanda().toString(), fontNegrito);
             Paragraph solicitante = new Paragraph("Solicitante:", fontNegrito);
             Paragraph data = new Paragraph("Data:", fontNegrito);
-            Paragraph setorTi = new Paragraph("DEPARTAMENTO:", fontNegrito);
+            Paragraph setorTi = new Paragraph("Departamento:", fontNegrito);
             Paragraph titulo = new Paragraph("Título:", fontNegrito);Paragraph objetivo = new Paragraph("Objetivo:", fontNegrito);
             Paragraph situacaoAtual = new Paragraph("Situação Atual:", fontNegrito);
             Paragraph beneficioReal = new Paragraph("Benefício Real:", fontNegrito);
-            Paragraph mbeneficioReal = new Paragraph("Memória de Cálculo do Benefício Real::", fontNegrito);
+            Paragraph mbeneficioReal = new Paragraph("Memória de Cálculo do Benefício Real:", fontNegrito);
             Paragraph beneficioPotencial = new Paragraph("Beneficio Potencial:", fontNegrito);
             Paragraph mbeneficioPotencial = new Paragraph("Memória de Cálculo do Benefício Potencial:", fontNegrito);
             Paragraph beneficioQualitativo = new Paragraph("Beneficio Qualitativo:", fontNegrito);
@@ -60,13 +49,6 @@ public class GeradorPDF {
             Paragraph conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString());
             Paragraph conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda());
 
-            PdfPTable table = new PdfPTable(2); // 2 colunas
-            PdfPCell cell1 = new PdfPCell(new Paragraph("Informação 1"));
-            PdfPCell cell2 = new PdfPCell(new Paragraph("Informação 2"));
-            table.addCell(cell1);
-            table.addCell(cell2);
-            document.add(table);
-
             Paragraph conteudoEscopoProjeto = new Paragraph("Ações de curto prazo visando ganhos globais de desempenho/estabilidade no MAESTRO Identificar causa raiz das instabilidades dos servidores (memória, CPU etc.)\n" +
                     "Otimizar estrutura das tabelas, consultas de baixo desempenho e criação/remoção de índices\n" +
                     "Otimizar configurações dos servidores (virtualização, balanceador de carga, recursos alocados,\n" +
@@ -75,10 +57,9 @@ public class GeradorPDF {
             Paragraph conteudoAnexos = new Paragraph("Arquivo 1.pdf\nArquivo 2.docx");
 
 // Adicionando o cabeçalho ao documento
-            document.add
 
-            document.add(solicitante);
-            document.add(conteudoSolicitante);
+            solicitante.setAlignment(Element.ALIGN_JUSTIFIED);
+            document.add(new Text());
 
             document.add(data);
             document.add(conteudoData);
@@ -92,8 +73,8 @@ public class GeradorPDF {
             document.add(objetivo);
             document.add(conteudoObjetivo);
 
-            document.add(conteudoSituacaoAtual);
             document.add(situacaoAtual);
+            document.add(conteudoSituacaoAtual);
 
             document.add(beneficioReal);
             document.add(conteudoBeneficioReal);
@@ -116,7 +97,6 @@ public class GeradorPDF {
             document.add(anexos);
             document.add(conteudoAnexos);
 
-// Fechando o documento
             document.close();
             return baos;
         } catch (Exception e) {
