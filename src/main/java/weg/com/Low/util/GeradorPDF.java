@@ -1,5 +1,7 @@
 package weg.com.Low.util;
 import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.stereotype.Component;
 import weg.com.Low.model.entity.Demanda;
@@ -25,13 +27,13 @@ public class GeradorPDF {
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Document document = new Document();
-            PdfWriter.getInstance(document, baos);
+            PdfWriter writer = PdfWriter.getInstance(document, baos);
+            HeaderFooter event = new HeaderFooter();
+            writer.setPageEvent(event);
             document.open();
-
 // Adicionando o cabeçalho do documento
             Font fontNegrito = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
             Paragraph codigo = new Paragraph(demanda.getCodigoDemanda().toString(), fontNegrito);
-            Paragraph logo = new Paragraph(new Chunk(Image.getInstance("weg-logo.png"), 0, 0));
             Paragraph solicitante = new Paragraph("Solicitante:", fontNegrito);
             Paragraph data = new Paragraph("Data:", fontNegrito);
             Paragraph setorTi = new Paragraph("DEPARTAMENTO:", fontNegrito);
@@ -58,6 +60,13 @@ public class GeradorPDF {
             Paragraph conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString());
             Paragraph conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda());
 
+            PdfPTable table = new PdfPTable(2); // 2 colunas
+            PdfPCell cell1 = new PdfPCell(new Paragraph("Informação 1"));
+            PdfPCell cell2 = new PdfPCell(new Paragraph("Informação 2"));
+            table.addCell(cell1);
+            table.addCell(cell2);
+            document.add(table);
+
             Paragraph conteudoEscopoProjeto = new Paragraph("Ações de curto prazo visando ganhos globais de desempenho/estabilidade no MAESTRO Identificar causa raiz das instabilidades dos servidores (memória, CPU etc.)\n" +
                     "Otimizar estrutura das tabelas, consultas de baixo desempenho e criação/remoção de índices\n" +
                     "Otimizar configurações dos servidores (virtualização, balanceador de carga, recursos alocados,\n" +
@@ -66,8 +75,7 @@ public class GeradorPDF {
             Paragraph conteudoAnexos = new Paragraph("Arquivo 1.pdf\nArquivo 2.docx");
 
 // Adicionando o cabeçalho ao documento
-            document.add(codigo);
-            document.add(logo);
+            document.add
 
             document.add(solicitante);
             document.add(conteudoSolicitante);
