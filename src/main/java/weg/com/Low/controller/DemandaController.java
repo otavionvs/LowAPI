@@ -64,12 +64,12 @@ public class DemandaController {
 
     @GetMapping("/pdf/{codigo}")
     public ResponseEntity<Object> download(@PathVariable(value = "codigo") Integer codigo) {
-//        List<Demanda> demandas = demandaService.findByCodigoDemanda(codigo);
-//        if (demandas.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma demanda encontrada!");
-//        }
+        List<Demanda> demandas = demandaService.findByCodigoDemanda(codigo);
+        if (demandas.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma demanda encontrada!");
+        }
         GeradorPDF geradorPDF = new GeradorPDF();
-        ByteArrayOutputStream baos = geradorPDF.gerarPDF(new Demanda());
+        ByteArrayOutputStream baos = geradorPDF.gerarPDF(demandas.get(0));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
