@@ -33,4 +33,5 @@ public class Usuario {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private NivelAcesso nivelAcessoUsuario;
+
 }
