@@ -8,8 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.DepartamentoDTO;
+import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Departamento;
 import weg.com.Low.model.service.DepartamentoService;
+import weg.com.Low.util.GeradorPDF;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -22,13 +24,20 @@ import java.util.Optional;
 public class DepartamentoController {
     private DepartamentoService departamentoService;
 
+    private GeradorPDF geradorPDF;
+
     @GetMapping
-    public ResponseEntity<List<Departamento>> findAll() {
-        return ResponseEntity.status(HttpStatus.OK).body(departamentoService.findAll());
+    public ResponseEntity<Object> findAll() {
+        String dados = "Informações a serem incluídas no PDF";
+        geradorPDF.gerarPDF(new Demanda());
+        return ResponseEntity.status(HttpStatus.OK).body("testando pdf");
+//        return ResponseEntity.status(HttpStatus.OK).body(departamentoService.findAll());
     }
 
     @GetMapping("/{codigo}")
     public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
+
+
         Optional<Departamento> departamentoOptional = departamentoService.findById(codigo);
         if (departamentoOptional.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Departamento não encontrado!");

@@ -5,7 +5,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +18,10 @@ import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.service.*;
 import weg.com.Low.util.DemandaUtil;
+import weg.com.Low.util.GeradorPDF;
 
 import javax.validation.Valid;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +62,25 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandas);
     }
 
+    @GetMapping("/pdf/{codigo}")
+    public ResponseEntity<Object> download(@PathVariable(value = "codigo") Integer codigo) {
+//        List<Demanda> demandas = demandaService.findByCodigoDemanda(codigo);
+//        if (demandas.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma demanda encontrada!");
+//        }
+        GeradorPDF geradorPDF = new GeradorPDF();
+        ByteArrayOutputStream baos = geradorPDF.gerarPDF(new Demanda());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "documento.pdf");
+        headers.setContentLength(baos.size());
+
+        return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
+//        return ResponseEntity.status(HttpStatus.OK).body("sdlghhfpoisdafpisdahflshdfiohfiosh");
+    }
+
+    //É necessário ter todos os campos mesmos que vazios("")
     //Este filtro deve ser usado para todos os usuários, porém quando for um solicitante ou gerente de negócio,
     //o fron-end deve mandar sempre o departamento correspondente ao usuário pré-definido, caso for analista, deve
     //deixar a opção aberta no filtro especializado.
