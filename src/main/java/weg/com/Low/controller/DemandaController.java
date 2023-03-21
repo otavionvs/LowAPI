@@ -189,11 +189,11 @@ public class DemandaController {
 
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
+        demandaNova.setVersion(demanda.getVersion() + 1);
         BeanUtils.copyProperties(demandaNova, demanda);
-        System.out.println(demanda);
-        demanda.setCentroCustos(demanda.getCentroCustos());
-        demanda.setVersion(demanda.getVersion() + 1);
-        demanda.setCodigoDemanda(demanda.getCodigoDemanda());
+//        System.out.println(demanda);
+//        demanda.setCentroCustos(demanda.getCentroCustos());
+//        demanda.setCodigoDemanda(demanda.getCodigoDemanda());
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
