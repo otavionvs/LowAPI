@@ -42,6 +42,12 @@ public class GeradorPDF {
             Paragraph escopoProjeto = new Paragraph("Escopo do Projeto:", fontNegrito);
             Paragraph anexos = new Paragraph("Anexos:", fontNegrito);
 
+            //Paragraph paragraph = new Paragraph();
+            //paragraph.add(new Chunk("Solicitante: ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+            //paragraph.add(new Chunk("nomeDoSolicitante"));
+            //
+            //document.add(paragraph);
+
 // Adicionando o conteúdo do cabeçalho do documento
             Paragraph conteudoSolicitante = new Paragraph(demanda.getSolicitanteDemanda().getNomeUsuario());
             Paragraph conteudoData = new Paragraph(demanda.getDataCriacaoDemanda().toString());
