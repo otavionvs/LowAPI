@@ -12,14 +12,20 @@ import javax.websocket.Decoder;
 import java.io.ByteArrayOutputStream;
 @Component
 public class GeradorPDF {
+
+    private final Font negritoFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
+    private final Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
     public ByteArrayOutputStream gerarPDF(Demanda demanda) {
         try {
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Document document = new Document();
+            document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin() + 50, document.bottomMargin());
             PdfWriter writer = PdfWriter.getInstance(document, baos);
-            HeaderFooter event = new HeaderFooter();
-            writer.setPageEvent(event);
+
+
+            HeaderFooter header = new HeaderFooter();
+            writer.setPageEvent(header);
             document.open();
 
             Font fontNegrito = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
