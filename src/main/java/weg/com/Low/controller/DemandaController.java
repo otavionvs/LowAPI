@@ -187,10 +187,27 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
         }
 
+        Beneficio beneficioPotencial = new Beneficio();
+        Beneficio beneficioReal = new Beneficio();
+
+//        BeanUtils.copyProperties(demandaNova.getBeneficioPotencialDemanda(), beneficioPotencial);
+//        BeanUtils.copyProperties(demandaNova.getBeneficioRealDemanda(), beneficioReal);
+
+//        centroCustoService.saveAll(demandaNova.getCentroCustos());
+//        beneficioPotencial = beneficioService.save(beneficioPotencial);
+//        beneficioReal = beneficioService.save(beneficioReal);
+
+//        demandaNova.setBeneficioPotencialDemanda(beneficioPotencial);
+//        demandaNova.setBeneficioRealDemanda(beneficioReal);
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
+        beneficioPotencial = demanda.getBeneficioPotencialDemanda();
+        beneficioReal = demanda.getBeneficioRealDemanda();
         demandaNova.setVersion(demanda.getVersion() + 1);
         BeanUtils.copyProperties(demandaNova, demanda);
+        demanda.setBeneficioPotencialDemanda(beneficioPotencial);
+        demanda.setBeneficioRealDemanda(beneficioReal);
+        System.out.println(demanda);
 //        System.out.println(demanda);
 //        demanda.setCentroCustos(demanda.getCentroCustos());
 //        demanda.setCodigoDemanda(demanda.getCodigoDemanda());
@@ -251,7 +268,7 @@ public class DemandaController {
         }
         Demanda demanda = (Demanda) demandaOptional.get();
         beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
-        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
+//        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
 
         demandaService.deleteById(codigo);
         return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");

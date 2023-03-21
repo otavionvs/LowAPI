@@ -1,6 +1,7 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.CentroCustoDTO;
 import weg.com.Low.model.enums.Status;
@@ -60,9 +61,12 @@ public class Demanda{
     private List<CentroCusto> centroCustos;
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda")
+//    @Embedded
     private Beneficio beneficioPotencialDemanda;
     @OneToOne
+//    @MapsId
     @JoinColumn(name = "beneficio_real_demanda")
+//    @Embedded
     private Beneficio beneficioRealDemanda;
     @OneToOne
     @JoinColumn(name = "solicitante_demanda", nullable = false)
