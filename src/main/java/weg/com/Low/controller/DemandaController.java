@@ -112,7 +112,6 @@ public class DemandaController {
     //Exige de outro formato para enviar as informações (body - form data)
     @PostMapping
     public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
-        System.out.println(demandaJson);
         //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
@@ -150,26 +149,26 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
-    @PutMapping("/update/{codigo}")
+    @PutMapping("/update")
     public ResponseEntity<Object> update(
-            @PathVariable(value = "codigo") Integer codigo,
-            @RequestBody @Valid DemandaDTO demandaDTO) {
-        if (!demandaService.existsById(codigo)) {
+            @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
+        DemandaUtil demandaUtil = new DemandaUtil();
+        Demanda demandaNova = demandaUtil.convertJsonToModel(demandaJson);
+        demandaNova.setArquivos(arquivos);
+
+        if (!demandaService.existsById(demandaNova.getCodigoDemanda())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
         }
 
-        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
-        Demanda demandaNova = new Demanda();
 
+        Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
+        BeanUtils.copyProperties(demandaNova, demanda);
+        System.out.println(demanda);
+        demanda.setCentroCustos(demanda.getCentroCustos());
+        demanda.setVersion(demanda.getVersion() + 1);
+        demanda.setCodigoDemanda(demanda.getCodigoDemanda());
 
-        BeanUtils.copyProperties(demandaDTO, demanda);
-        demanda.setCodigoDemanda(codigo);
-        BeanUtils.copyProperties(demanda, demandaNova);
-        demandaNova.setCentroCustos(demanda.getCentroCustos());
-        demandaNova.setVersion(demandaNova.getVersion() + 1);
-        demandaNova.setCodigoDemanda(codigo);
-
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
     //Caso seja passado por parametro 1 - passa para o proximo status
