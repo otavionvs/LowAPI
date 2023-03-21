@@ -4,6 +4,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.stereotype.Component;
+import weg.com.Low.model.entity.Beneficio;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Departamento;
 import weg.com.Low.model.entity.Usuario;
@@ -15,6 +16,7 @@ public class GeradorPDF {
 
     private final Font negritoFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
     private final Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
+
     public ByteArrayOutputStream gerarPDF(Demanda demanda) {
         try {
 
@@ -28,19 +30,16 @@ public class GeradorPDF {
             writer.setPageEvent(header);
             document.open();
 
-            Font fontNegrito = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
-            Paragraph solicitante = new Paragraph("Solicitante:", fontNegrito);
-            Paragraph data = new Paragraph();
-            Paragraph setorTi = new Paragraph("Departamento:", fontNegrito);
-            Paragraph titulo = new Paragraph("Título:", fontNegrito);Paragraph objetivo = new Paragraph("Objetivo:", fontNegrito);
-            Paragraph situacaoAtual = new Paragraph("Situação Atual:", fontNegrito);
-            Paragraph beneficioReal = new Paragraph("Benefício Real:", fontNegrito);
-            Paragraph mbeneficioReal = new Paragraph("Memória de Cálculo do Benefício Real:", fontNegrito);
-            Paragraph beneficioPotencial = new Paragraph("Beneficio Potencial:", fontNegrito);
-            Paragraph mbeneficioPotencial = new Paragraph("Memória de Cálculo do Benefício Potencial:", fontNegrito);
-            Paragraph beneficioQualitativo = new Paragraph("Beneficio Qualitativo:", fontNegrito);
-            Paragraph escopoProjeto = new Paragraph("Escopo do Projeto:", fontNegrito);
-            Paragraph anexos = new Paragraph("Anexos:", fontNegrito);
+            Paragraph departamento = new Paragraph();
+            Paragraph objetivo = new Paragraph("Objetivo:", negritoFont);
+            Paragraph situacaoAtual = new Paragraph("Situação Atual:", negritoFont);
+            Paragraph beneficioReal = new Paragraph();
+            Paragraph mbeneficioReal = new Paragraph("Memória de Cálculo do Benefício Real:", negritoFont);
+            Paragraph beneficioPotencial = new Paragraph();
+            Paragraph mbeneficioPotencial = new Paragraph("Memória de Cálculo do Benefício Potencial:", negritoFont);
+            Paragraph beneficioQualitativo = new Paragraph("Beneficio Qualitativo:", negritoFont);
+            Paragraph escopoProjeto = new Paragraph("Escopo do Projeto:", negritoFont);
+            Paragraph anexos = new Paragraph("Anexos:", negritoFont);
 
             //Paragraph paragraph = new Paragraph();
             //paragraph.add(new Chunk("Solicitante: ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
@@ -49,15 +48,11 @@ public class GeradorPDF {
             //document.add(paragraph);
 
 // Adicionando o conteúdo do cabeçalho do documento
-            Paragraph conteudoSolicitante = new Paragraph(demanda.getSolicitanteDemanda().getNomeUsuario());
-            Paragraph conteudoData = new Paragraph(demanda.getDataCriacaoDemanda().toString());
-            Paragraph conteudoSetorTi = new Paragraph(demanda.getSolicitanteDemanda().getDepartamentoUsuario().getNomeDepartamento());
-            Paragraph conteudoTitulo = new Paragraph(demanda.getTituloDemanda());
+            Paragraph conteudoTitulo = new Paragraph(demanda.getTituloDemanda(), negritoFont);
+            conteudoTitulo.setAlignment(Element.ALIGN_CENTER);
             Paragraph conteudoObjetivo = new Paragraph(demanda.getObjetivoDemanda());
             Paragraph conteudoSituacaoAtual = new Paragraph(demanda.getSituacaoAtualDemanda());
-            Paragraph conteudoBeneficioReal = new Paragraph(demanda.getBeneficioRealDemanda().getValorBeneficio().toString());
             Paragraph conteudoMBeneficioReal = new Paragraph(demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio());
-            Paragraph conteudoBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString());
             Paragraph conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString());
             Paragraph conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda());
 
@@ -71,22 +66,33 @@ public class GeradorPDF {
             PdfPTable table = new PdfPTable(2);
             table.setWidthPercentage(100);
 
-            PdfPCell leftCell = new PdfPCell(new Phrase("Informação alinhada à esquerda"));
+            PdfPCell leftCell = new PdfPCell();
+            Paragraph paragraph = new Paragraph();
+            paragraph.add(new Chunk("Solicitante:", negritoFont));
+            paragraph.add(new Chunk(demanda.getSolicitanteDemanda().getNomeUsuario(), normalFont));
+            leftCell.addElement(paragraph);
             leftCell.setBorder(Rectangle.NO_BORDER);
             leftCell.setHorizontalAlignment(Element.ALIGN_LEFT);
             table.addCell(leftCell);
+            
 
-            PdfPCell rightCell = new PdfPCell(new Phrase("Informação alinhada à direita"));
+            PdfPCell rightCell = new PdfPCell();
+            Paragraph paragraph2 = new Paragraph();
+            paragraph2.add(new Chunk("Data:", negritoFont));
+            paragraph2.add(new Chunk(demanda.getDataCriacaoDemanda().toString(), normalFont));
+            paragraph2.setAlignment(Element.ALIGN_RIGHT);
+            rightCell.addElement(paragraph2);
             rightCell.setBorder(Rectangle.NO_BORDER);
             rightCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             table.addCell(rightCell);
 
             document.add(table);
 
-            document.add(setorTi);
-            document.add(conteudoSetorTi);
+            departamento.add(new Chunk("Departamento:", negritoFont));
+            departamento.add(new Chunk(demanda.getSolicitanteDemanda().getDepartamentoUsuario().getNomeDepartamento(), normalFont));
+            document.add(departamento);
 
-            document.add(titulo);
+
             document.add(conteudoTitulo);
 
             document.add(objetivo);
@@ -95,14 +101,18 @@ public class GeradorPDF {
             document.add(situacaoAtual);
             document.add(conteudoSituacaoAtual);
 
+            String tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioRealDemanda());
+            beneficioReal.add(new Chunk("Benefício Real: ", negritoFont));
+            beneficioReal.add(new Chunk(tipoValor+" "+demanda.getBeneficioRealDemanda().getValorBeneficio().toString(), normalFont));
             document.add(beneficioReal);
-            document.add(conteudoBeneficioReal);
 
             document.add(mbeneficioReal);
             document.add(conteudoMBeneficioReal);
 
+            tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioPotencialDemanda());
+            beneficioPotencial.add(new Chunk("Benefício Potencial: ", negritoFont));
+            beneficioPotencial.add(new Chunk(tipoValor+" "+demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont));
             document.add(beneficioPotencial);
-            document.add(conteudoBeneficioPotencial);
 
             document.add(mbeneficioPotencial);
             document.add(conteudoMBeneficioPotencial);
@@ -122,6 +132,18 @@ public class GeradorPDF {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private String resgatarTipoValorBeneficio(Beneficio beneficio) {
+        if(beneficio.getMoedaBeneficio().getMoeda() == "Dollar"){
+            return "$";
+        }else if(beneficio.getMoedaBeneficio().getMoeda() == "Real"){
+            return "R$";
+        }else if(beneficio.getMoedaBeneficio().getMoeda() == "Euro"){
+            return "€";
+        }else{
+            return "£";
+        }
     }
 
 
