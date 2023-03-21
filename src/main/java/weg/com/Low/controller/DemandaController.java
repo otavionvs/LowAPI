@@ -190,29 +190,32 @@ public class DemandaController {
         Beneficio beneficioPotencial = new Beneficio();
         Beneficio beneficioReal = new Beneficio();
 
-//        BeanUtils.copyProperties(demandaNova.getBeneficioPotencialDemanda(), beneficioPotencial);
-//        BeanUtils.copyProperties(demandaNova.getBeneficioRealDemanda(), beneficioReal);
+        BeanUtils.copyProperties(demandaNova.getBeneficioPotencialDemanda(), beneficioPotencial);
+        BeanUtils.copyProperties(demandaNova.getBeneficioRealDemanda(), beneficioReal);
 
-//        centroCustoService.saveAll(demandaNova.getCentroCustos());
-//        beneficioPotencial = beneficioService.save(beneficioPotencial);
-//        beneficioReal = beneficioService.save(beneficioReal);
+        centroCustoService.saveAll(demandaNova.getCentroCustos());
+        beneficioPotencial = beneficioService.save(beneficioPotencial);
+        beneficioReal = beneficioService.save(beneficioReal);
 
-//        demandaNova.setBeneficioPotencialDemanda(beneficioPotencial);
-//        demandaNova.setBeneficioRealDemanda(beneficioReal);
+        demandaNova.setBeneficioPotencialDemanda(beneficioPotencial);
+        demandaNova.setBeneficioRealDemanda(beneficioReal);
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
+        demandaNova.setStatusDemanda(demanda.getStatusDemanda());
         beneficioPotencial = demanda.getBeneficioPotencialDemanda();
         beneficioReal = demanda.getBeneficioRealDemanda();
         demandaNova.setVersion(demanda.getVersion() + 1);
         BeanUtils.copyProperties(demandaNova, demanda);
         demanda.setBeneficioPotencialDemanda(beneficioPotencial);
         demanda.setBeneficioRealDemanda(beneficioReal);
-        System.out.println(demanda);
+        Demanda demandaPut = new Demanda();
+        BeanUtils.copyProperties(demanda, demandaPut);
+
 //        System.out.println(demanda);
 //        demanda.setCentroCustos(demanda.getCentroCustos());
 //        demanda.setCodigoDemanda(demanda.getCodigoDemanda());
 
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaPut));
     }
 
     //Caso seja passado por parametro 1 - passa para o proximo status
