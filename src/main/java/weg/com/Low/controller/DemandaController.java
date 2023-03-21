@@ -187,7 +187,6 @@ public class DemandaController {
 
         Demanda demanda = demandaService.findLastDemandaById(codigo).get();
         Demanda demandaNova = new Demanda();
-
         
         BeanUtils.copyProperties(demandaDTO, demanda);
         demanda.setCodigoDemanda(codigo);
