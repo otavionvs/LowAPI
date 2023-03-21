@@ -202,12 +202,10 @@ public class DemandaController {
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
         demandaNova.setStatusDemanda(demanda.getStatusDemanda());
-        beneficioPotencial = demanda.getBeneficioPotencialDemanda();
-        beneficioReal = demanda.getBeneficioRealDemanda();
+
         demandaNova.setVersion(demanda.getVersion() + 1);
         BeanUtils.copyProperties(demandaNova, demanda);
-        demanda.setBeneficioPotencialDemanda(beneficioPotencial);
-        demanda.setBeneficioRealDemanda(beneficioReal);
+
         Demanda demandaPut = new Demanda();
         BeanUtils.copyProperties(demanda, demandaPut);
 
