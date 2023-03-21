@@ -24,7 +24,7 @@ public class GeradorPDF {
 
             Font fontNegrito = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
             Paragraph solicitante = new Paragraph("Solicitante:", fontNegrito);
-            Paragraph data = new Paragraph("Data:", fontNegrito);
+            Paragraph data = new Paragraph();
             Paragraph setorTi = new Paragraph("Departamento:", fontNegrito);
             Paragraph titulo = new Paragraph("Título:", fontNegrito);Paragraph objetivo = new Paragraph("Objetivo:", fontNegrito);
             Paragraph situacaoAtual = new Paragraph("Situação Atual:", fontNegrito);
@@ -56,13 +56,20 @@ public class GeradorPDF {
                     "\uF0B7 Otimizar configurações dos servidores de aplicação (versão, parâmetros JVM, pool de conexões)o");
             Paragraph conteudoAnexos = new Paragraph("Arquivo 1.pdf\nArquivo 2.docx");
 
-// Adicionando o cabeçalho ao documento
+            PdfPTable table = new PdfPTable(2);
+            table.setWidthPercentage(100);
 
-            solicitante.setAlignment(Element.ALIGN_JUSTIFIED);
-            document.add(new Text());
+            PdfPCell leftCell = new PdfPCell(new Phrase("Informação alinhada à esquerda"));
+            leftCell.setBorder(Rectangle.NO_BORDER);
+            leftCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+            table.addCell(leftCell);
 
-            document.add(data);
-            document.add(conteudoData);
+            PdfPCell rightCell = new PdfPCell(new Phrase("Informação alinhada à direita"));
+            rightCell.setBorder(Rectangle.NO_BORDER);
+            rightCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table.addCell(rightCell);
+
+            document.add(table);
 
             document.add(setorTi);
             document.add(conteudoSetorTi);
