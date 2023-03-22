@@ -15,6 +15,7 @@ import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.UsuarioService;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin
@@ -75,6 +76,7 @@ public class DemandaClassificadaController {
         }
 
         Demanda demanda = (Demanda) demandaOptional.get();
+
         if(demanda.getStatusDemanda() != Status.BACKLOG_CLASSIFICACAO){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda já foi classificada!");
         }
@@ -82,10 +84,13 @@ public class DemandaClassificadaController {
         BeanUtils.copyProperties(demandaClassificadaDTO, demandaClassificada);
         BeanUtils.copyProperties(demanda, demandaClassificada);
 
+
         //Alguns atributos precisam ser setados manualmente
-        demandaClassificada.setCentroCustos(demanda.getCentroCustos());
         demandaClassificada.setStatusDemanda(Status.BACKLOG_APROVACAO);
         demandaClassificada.setVersion(demandaClassificada.getVersion() + 1);
+        System.out.println(demandaClassificada);
+        demandaClassificada.setCentroCustos(demanda.getCentroCustos());
+        demandaClassificada.setArquivosDemanda(demanda.getArquivosDemanda());
         return ResponseEntity.status(HttpStatus.OK).body(demandaClassificadaService.save(demandaClassificada));
     }
 

@@ -147,24 +147,12 @@ public class DemandaController {
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
-//        List<CentroCusto> listCentroCusto = demanda.getCentroCustos();
-
-        Beneficio beneficioPotencial = new Beneficio();
-        Beneficio beneficioReal = new Beneficio();
-
-        BeanUtils.copyProperties(demanda.getBeneficioPotencialDemanda(), beneficioPotencial);
-        BeanUtils.copyProperties(demanda.getBeneficioRealDemanda(), beneficioReal);
 
         centroCustoService.saveAll(demanda.getCentroCustos());
 
-//        BeanUtils.copyProperties(demanda.getCentroCustos(), listCentroCusto);
 
-
-        beneficioPotencial = beneficioService.save(beneficioPotencial);
-        beneficioReal = beneficioService.save(beneficioReal);
-
-        demanda.setBeneficioPotencialDemanda(beneficioPotencial);
-        demanda.setBeneficioRealDemanda(beneficioReal);
+        demanda.setBeneficioPotencialDemanda(beneficioService.save(demanda.getBeneficioPotencialDemanda()));
+        demanda.setBeneficioRealDemanda(beneficioService.save(demanda.getBeneficioRealDemanda()));
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
 
@@ -187,34 +175,39 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
         }
 
-        Beneficio beneficioPotencial = new Beneficio();
-        Beneficio beneficioReal = new Beneficio();
-
-        BeanUtils.copyProperties(demandaNova.getBeneficioPotencialDemanda(), beneficioPotencial);
-        BeanUtils.copyProperties(demandaNova.getBeneficioRealDemanda(), beneficioReal);
-
         centroCustoService.saveAll(demandaNova.getCentroCustos());
-        beneficioPotencial = beneficioService.save(beneficioPotencial);
-        beneficioReal = beneficioService.save(beneficioReal);
 
-        demandaNova.setBeneficioPotencialDemanda(beneficioPotencial);
-        demandaNova.setBeneficioRealDemanda(beneficioReal);
+        demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
+        demandaNova.setBeneficioRealDemanda(beneficioService.save(demandaNova.getBeneficioRealDemanda()));
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
+
         demandaNova.setStatusDemanda(demanda.getStatusDemanda());
-
         demandaNova.setVersion(demanda.getVersion() + 1);
-        BeanUtils.copyProperties(demandaNova, demanda);
 
-        Demanda demandaPut = new Demanda();
-        BeanUtils.copyProperties(demanda, demandaPut);
-
-//        System.out.println(demanda);
-//        demanda.setCentroCustos(demanda.getCentroCustos());
-//        demanda.setCodigoDemanda(demanda.getCodigoDemanda());
-
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaPut));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
+
+//    @PutMapping("/update/{codigo}")
+//    public ResponseEntity<Object> update(
+//            @PathVariable(value = "codigo") Integer codigo,
+//            @RequestBody @Valid DemandaDTO demandaDTO) {
+//        if (!demandaService.existsById(codigo)) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
+//        }
+//
+//        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
+//        Demanda demandaNova = new Demanda();
+//
+//        BeanUtils.copyProperties(demandaDTO, demanda);
+//        demanda.setCodigoDemanda(codigo);
+//        BeanUtils.copyProperties(demanda, demandaNova);
+//        demandaNova.setCentroCustos(demanda.getCentroCustos());
+//        demandaNova.setVersion(demandaNova.getVersion() + 1);
+//        demandaNova.setCodigoDemanda(codigo);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+//    }
 
     //Caso seja passado por parametro 1 - passa para o proximo status
     //Parametro != 1 - Cancela a demanda
