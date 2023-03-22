@@ -29,7 +29,7 @@ public class DepartamentoController {
     @GetMapping
     public ResponseEntity<Object> findAll() {
         String dados = "Informações a serem incluídas no PDF";
-        geradorPDF.gerarPDF(new Demanda());
+        geradorPDF.gerarPDFDemanda(new Demanda());
         return ResponseEntity.status(HttpStatus.OK).body("testando pdf");
 //        return ResponseEntity.status(HttpStatus.OK).body(departamentoService.findAll());
     }

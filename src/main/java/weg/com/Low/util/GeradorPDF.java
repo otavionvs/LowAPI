@@ -3,13 +3,11 @@ import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
 import org.springframework.stereotype.Component;
-import weg.com.Low.model.entity.Beneficio;
-import weg.com.Low.model.entity.Demanda;
-import weg.com.Low.model.entity.Departamento;
-import weg.com.Low.model.entity.Usuario;
+import weg.com.Low.model.entity.*;
 
-import javax.websocket.Decoder;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 @Component
 public class GeradorPDF {
@@ -17,18 +15,19 @@ public class GeradorPDF {
     private final Font negritoFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
     private final Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
 
-    public ByteArrayOutputStream gerarPDF(Demanda demanda) {
+    public ByteArrayOutputStream gerarPDFDemanda(Demanda demanda) {
         try {
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Document document = new Document();
             document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin() + 50, document.bottomMargin());
             PdfWriter writer = PdfWriter.getInstance(document, baos);
-
+            String html = "<h1>12131kjfshdaklsdhfklsadhfklashdflkjshdlfkahsdklfhasdklfjhasldkfjhskladfhklasjdhfklsdahfsda2</h1>";
 
             HeaderFooter header = new HeaderFooter();
             writer.setPageEvent(header);
             document.open();
+
 
             Paragraph departamento = new Paragraph();
             Paragraph objetivo = new Paragraph("Objetivo:", negritoFont);
@@ -38,30 +37,18 @@ public class GeradorPDF {
             Paragraph beneficioPotencial = new Paragraph();
             Paragraph mbeneficioPotencial = new Paragraph("Memória de Cálculo do Benefício Potencial:", negritoFont);
             Paragraph beneficioQualitativo = new Paragraph("Beneficio Qualitativo:", negritoFont);
-            Paragraph escopoProjeto = new Paragraph("Escopo do Projeto:", negritoFont);
+
             Paragraph anexos = new Paragraph("Anexos:", negritoFont);
-
-            //Paragraph paragraph = new Paragraph();
-            //paragraph.add(new Chunk("Solicitante: ", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-            //paragraph.add(new Chunk("nomeDoSolicitante"));
-            //
-            //document.add(paragraph);
-
-// Adicionando o conteúdo do cabeçalho do documento
             Paragraph conteudoTitulo = new Paragraph(demanda.getTituloDemanda(), negritoFont);
             conteudoTitulo.setAlignment(Element.ALIGN_CENTER);
-            Paragraph conteudoObjetivo = new Paragraph(demanda.getObjetivoDemanda());
-            Paragraph conteudoSituacaoAtual = new Paragraph(demanda.getSituacaoAtualDemanda());
-            Paragraph conteudoMBeneficioReal = new Paragraph(demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio());
-            Paragraph conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString());
-            Paragraph conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda());
 
-            Paragraph conteudoEscopoProjeto = new Paragraph("Ações de curto prazo visando ganhos globais de desempenho/estabilidade no MAESTRO Identificar causa raiz das instabilidades dos servidores (memória, CPU etc.)\n" +
-                    "Otimizar estrutura das tabelas, consultas de baixo desempenho e criação/remoção de índices\n" +
-                    "Otimizar configurações dos servidores (virtualização, balanceador de carga, recursos alocados,\n" +
-                    "etc.)\n" +
-                    "\uF0B7 Otimizar configurações dos servidores de aplicação (versão, parâmetros JVM, pool de conexões)o");
-            Paragraph conteudoAnexos = new Paragraph("Arquivo 1.pdf\nArquivo 2.docx");
+            Paragraph conteudoObjetivo = new Paragraph(demanda.getObjetivoDemanda(), normalFont);
+            Paragraph conteudoSituacaoAtual = new Paragraph(demanda.getSituacaoAtualDemanda(), normalFont);
+            Paragraph conteudoMBeneficioReal = new Paragraph(demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio(), normalFont);
+            Paragraph conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont);
+            Paragraph conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda(), normalFont);
+
+            Paragraph conteudoAnexos = new Paragraph("Arquivo 1.pdf\nArquivo 2.docx", normalFont);
 
             PdfPTable table = new PdfPTable(2);
             table.setWidthPercentage(100);
@@ -87,17 +74,12 @@ public class GeradorPDF {
             table.addCell(rightCell);
 
             document.add(table);
-
             departamento.add(new Chunk("Departamento:", negritoFont));
             departamento.add(new Chunk(demanda.getSolicitanteDemanda().getDepartamentoUsuario().getNomeDepartamento(), normalFont));
             document.add(departamento);
-
-
             document.add(conteudoTitulo);
-
             document.add(objetivo);
             document.add(conteudoObjetivo);
-
             document.add(situacaoAtual);
             document.add(conteudoSituacaoAtual);
 
@@ -105,6 +87,7 @@ public class GeradorPDF {
             beneficioReal.add(new Chunk("Benefício Real: ", negritoFont));
             beneficioReal.add(new Chunk(tipoValor+" "+demanda.getBeneficioRealDemanda().getValorBeneficio().toString(), normalFont));
             document.add(beneficioReal);
+//            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(html.getBytes()));
 
             document.add(mbeneficioReal);
             document.add(conteudoMBeneficioReal);
@@ -120,11 +103,87 @@ public class GeradorPDF {
             document.add(beneficioQualitativo);
             document.add(conteudoBeneficioQualitativo);
 
-            document.add(escopoProjeto);
-            document.add(conteudoEscopoProjeto);
 
             document.add(anexos);
             document.add(conteudoAnexos);
+
+            if (demanda.getStatusDemanda().ordinal() > 0 && (demanda instanceof DemandaClassificada || demanda instanceof Proposta)){
+                Paragraph tamanhoDemanda = new Paragraph();
+                tamanhoDemanda.add(new Chunk("Tamanho Demanda: ", negritoFont));
+                tamanhoDemanda.add(new Chunk(((DemandaClassificada) demanda).getTamanhoDemandaClassificada().toString(), normalFont));
+                document.add(tamanhoDemanda);
+            }
+
+            if(demanda.getStatusDemanda().ordinal() > 1 && demanda instanceof Proposta){
+                Paragraph prazoElaboracao = new Paragraph();
+                prazoElaboracao.add(new Chunk("Prazo Elaboração Proposta: ", negritoFont));
+                prazoElaboracao.add(new Chunk(((Proposta) demanda).getPrazoProposta().toString(), normalFont));
+
+
+                Paragraph inicioExDemandaProposta = new Paragraph();
+                inicioExDemandaProposta.add(new Chunk("Inicio Execução Proposta: ", negritoFont));
+                inicioExDemandaProposta.add(new Chunk(((Proposta) demanda).getInicioExDemandaProposta().toString(), normalFont));
+
+
+                Paragraph fimExDemandaProposta = new Paragraph();
+                fimExDemandaProposta.add(new Chunk("Fim Execução Proposta: ", negritoFont));
+                fimExDemandaProposta.add(new Chunk(((Proposta) demanda).getFimExDemandaProposta().toString(), normalFont));
+
+                Paragraph paybackProposta = new Paragraph();
+                paybackProposta.add(new Chunk("Payback: ", negritoFont));
+                paybackProposta.add(new Chunk(((Proposta) demanda).getPaybackProposta().toString(), normalFont));
+
+                Paragraph escopoDemandaProposta = new Paragraph("Escopo Proposta: ", negritoFont);
+                Paragraph conteudoEscopoDemandaProposta = new Paragraph("Conteudo do escopo que ainda não existe no banco de dados infelizmente", normalFont);
+
+                Paragraph responsavelProposta = new Paragraph();
+                responsavelProposta.add(new Chunk("Responsável Proposta: ", negritoFont));
+                responsavelProposta.add(new Chunk(((Proposta) demanda).getResponsavelProposta().getNomeUsuario(), normalFont));
+
+                Paragraph areaResponsavelProposta = new Paragraph();
+                areaResponsavelProposta.add(new Chunk("Área Responsável Proposta: ", negritoFont));
+                areaResponsavelProposta.add(new Chunk(((Proposta) demanda).getResponsavelProposta().getDepartamentoUsuario().getNomeDepartamento(), normalFont));
+
+                Paragraph recursos = new Paragraph("Recursos: ", negritoFont);
+                recursos.setSpacingAfter(10);
+                document.add(recursos);
+
+                PdfPTable tableRecurso = new PdfPTable(7);
+                tableRecurso.setWidthPercentage(100);
+                tableRecurso.addCell(new PdfPCell(new Phrase("Recurso Necessário", negritoFont)));
+                tableRecurso.addCell(new PdfPCell(new Phrase("Tipo da despesa", negritoFont)));
+                tableRecurso.addCell(new PdfPCell(new Phrase("Perfil da despesa", negritoFont)));
+                tableRecurso.addCell(new PdfPCell(new Phrase("C.C. pagantes", negritoFont)));
+                tableRecurso.addCell(new PdfPCell(new Phrase("Qtd de horas", negritoFont)));
+                tableRecurso.addCell(new PdfPCell(new Phrase("Valor da hora", negritoFont)));
+                tableRecurso.addCell(new PdfPCell(new Phrase("Período de execução (Mensal)",negritoFont)));
+
+
+                for(Recurso recurso: ((Proposta) demanda).getRecursosProposta()){
+                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getNomeRecurso(), normalFont)));
+                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getTipoDespesaRecurso().toString(), normalFont)));
+                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getPerfilDespesaRecurso().toString(), normalFont)));
+                    PdfPCell cellCC = new PdfPCell();
+                    //Adicionar Centro de custo: por algum motivo estava comentado
+                    cellCC.addElement(new Phrase("Centro de ", normalFont));
+                    tableRecurso.addCell(cellCC);
+                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getQuantidadeHorasRecurso().toString(), normalFont)));
+                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getValorHoraRecurso().toString(), normalFont)));
+                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getPeriodoExMesesRecurso().toString(), normalFont)));
+                }
+                document.add(tableRecurso);
+
+
+                document.add(prazoElaboracao);
+                document.add(inicioExDemandaProposta);
+                document.add(fimExDemandaProposta);
+                document.add(paybackProposta);
+                document.add(escopoDemandaProposta);
+                document.add(conteudoEscopoDemandaProposta);
+                document.add(responsavelProposta);
+                document.add(areaResponsavelProposta);
+
+            }
 
             document.close();
             return baos;

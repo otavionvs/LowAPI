@@ -36,7 +36,7 @@ public class Proposta extends DemandaClassificada {
     private String parecerComissaoProposta;
 
     @Column
-    private String SugestaoProposta;
+    private String sugestaoProposta;
 
     @OneToOne
     @JoinColumn(name = "codigo_responsavel")
