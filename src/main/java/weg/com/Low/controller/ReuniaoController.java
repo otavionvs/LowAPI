@@ -9,12 +9,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.ReuniaoDTO;
+import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
+import weg.com.Low.model.enums.Comissao;
 import weg.com.Low.model.enums.StatusReuniao;
+import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.ReuniaoService;
 
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +31,7 @@ import java.util.Optional;
 @RequestMapping("/reuniao")
 public class ReuniaoController {
     private ReuniaoService reuniaoService;
+    private DemandaService demandaService;
     private PropostaService propostaService;
 
     @GetMapping
@@ -61,20 +66,37 @@ public class ReuniaoController {
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid ReuniaoDTO reuniaoDTO) {
-        //Caso seja enviado demandas ao invés das propostas (melhor opção para o front)
-        if(reuniaoDTO.getPropostasReuniao() == null){
-            List<Proposta> propostas = new ArrayList<>();
-            for(int i = 0; i < reuniaoDTO.getDemandasReuniao().size(); i ++){
-                propostas.add(propostaService.porDemanda(reuniaoDTO.getDemandasReuniao().get(i).getCodigoDemanda() + ""));
-            }
-            reuniaoDTO.setPropostasReuniao(propostas);
-        }
         Reuniao reuniao = new Reuniao();
+        //Verificação para caso a Reunião não tenha Propostas
+        if(reuniaoDTO.getPropostasReuniao().size() == 0){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Adicione Propostas na sua Reunião");
+        }
+        //Verificar se existe a comissão enviada e setar no objeto principal
+        boolean comissaoNotFound = true;
+        for(Comissao comissao: Comissao.values()){
+            if(comissao.toString().equals(reuniaoDTO.getComissaoReuniao())) {
+                comissaoNotFound = false;
+                reuniao.setComissaoReuniao(comissao);
+                break;
+            }
+        }
+
+        if(comissaoNotFound){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comissão não Encontrada! Comissões: [CPGCI, CGPN, CPVM, CWBS, CTI, DTI, CPGPR]");
+        }
+
+        ArrayList<Proposta> listaPropostas = new ArrayList<>();
+        for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
+            Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
+            listaPropostas.add(proposta);
+        }
+
         BeanUtils.copyProperties(reuniaoDTO, reuniao);
+
+        reuniao.setPropostasReuniao(listaPropostas);
+
+
         Long tempo = reuniao.getDataReuniao().getTime() - new Date().getTime();
-        System.out.println(tempo);
-        System.out.println(reuniao.getDataReuniao().getTime());
-        System.out.println(new Date().getTime());
         //aproximadamente duas semanas
         if(tempo > 0 && tempo < 1300000000){
             reuniao.setStatusReuniao(StatusReuniao.PROXIMO);

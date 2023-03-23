@@ -26,26 +26,17 @@ public class ReuniaoService {
     }
 
     public Reuniao save(Reuniao reuniao) {
-        List<Proposta> propostas = reuniao.getPropostasReuniao();
-        List<Usuario> usuarios = null;
-        for (Proposta proposta: propostas){
-            DemandaClassificada demandaClassificada = demandaClassificadaService.findById(proposta.getCodigoDemanda()).get();
-            usuarios.add(demandaClassificada.getAnalista());
-            usuarios.add(demandaClassificada.getGerenteNegocio());
-            Demanda demanda = demandaService.findLastDemandaById(demandaClassificada.getCodigoDemanda()).get();
-            usuarios.add(demanda.getSolicitanteDemanda());
-        }
-        notificacaoService.save(new Notificacao(
-                null,
-                reuniao.getDataReuniao().toString(),
-                reuniao.getCodigoReuniao(),
-                TipoNotificacao.MARCOU_REUNIAO,
-                "Uma reunião de uma demanda que você está envolvido foi marcada! ",
-                LocalDateTime.now(),
-                LocalDate.now(),
-                StatusNotificacao.ATIVADA,
-                usuarios
-                ));
+//        notificacaoService.save(new Notificacao(
+//                null,
+//                reuniao.getDataReuniao().toString(),
+//                reuniao.getCodigoReuniao(),
+//                TipoNotificacao.MARCOU_REUNIAO,
+//                "Uma reunião de uma demanda que você está envolvido foi marcada! ",
+//                LocalDateTime.now(),
+//                LocalDate.now(),
+//                StatusNotificacao.ATIVADA,
+//                usuarios
+//                ));
         return reuniaoRepository.save(reuniao);
     }
 

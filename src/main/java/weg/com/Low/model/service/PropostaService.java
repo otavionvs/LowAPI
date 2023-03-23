@@ -28,6 +28,8 @@ public class PropostaService {
         return propostaRepository.save(proposta);
     }
 
+
+
     //    public Proposta save(Proposta proposta) {
 //        List<Usuario> usuarios = null;
 //        DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
