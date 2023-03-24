@@ -19,8 +19,6 @@ public class ReuniaoDTO {
     Date dataReuniao;
     @NotNull
     private String comissaoReuniao;
-
-    private List<Demanda> demandasReuniao;
     private List<Proposta> propostasReuniao;
 
     private Ata ataReuniao;

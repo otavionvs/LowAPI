@@ -113,6 +113,7 @@ public class ReuniaoController {
         Proposta demanda = (Proposta) demandaService.findLastDemandaById(codigoProposta).get();
         if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR)){
             demanda.setStatusDemanda(Status.TO_DO);
+
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR_COM_RECOMENDACAO)){
             demanda.setStatusDemanda(Status.TO_DO);
 
@@ -120,7 +121,6 @@ public class ReuniaoController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
             }
 
-            demanda.setRecomendacaoProposta(parecerComissaoDTO.getRecomendacaoProposta());
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)){
             demanda.setStatusDemanda(Status.RETURNED);
 
@@ -128,13 +128,13 @@ public class ReuniaoController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
             }
 
-            demanda.setRecomendacaoProposta(parecerComissaoDTO.getRecomendacaoProposta());
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REPROVAR)){
             demanda.setStatusDemanda(Status.CANCELLED);
         }
+
+        BeanUtils.copyProperties(parecerComissaoDTO, demanda);
         demanda.setVersion(demanda.getVersion() + 1);
-        demandaService.save(demanda);
-        return ResponseEntity.status(HttpStatus.OK).body("em fase de testes");
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
     @PutMapping("/update/{codigo}")

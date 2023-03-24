@@ -61,8 +61,6 @@ public class PropostaController {
             recursos.add(recurso);
         }
 
-        BeanUtils.copyProperties(demandaService.findLastDemandaById(propostaDTO.getCodigoDemanda()).get(), proposta);
-
         proposta.setRecursosProposta(recursos);
         proposta.setStatusDemanda(Status.TO_DO);
         proposta.setVersion(proposta.getVersion() + 1);
