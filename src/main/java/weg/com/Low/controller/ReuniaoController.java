@@ -8,11 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import weg.com.Low.dto.ParecerComissaoDTO;
 import weg.com.Low.dto.ReuniaoDTO;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
 import weg.com.Low.model.enums.Comissao;
+import weg.com.Low.model.enums.DecisaoProposta;
 import weg.com.Low.model.enums.StatusReuniao;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.PropostaService;
@@ -84,7 +86,7 @@ public class ReuniaoController {
         if(comissaoNotFound){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comissão não Encontrada! Comissões: [CPGCI, CGPN, CPVM, CWBS, CTI, DTI, CPGPR]");
         }
-
+        //Instancia Propostas com o código
         ArrayList<Proposta> listaPropostas = new ArrayList<>();
         for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
             Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
@@ -92,10 +94,7 @@ public class ReuniaoController {
         }
 
         BeanUtils.copyProperties(reuniaoDTO, reuniao);
-
         reuniao.setPropostasReuniao(listaPropostas);
-
-
         Long tempo = reuniao.getDataReuniao().getTime() - new Date().getTime();
         //aproximadamente duas semanas
         if(tempo > 0 && tempo < 1300000000){
@@ -104,6 +103,22 @@ public class ReuniaoController {
             reuniao.setStatusReuniao(StatusReuniao.AGUARDANDO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+    }
+
+    @PutMapping("/parecer/{codigoProposta}")
+    public ResponseEntity<Object> parecer(
+            @PathVariable(value = "codigoProposta") Integer codigoProposta,
+            @RequestBody @Valid ParecerComissaoDTO parecerComissaoDTO) {
+        if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR)){
+
+        }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR_COM_RECOMENDACAO)){
+
+        }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)){
+
+        }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REPROVAR)){
+
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("em fase de testes");
     }
 
     @PutMapping("/update/{codigo}")
