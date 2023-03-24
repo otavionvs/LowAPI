@@ -1,6 +1,7 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
+import weg.com.Low.model.enums.TipoAtaProposta;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -29,6 +30,9 @@ public class Proposta extends DemandaClassificada {
 
     @Column
     private String parecerComissaoProposta;
+
+    @Column
+    private TipoAtaProposta tipoAtaProposta;
 
     @Column
     private String recomendacaoProposta;
