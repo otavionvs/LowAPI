@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ParecerComissaoDTO {
     @NotNull
-    private ParecerComissaoDTO parecerComissaoProposta;
+    private String parecerComissaoProposta;
     @NotNull
     private DecisaoProposta decisaoProposta;
     private String recomendacaoProposta;

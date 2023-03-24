@@ -15,6 +15,7 @@ import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
 import weg.com.Low.model.enums.Comissao;
 import weg.com.Low.model.enums.DecisaoProposta;
+import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.enums.StatusReuniao;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.PropostaService;
@@ -109,15 +110,30 @@ public class ReuniaoController {
     public ResponseEntity<Object> parecer(
             @PathVariable(value = "codigoProposta") Integer codigoProposta,
             @RequestBody @Valid ParecerComissaoDTO parecerComissaoDTO) {
+        Proposta demanda = (Proposta) demandaService.findLastDemandaById(codigoProposta).get();
         if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR)){
-
+            demanda.setStatusDemanda(Status.TO_DO);
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR_COM_RECOMENDACAO)){
+            demanda.setStatusDemanda(Status.TO_DO);
 
+            if(parecerComissaoDTO.getParecerComissaoProposta().length() == 0){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
+            }
+
+            demanda.setRecomendacaoProposta(parecerComissaoDTO.getRecomendacaoProposta());
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)){
+            demanda.setStatusDemanda(Status.RETURNED);
 
+            if(parecerComissaoDTO.getParecerComissaoProposta().length() == 0){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
+            }
+
+            demanda.setRecomendacaoProposta(parecerComissaoDTO.getRecomendacaoProposta());
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REPROVAR)){
-
+            demanda.setStatusDemanda(Status.CANCELLED);
         }
+        demanda.setVersion(demanda.getVersion() + 1);
+        demandaService.save(demanda);
         return ResponseEntity.status(HttpStatus.OK).body("em fase de testes");
     }
 

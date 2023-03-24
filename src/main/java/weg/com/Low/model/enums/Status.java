@@ -16,7 +16,8 @@ public enum Status {
     SUPPORT("Support"),//7
     CANCELLED("Cancelled"),//8
     DONE("Done"),//9
-    DRAFT("Draft");//10
+    DRAFT("Draft"),//10
+    RETURNED("Returned");
 
     String status;
 }
