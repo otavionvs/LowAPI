@@ -23,6 +23,7 @@ public class Ata {
     @Column(nullable = false, length = 100)
     String tituloAta;
 
+
     
 
 

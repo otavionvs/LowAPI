@@ -15,6 +15,10 @@ public class GeradorPDF {
     private final Font negritoFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
     private final Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
 
+    public ByteArrayOutputStream gerarPDFAta(Reuniao reuniao){
+        return null;
+    }
+
     public ByteArrayOutputStream gerarPDFDemanda(Demanda demanda) {
         try {
 
