@@ -137,6 +137,15 @@ public class ReuniaoController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
+    @PutMapping("/ata/{codigoReuniao}")
+    public ResponseEntity<Object> downloadAta(
+            @PathVariable(value = "codigoReuniao") Integer codigo,
+            @RequestBody String ) {
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+    }
+
     @PutMapping("/update/{codigo}")
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,

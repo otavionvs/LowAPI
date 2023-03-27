@@ -13,9 +13,16 @@ public class Ata {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
-    Integer idAta;
+    Integer codigoAta;
     @Column()
-    String tipoAta;
+    String anoAta;
+
+    //Tem também a data da reunião, mas isso está em Reuniao
     @Column(nullable = false, length = 100)
     String tituloAta;
+
+    @Column
+    
+
+
 }

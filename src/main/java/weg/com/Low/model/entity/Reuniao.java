@@ -25,7 +25,11 @@ public class Reuniao {
     private Comissao comissaoReuniao;
     @OneToOne
     @JoinColumn(name = "ata")
-    private Ata ataReuniao;
+    private Ata ataPublicadaReuniao;
+
+    @OneToOne
+    @JoinColumn(name = "ata")
+    private Ata ataNaoPublicadaReuniao;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "proposta_reuniao", joinColumns =
     @JoinColumn(name = "codigo_reuniao", nullable = false),
