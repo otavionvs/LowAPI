@@ -37,6 +37,8 @@ public class Proposta extends DemandaClassificada {
     @Column
     private String recomendacaoProposta;
 
+    @Column String ultimaDecisaoComissao;
+
     @OneToOne
     @JoinColumn(name = "codigo_responsavel")
     private Usuario responsavelProposta;

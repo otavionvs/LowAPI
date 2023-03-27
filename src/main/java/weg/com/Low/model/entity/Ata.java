@@ -2,12 +2,14 @@ package weg.com.Low.model.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "ata")
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class Ata {
     @Id
@@ -21,7 +23,6 @@ public class Ata {
     @Column(nullable = false, length = 100)
     String tituloAta;
 
-//    @Column
     
 
 
