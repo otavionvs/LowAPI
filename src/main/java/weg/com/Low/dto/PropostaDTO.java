@@ -14,6 +14,8 @@ import java.util.List;
 public class PropostaDTO {
     @NotNull
     private Integer codigoDemanda;
+    @NotNull
+    private Integer version;
     @NotBlank
     private String tituloDemanda;
     @NotBlank
@@ -25,10 +27,10 @@ public class PropostaDTO {
     @NotBlank
     private String beneficioQualitativoDemanda;
     private String motivoReprovacaoDemanda;
-    @NotNull
+//    @NotNull
     private Integer score;
     @NotEmpty
-    private List<CentroCusto> centroCustos;
+    private List<CentroCusto> centroCustosDemanda;
     @NotNull
     private Beneficio beneficioPotencialDemanda;
     @NotNull
@@ -46,14 +48,15 @@ public class PropostaDTO {
     private Date fimExDemandaProposta;
     @NotNull
     private Double paybackProposta;
-    @NotBlank
     private String parecerComissaoProposta;
-    @NotBlank
     private String SugestaoProposta;
     @NotNull
     private Usuario responsavelProposta;
     @NotEmpty
     private List<RecursoDTO> recursosProposta;
+    @NotNull
+    private Usuario solicitanteDemanda;
+
     //parecer e sugestão - adicionar na demanda maior
 //    private Arquivo arquivoProposta
 }

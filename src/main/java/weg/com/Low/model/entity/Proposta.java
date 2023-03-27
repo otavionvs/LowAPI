@@ -49,8 +49,8 @@ public class Proposta extends DemandaClassificada {
             inverseJoinColumns = @JoinColumn(name = "codigo_recurso"))
     private List<Recurso> recursosProposta;
 
-    @ManyToOne
-    @JoinColumn(name = "codigo_arquivo")
-    private Arquivo arquivoProposta;
+//    @ManyToOne
+//    @JoinColumn(name = "codigo_arquivo")
+//    private Arquivo arquivoProposta;
 
 }
