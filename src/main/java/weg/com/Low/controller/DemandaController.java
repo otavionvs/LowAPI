@@ -148,7 +148,7 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
 
-        centroCustoService.saveAll(demanda.getCentroCustos());
+        centroCustoService.saveAll(demanda.getCentroCustosDemanda());
 
 
         demanda.setBeneficioPotencialDemanda(beneficioService.save(demanda.getBeneficioPotencialDemanda()));
@@ -175,7 +175,7 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
         }
 
-        centroCustoService.saveAll(demandaNova.getCentroCustos());
+        centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
 
         demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
         demandaNova.setBeneficioRealDemanda(beneficioService.save(demandaNova.getBeneficioRealDemanda()));

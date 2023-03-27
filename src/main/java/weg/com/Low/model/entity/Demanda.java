@@ -56,9 +56,19 @@ public class Demanda{
 //    private List<CentroCusto> centroCustos;
 
 
-    @Column
-    @ElementCollection
-    private List<CentroCusto> centroCustos;
+//    @Column
+//    @ElementCollection
+//    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+        name = "centro_custo_demanda",
+        joinColumns = {
+                @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"),
+                @JoinColumn(name = "version", referencedColumnName = "version")
+        },
+        inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo")
+)
+    private List<CentroCusto> centroCustosDemanda;
     @OneToOne
     @JoinColumn(name = "beneficio_potencial_demanda")
 //    @Embedded
@@ -120,5 +130,33 @@ public class Demanda{
             e.printStackTrace();
         }
     }
+
+    public void setArquivosClassificada(List<Arquivo> arquivos){
+        arquivosDemanda = new ArrayList<>();
+        try {
+            for (Arquivo arquivo : arquivos) {
+                arquivosDemanda.add(new Arquivo(null,
+                        arquivo.getNomeArquivo(),
+                        arquivo.getTipoArquivo(),
+                        arquivo.getDadosArquivo()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setCentroCustosClassificada(List<CentroCusto> centroCustos){
+        centroCustosDemanda = new ArrayList<>();
+        try {
+            for (CentroCusto centroCusto : centroCustos) {
+                centroCustos.add(new CentroCusto(centroCusto.getCodigoCentroCusto(),
+                        centroCusto.getNomeCentroCusto(),
+                        centroCusto.getPorcentagemCentroCusto()));
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
 }
