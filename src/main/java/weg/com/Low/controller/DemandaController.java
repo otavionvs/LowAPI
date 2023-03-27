@@ -139,7 +139,6 @@ public class DemandaController {
     //Exige de outro formato para enviar as informações (body - form data)
     @PostMapping
     public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
-        System.out.println(demandaJson);
         //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
@@ -148,24 +147,12 @@ public class DemandaController {
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
-//        List<CentroCusto> listCentroCusto = demanda.getCentroCustos();
 
-        Beneficio beneficioPotencial = new Beneficio();
-        Beneficio beneficioReal = new Beneficio();
-
-        BeanUtils.copyProperties(demanda.getBeneficioPotencialDemanda(), beneficioPotencial);
-        BeanUtils.copyProperties(demanda.getBeneficioRealDemanda(), beneficioReal);
-
-        centroCustoService.saveAll(demanda.getCentroCustos());
-
-//        BeanUtils.copyProperties(demanda.getCentroCustos(), listCentroCusto);
+        centroCustoService.saveAll(demanda.getCentroCustosDemanda());
 
 
-        beneficioPotencial = beneficioService.save(beneficioPotencial);
-        beneficioReal = beneficioService.save(beneficioReal);
-
-        demanda.setBeneficioPotencialDemanda(beneficioPotencial);
-        demanda.setBeneficioRealDemanda(beneficioReal);
+        demanda.setBeneficioPotencialDemanda(beneficioService.save(demanda.getBeneficioPotencialDemanda()));
+        demanda.setBeneficioRealDemanda(beneficioService.save(demanda.getBeneficioRealDemanda()));
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
 
@@ -177,26 +164,62 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
-    @PutMapping("/update/{codigo}")
+    @PutMapping("/update")
     public ResponseEntity<Object> update(
-            @PathVariable(value = "codigo") Integer codigo,
-            @RequestBody @Valid DemandaDTO demandaDTO) {
-        if (!demandaService.existsById(codigo)) {
+            @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
+        DemandaUtil demandaUtil = new DemandaUtil();
+        Demanda demandaNova = demandaUtil.convertJsonToModel(demandaJson);
+        demandaNova.setArquivos(arquivos);
+
+        if (!demandaService.existsById(demandaNova.getCodigoDemanda())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
         }
 
-        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
-        Demanda demandaNova = new Demanda();
-        
-        BeanUtils.copyProperties(demandaDTO, demanda);
-        demanda.setCodigoDemanda(codigo);
-        BeanUtils.copyProperties(demanda, demandaNova);
-        demandaNova.setCentroCustos(demanda.getCentroCustos());
-        demandaNova.setVersion(demandaNova.getVersion() + 1);
-        demandaNova.setCodigoDemanda(codigo);
+//<<<<<<< HEAD
+        centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
+
+        demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
+        demandaNova.setBeneficioRealDemanda(beneficioService.save(demandaNova.getBeneficioRealDemanda()));
+
+        Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
+
+        demandaNova.setStatusDemanda(demanda.getStatusDemanda());
+        demandaNova.setVersion(demanda.getVersion() + 1);
+//=======
+//        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
+//        Demanda demandaNova = new Demanda();
+//
+//        BeanUtils.copyProperties(demandaDTO, demanda);
+//        demanda.setCodigoDemanda(codigo);
+//        BeanUtils.copyProperties(demanda, demandaNova);
+//        demandaNova.setCentroCustos(demanda.getCentroCustos());
+//        demandaNova.setVersion(demandaNova.getVersion() + 1);
+//        demandaNova.setCodigoDemanda(codigo);
+//>>>>>>> main
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
+
+//    @PutMapping("/update/{codigo}")
+//    public ResponseEntity<Object> update(
+//            @PathVariable(value = "codigo") Integer codigo,
+//            @RequestBody @Valid DemandaDTO demandaDTO) {
+//        if (!demandaService.existsById(codigo)) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
+//        }
+//
+//        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
+//        Demanda demandaNova = new Demanda();
+//
+//        BeanUtils.copyProperties(demandaDTO, demanda);
+//        demanda.setCodigoDemanda(codigo);
+//        BeanUtils.copyProperties(demanda, demandaNova);
+//        demandaNova.setCentroCustos(demanda.getCentroCustos());
+//        demandaNova.setVersion(demandaNova.getVersion() + 1);
+//        demandaNova.setCodigoDemanda(codigo);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+//    }
 
     //Caso seja passado por parametro 1 - passa para o proximo status
     //Parametro != 1 - Cancela a demanda
@@ -251,7 +274,7 @@ public class DemandaController {
         }
         Demanda demanda = (Demanda) demandaOptional.get();
         beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
-        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
+//        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
 
         demandaService.deleteById(codigo);
         return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
