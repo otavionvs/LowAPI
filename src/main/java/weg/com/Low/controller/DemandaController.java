@@ -77,7 +77,6 @@ public class DemandaController {
         headers.setContentLength(baos.size());
 
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
-//        return ResponseEntity.status(HttpStatus.OK).body("sdlghhfpoisdafpisdahflshdfiohfiosh");
     }
 
     //É necessário ter todos os campos mesmos que vazios("")
@@ -239,7 +238,6 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
 
-        System.out.println("Demanda 2 " + demanda);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
