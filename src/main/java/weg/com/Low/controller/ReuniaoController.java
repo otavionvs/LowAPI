@@ -13,7 +13,10 @@ import weg.com.Low.dto.ReuniaoDTO;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
-import weg.com.Low.model.enums.*;
+import weg.com.Low.model.enums.Comissao;
+import weg.com.Low.model.enums.DecisaoProposta;
+import weg.com.Low.model.enums.Status;
+import weg.com.Low.model.enums.StatusReuniao;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.ReuniaoService;
@@ -134,19 +137,13 @@ public class ReuniaoController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
-    @PutMapping("/atapublicada/{codigoReuniao}")
+    @PutMapping("/ata/{codigoReuniao}")
     public ResponseEntity<Object> downloadAta(
-            @PathVariable(value = "codigoReuniao") Integer codigo) {
-        Reuniao reuniao = reuniaoService.findById(codigo).get();
-        List<Proposta> propostas = reuniao.getPropostasReuniao();
-        ArrayList<Proposta> propostasAtaPublicada = new ArrayList<>();
-        for (Proposta proposta : propostas) {
-            if(proposta.getTipoAtaProposta() == TipoAtaProposta.PUBLICADA){
-                propostasAtaPublicada.add(proposta);
-            }
-        }
-//        reuniao.
-        return null;
+            @PathVariable(value = "codigoReuniao") Integer codigo,
+            @RequestBody String ) {
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
     }
 
     @PutMapping("/update/{codigo}")
