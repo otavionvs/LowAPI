@@ -24,11 +24,11 @@ public class Reuniao {
     @Enumerated(EnumType.STRING)
     private Comissao comissaoReuniao;
     @OneToOne
-    @JoinColumn(name = "ata")
+    @JoinColumn(name = "ata_publicada")
     private Ata ataPublicadaReuniao;
 
     @OneToOne
-    @JoinColumn(name = "ata")
+    @JoinColumn(name = "ata_nao_publicada")
     private Ata ataNaoPublicadaReuniao;
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "proposta_reuniao", joinColumns =

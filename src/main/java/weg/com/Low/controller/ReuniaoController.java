@@ -8,20 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import weg.com.Low.dto.ParecerComissaoDTO;
-import weg.com.Low.dto.ReuniaoDTO;
-import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.dto.*;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
-import weg.com.Low.model.enums.Comissao;
-import weg.com.Low.model.enums.DecisaoProposta;
-import weg.com.Low.model.enums.Status;
-import weg.com.Low.model.enums.StatusReuniao;
+import weg.com.Low.model.enums.*;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.ReuniaoService;
 
-import javax.swing.text.html.Option;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
@@ -137,14 +131,14 @@ public class ReuniaoController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
-    @PutMapping("/ata/{codigoReuniao}")
-    public ResponseEntity<Object> downloadAta(
-            @PathVariable(value = "codigoReuniao") Integer codigo,
-            @RequestBody String ) {
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
-    }
+//    @PutMapping("/ata/{codigoReuniao}")
+//    public ResponseEntity<Object> downloadAta(
+//            @PathVariable(value = "codigoReuniao") Integer codigo,
+//            @RequestBody String ) {
+//
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+//    }
 
     @PutMapping("/update/{codigo}")
     public ResponseEntity<Object> update(
