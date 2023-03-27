@@ -77,9 +77,14 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento ", nativeQuery = true)
     List<Demanda> search(String status, Integer codigoDepartamento, Pageable page);
 
-    @Query(value = "select * from demanda " +
-            "WHERE LOWER(demanda.status_demanda) like %:status1% OR " +
-            "LOWER(demanda.status_demanda) like %:status2%", nativeQuery = true)
+    @Query(value = "select * from demanda d " +
+            "INNER JOIN (" +
+            "  SELECT codigo_demanda, MAX(version) AS max_version " +
+            "  FROM demanda " +
+            "  GROUP BY codigo_demanda " +
+            ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+            "WHERE LOWER(d.status_demanda) like %:status1% OR " +
+            "LOWER(d.status_demanda) like %:status2%", nativeQuery = true)
     List<Demanda> search(String status1, String status2, Pageable page);
 
 }

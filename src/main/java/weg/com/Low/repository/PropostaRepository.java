@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Proposta;
 
+import java.util.List;
+
 @Repository
 public  interface PropostaRepository extends JpaRepository<Proposta, Integer> {
     //Retorna a proposta que possuir aquela demanda
@@ -13,4 +15,6 @@ public  interface PropostaRepository extends JpaRepository<Proposta, Integer> {
             "INNER JOIN demanda d ON da.demanda_codigo = d.codigo_demanda " +
             "WHERE LOWER(d.codigo_demanda) like :codigoDemanda ", nativeQuery = true)
     Proposta porDemanda(String codigoDemanda);
+
+
 }

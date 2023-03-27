@@ -64,12 +64,12 @@ public class DemandaController {
 
     @GetMapping("/pdf/{codigo}")
     public ResponseEntity<Object> download(@PathVariable(value = "codigo") Integer codigo) {
-//        List<Demanda> demandas = demandaService.findByCodigoDemanda(codigo);
-//        if (demandas.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma demanda encontrada!");
-//        }
+        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
+        if (demanda == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma demanda encontrada!");
+        }
         GeradorPDF geradorPDF = new GeradorPDF();
-        ByteArrayOutputStream baos = geradorPDF.gerarPDF(new Demanda());
+        ByteArrayOutputStream baos = geradorPDF.gerarPDFDemanda(demanda);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
@@ -175,6 +175,7 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
         }
 
+//<<<<<<< HEAD
         centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
 
         demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
@@ -184,6 +185,17 @@ public class DemandaController {
 
         demandaNova.setStatusDemanda(demanda.getStatusDemanda());
         demandaNova.setVersion(demanda.getVersion() + 1);
+//=======
+//        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
+//        Demanda demandaNova = new Demanda();
+//
+//        BeanUtils.copyProperties(demandaDTO, demanda);
+//        demanda.setCodigoDemanda(codigo);
+//        BeanUtils.copyProperties(demanda, demandaNova);
+//        demandaNova.setCentroCustos(demanda.getCentroCustos());
+//        demandaNova.setVersion(demandaNova.getVersion() + 1);
+//        demandaNova.setCodigoDemanda(codigo);
+//>>>>>>> main
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
