@@ -11,6 +11,7 @@ public enum Status {
     BACKLOG_PROPOSTA("BackLog - Proposta"), //2
     ASSESSMENT("Assessment"), //3
     BUSINESS_CASE("Business Case"), //4
+    DISCUSSION("Discussion"),
     TO_DO("To Do"), //5
     DESIGN_AND_BUILD("Design and Build"), //6
     SUPPORT("Support"),//7

@@ -141,6 +141,38 @@ public class ReuniaoController {
     }
 
 
+    @PutMapping("/finalizar/{codigoReuniao}")
+    public ResponseEntity<Object> update(
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao) {
+        if (!reuniaoService.existsById(codigoReuniao)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta reunião não existe!");
+        }
+        Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
+        reuniao.setStatusReuniao(StatusReuniao.CONCLUIDO);
+        for (Proposta proposta : reuniao.getPropostasReuniao()) {
+            //Aqui deve retornar ao status anterior. Coloquei assessment, porém pode ser bussiness case também
+            if (proposta.getStatusDemanda() == Status.DISCUSSION) {
+                proposta.setStatusDemanda(Status.ASSESSMENT);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+    }
+
+
+    //Caso o usuário adicionar um parecer antes de cancelar uma reunião, a proposta deve voltar a sua versão anterior
+    @PutMapping("/cancelar/{codigoReuniao}")
+    public ResponseEntity<Object> cancell(
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao) {
+        if (!reuniaoService.existsById(codigoReuniao)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta reunião não existe!");
+        }
+        Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
+        reuniao.setStatusReuniao(StatusReuniao.CANCELADO);
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+    }
+
+
+
     @GetMapping("/ata/{codigoReuniao}")
     public ResponseEntity<Object> downloadAta(
             @PathVariable(value = "codigoReuniao") Integer codigoReuniao) {
