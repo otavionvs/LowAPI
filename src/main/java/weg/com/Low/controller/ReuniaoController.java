@@ -162,12 +162,16 @@ public class ReuniaoController {
     //Caso o usuário adicionar um parecer antes de cancelar uma reunião, a proposta deve voltar a sua versão anterior
     @PutMapping("/cancelar/{codigoReuniao}")
     public ResponseEntity<Object> cancell(
-            @PathVariable(value = "codigoReuniao") Integer codigoReuniao) {
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao, @RequestBody String motivoCancelamentoReuniao) {
+
+
         if (!reuniaoService.existsById(codigoReuniao)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta reunião não existe!");
         }
         Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
         reuniao.setStatusReuniao(StatusReuniao.CANCELADO);
+        reuniao.setMotivoCancelamentoReuniao(motivoCancelamentoReuniao);
+
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
     }
 

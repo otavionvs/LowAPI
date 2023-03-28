@@ -27,6 +27,8 @@ public class Reuniao {
     @JoinColumn(name = "ata_publicada")
     private Ata ataPublicadaReuniao;
 
+    @Column(length = 2000)
+    private String motivoCancelamentoReuniao;
     @OneToOne
     @JoinColumn(name = "ata_nao_publicada")
     private Ata ataNaoPublicadaReuniao;
@@ -36,6 +38,7 @@ public class Reuniao {
             inverseJoinColumns = {@JoinColumn(name = "codigo_proposta", referencedColumnName = "codigo_demanda", nullable = false),
             @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)})
     private List<Proposta> propostasReuniao;
+
 
 }
 
