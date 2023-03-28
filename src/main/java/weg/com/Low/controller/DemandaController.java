@@ -20,6 +20,7 @@ import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -261,6 +262,21 @@ public class DemandaController {
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
+
+    //Reprova uma demanda
+    @PutMapping("/cancell/{codigoDemanda}")
+    public ResponseEntity<Object> updateAprovacao(
+            @PathVariable(value = "codigoDemanda") Integer codigoDemanda, @RequestBody @NotBlank String motivoReprovacao) {
+
+        Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
+        demanda.setMotivoReprovacaoDemanda(motivoReprovacao);
+        demanda.setStatusDemanda(Status.CANCELLED);
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+    }
+
+
+
 
 //    //Não Deleta todas as demandas do codigo
     @DeleteMapping("/{codigo}")

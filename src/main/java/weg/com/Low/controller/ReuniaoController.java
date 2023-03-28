@@ -93,6 +93,7 @@ public class ReuniaoController {
         ArrayList<Proposta> listaPropostas = new ArrayList<>();
         for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
             Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
+            proposta.setStatusDemanda(Status.DISCUSSION);
             listaPropostas.add(proposta);
         }
 
