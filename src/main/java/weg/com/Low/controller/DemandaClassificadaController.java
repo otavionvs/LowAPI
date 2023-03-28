@@ -10,11 +10,13 @@ import weg.com.Low.dto.DemandaClassificadaDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.Status;
+import weg.com.Low.model.service.CentroCustoService;
 import weg.com.Low.model.service.DemandaClassificadaService;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.UsuarioService;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin
@@ -25,6 +27,7 @@ public class DemandaClassificadaController {
     private DemandaClassificadaService demandaClassificadaService;
     private UsuarioService usuarioService;
     private DemandaService demandaService;
+    private CentroCustoService centroCustoService;
 
     //Gets são feitos em demanda
 
@@ -75,6 +78,7 @@ public class DemandaClassificadaController {
         }
 
         Demanda demanda = (Demanda) demandaOptional.get();
+
         if(demanda.getStatusDemanda() != Status.BACKLOG_CLASSIFICACAO){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda já foi classificada!");
         }
@@ -82,10 +86,21 @@ public class DemandaClassificadaController {
         BeanUtils.copyProperties(demandaClassificadaDTO, demandaClassificada);
         BeanUtils.copyProperties(demanda, demandaClassificada);
 
+
+
         //Alguns atributos precisam ser setados manualmente
-        demandaClassificada.setCentroCustos(demanda.getCentroCustos());
         demandaClassificada.setStatusDemanda(Status.BACKLOG_APROVACAO);
         demandaClassificada.setVersion(demandaClassificada.getVersion() + 1);
+//        System.out.println(demandaClassificada);
+
+        //Alguns precisam ser salvos novamente no banco
+        //O sout n deve ser tirado
+        System.out.println(demandaClassificada.getCentroCustosDemanda());
+//        demandaClassificada.setCentroCustosClassificada(demanda.getCentroCustosDemanda());
+//        demandaClassificada.setCentroCustosClassificada(demandaClassificada.getCentroCustosDemanda());
+//        centroCustoService.saveAll(demandaClassificada.getCentroCustosDemanda());
+        demandaClassificada.setArquivosClassificada(demanda.getArquivosDemanda());
+
         return ResponseEntity.status(HttpStatus.OK).body(demandaClassificadaService.save(demandaClassificada));
     }
 
