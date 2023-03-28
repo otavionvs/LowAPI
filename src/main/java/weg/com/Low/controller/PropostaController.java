@@ -50,11 +50,18 @@ public class PropostaController {
     @PostMapping
     public ResponseEntity<Object> save(
             @RequestParam("arquivos") MultipartFile[] arquivos,
-            @RequestParam String propostaJson) {
+            @RequestParam("proposta") String propostaJson) {
         PropostaUtil propostaUtil = new PropostaUtil();
         Proposta proposta = propostaUtil.convertJsonToModel(propostaJson);
         proposta.setArquivos(arquivos);
-
+        Proposta propostaNova = new Proposta();
+        DemandaClassificada demandaClassificada = (DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get();
+        System.out.println();
+        BeanUtils.copyProperties(demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get(), propostaNova);
+        System.out.println(propostaNova.getTamanhoDemandaClassificada());
+        //Passa a versão anterior para nova
+        proposta.setVersion(propostaNova.getVersion() + 1);
+        BeanUtils.copyProperties(proposta, propostaNova);
 
 //        List<Recurso> recursos = proposta.getRecursosProposta();
 //        List<Recurso> recursos = new ArrayList<>();
@@ -72,7 +79,7 @@ public class PropostaController {
 //        }
 
         for(Recurso recurso: proposta.getRecursosProposta()){
-            centroCustoService.saveAll(recurso.getCentroCustos());
+            recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
         }
 
         if(proposta.getBeneficioPotencialDemanda().getCodigoBeneficio() == null){
@@ -84,7 +91,7 @@ public class PropostaController {
 
 //        proposta.setRecursosProposta(recursos);
         proposta.setStatusDemanda(Status.ASSESSMENT);
-        proposta.setVersion(proposta.getVersion() + 1);
+
 
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }

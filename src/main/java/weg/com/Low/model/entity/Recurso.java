@@ -31,6 +31,6 @@ public class Recurso {
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "recurso_centro_custo", joinColumns = @JoinColumn(name = "codigo_recurso"),
             inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo"))
-    private List<CentroCusto> centroCustos;
+    private List<CentroCusto> centroCustoRecurso;
 
 }

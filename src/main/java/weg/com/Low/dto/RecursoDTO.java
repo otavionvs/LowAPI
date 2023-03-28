@@ -24,9 +24,6 @@ public class RecursoDTO {
     private PerfilDespesa perfilDespesaRecurso;
     @NotNull
     private Integer periodoExMesesRecurso;
-
-
-
     @NotEmpty
-    private List<CentroCusto> centroDeCustoRecurso;
+    private List<CentroCustoDTO> centroCustoRecurso;
 }

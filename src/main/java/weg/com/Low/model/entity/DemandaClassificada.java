@@ -25,7 +25,7 @@ public class DemandaClassificada extends Demanda{
 
     @Enumerated(value = EnumType.STRING)
     @Column
-    private BussinessUnit buSolicitanteClassificada;
+    private BussinessUnit buSolicitanteDemandaClassificada;
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "bu_beneficiada", joinColumns = {
 //    @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda", nullable = false), @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)},
