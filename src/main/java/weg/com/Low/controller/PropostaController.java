@@ -54,14 +54,8 @@ public class PropostaController {
         PropostaUtil propostaUtil = new PropostaUtil();
         Proposta proposta = propostaUtil.convertJsonToModel(propostaJson);
         proposta.setArquivos(arquivos);
-        Proposta propostaNova = new Proposta();
-        DemandaClassificada demandaClassificada = (DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get();
-        System.out.println();
-        BeanUtils.copyProperties(demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get(), propostaNova);
-        System.out.println(propostaNova.getTamanhoDemandaClassificada());
-        //Passa a versão anterior para nova
-        proposta.setVersion(propostaNova.getVersion() + 1);
-        BeanUtils.copyProperties(proposta, propostaNova);
+        //Seta as informações
+        proposta.setAll((DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get());
 
 //        List<Recurso> recursos = proposta.getRecursosProposta();
 //        List<Recurso> recursos = new ArrayList<>();
@@ -91,7 +85,7 @@ public class PropostaController {
 
 //        proposta.setRecursosProposta(recursos);
         proposta.setStatusDemanda(Status.ASSESSMENT);
-
+        proposta.setVersion(proposta.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }
