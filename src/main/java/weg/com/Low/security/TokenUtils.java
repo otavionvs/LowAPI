@@ -35,6 +35,14 @@ public class TokenUtils {
 
     }
 
+    public Cookie gerarCookie(Authentication authentication){
+        Cookie cookie = new Cookie("jwt", gerarToken(authentication));
+        cookie.setPath("/");
+        cookie.setSecure(false);
+        cookie.setMaxAge(5000);
+        return cookie;
+    }
+
     public String getUsuarioUsername(String token) {
         String token2 = Jwts.parser()
                 .setSigningKey(senhaForte)

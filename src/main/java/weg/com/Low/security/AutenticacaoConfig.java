@@ -12,7 +12,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import weg.com.Low.security.service.JpaService;
+
+import java.util.List;
 
 @Configuration
 @AllArgsConstructor
@@ -29,6 +34,23 @@ public class AutenticacaoConfig {
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
+
+    private CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration =
+                new CorsConfiguration();
+        corsConfiguration.setAllowedOrigins(List.of(
+                "http://localhost:4200"
+        ));
+        corsConfiguration.setAllowedMethods(List.of(
+                "POST", "DELETE", "GET", "PUT"
+        ));
+        corsConfiguration.setAllowCredentials(true);
+        corsConfiguration.setAllowedHeaders(List.of("*"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
     @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
@@ -36,8 +58,9 @@ public class AutenticacaoConfig {
                 .antMatchers("/login", "/login/auth", "/logout", "/usuario").permitAll()
                 // Determina que todas as demais requisições terão de ser autenticadas
                 .anyRequest().authenticated()
-                .and().csrf().disable().cors().disable()
-                .formLogin().permitAll()
+                .and().csrf().disable()
+                .cors().configurationSource(corsConfigurationSource())
+                .and().formLogin().permitAll()
                 .and().logout().permitAll()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(new AutenticacaoFiltro(new TokenUtils(), jpaService), UsernamePasswordAuthenticationFilter.class);
