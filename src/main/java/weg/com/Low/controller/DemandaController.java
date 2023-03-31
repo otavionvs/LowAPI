@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import weg.com.Low.dto.CentroCustoDTO;
 import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.Status;
@@ -21,6 +20,7 @@ import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +77,6 @@ public class DemandaController {
         headers.setContentLength(baos.size());
 
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
-//        return ResponseEntity.status(HttpStatus.OK).body("sdlghhfpoisdafpisdahflshdfiohfiosh");
     }
 
     //É necessário ter todos os campos mesmos que vazios("")
@@ -261,9 +260,23 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
 
-        System.out.println("Demanda 2 " + demanda);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
+
+    //Reprova uma demanda
+    @PutMapping("/cancell/{codigoDemanda}")
+    public ResponseEntity<Object> updateAprovacao(
+            @PathVariable(value = "codigoDemanda") Integer codigoDemanda, @RequestBody @NotBlank String motivoReprovacao) {
+
+        Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
+        demanda.setMotivoReprovacaoDemanda(motivoReprovacao);
+        demanda.setStatusDemanda(Status.CANCELLED);
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+    }
+
+
+
 
 //    //Não Deleta todas as demandas do codigo
     @DeleteMapping("/{codigo}")

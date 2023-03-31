@@ -20,8 +20,8 @@ public class Ata {
     String anoAta;
 
     //Tem também a data da reunião, mas isso está em Reuniao
-    @Column(nullable = false, length = 100)
-    String tituloAta;
+    @Column()
+    private byte[] dadosAta;
 
 
     
