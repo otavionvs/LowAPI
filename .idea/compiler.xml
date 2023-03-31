@@ -10,9 +10,6 @@
         <module name="Low" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="Low" target="16" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
