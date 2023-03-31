@@ -60,14 +60,15 @@ public class PropostaController {
             recurso = recursoService.save(recurso);
             recursos.add(recurso);
         }
+
         proposta.setRecursosProposta(recursos);
         proposta.setStatusDemanda(Status.TO_DO);
-
-        BeanUtils.copyProperties(demandaService.findLastDemandaById(propostaDTO.getCodigoDemanda()).get(), proposta);
         proposta.setVersion(proposta.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }
+
+
 
 //    @DeleteMapping("/{codigo}")
 //    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {

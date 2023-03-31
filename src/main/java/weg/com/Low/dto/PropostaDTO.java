@@ -1,37 +1,59 @@
 package weg.com.Low.dto;
 
 import lombok.Getter;
+import weg.com.Low.model.entity.Beneficio;
+import weg.com.Low.model.entity.CentroCusto;
+import weg.com.Low.model.entity.Recurso;
 import weg.com.Low.model.entity.Usuario;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.FutureOrPresent;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.*;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 public class PropostaDTO {
     @NotNull
+    private Integer codigoDemanda;
+    @NotBlank
+    private String tituloDemanda;
+    @NotBlank
+    private String situacaoAtualDemanda;
+    @NotBlank
+    private String objetivoDemanda;
+    @NotBlank
+    private String frequenciaDeUsoDemanda;
+    @NotBlank
+    private String beneficioQualitativoDemanda;
+    private String motivoReprovacaoDemanda;
+    @NotNull
+    private Integer score;
+    @NotEmpty
+    private List<CentroCusto> centroCustos;
+    @NotNull
+    private Beneficio beneficioPotencialDemanda;
+    @NotNull
+    private Beneficio beneficioRealDemanda;
+    @NotNull
     @FutureOrPresent
     private Date prazoProposta;
     @NotNull
     private Integer codigoPPMProposta;
-    @NotNull
+    @NotBlank
     private String jiraProposta;
-    @NotNull
-    private List<RecursoDTO> recursosProposta;
-    @NotNull
-    private String escopoDemandaProposta;
     @FutureOrPresent
     private Date inicioExDemandaProposta;
     @Future
     private Date fimExDemandaProposta;
     @NotNull
     private Double paybackProposta;
+    @NotBlank
+    private String parecerComissaoProposta;
+    @NotBlank
+    private String SugestaoProposta;
     @NotNull
     private Usuario responsavelProposta;
-    @NotNull
-    private Integer codigoDemanda;
+    @NotEmpty
+    private List<RecursoDTO> recursosProposta;
     //parecer e sugestão - adicionar na demanda maior
 //    private Arquivo arquivoProposta
 }

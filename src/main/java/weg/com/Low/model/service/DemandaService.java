@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.enums.Status;
 import weg.com.Low.repository.DemandaRepository;
 
 import java.util.List;
@@ -81,6 +82,7 @@ public class DemandaService {
     public void deleteById(Integer codigo) {
         demandaRepository.deleteFirstByCodigoDemandaOrderByVersionDesc(codigo);
     }
+
 
     public List<Demanda> search(
             String tituloDemanda, String solicitante, String codigoDemanda, String status,
