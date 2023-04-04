@@ -9,12 +9,18 @@ import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Usuario;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     boolean existsByUserUsuario(String user);
 
     boolean existsByEmailUsuario(String email);
+
+    Optional<Usuario> findByEmailUsuario(String email);
+
+    Optional<Usuario> findByUserUsuario(String nome);
+
 
     @Query(value = "select * from usuario u " +
             "INNER JOIN departamento d ON u.departamento_codigo = d.codigo_departamento " +

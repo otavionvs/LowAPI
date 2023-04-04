@@ -19,6 +19,7 @@ public class Arquivo {
     private Integer codigoArquivo;
     private String nomeArquivo;
     private String tipoArquivo;
+
     @Lob
     private byte[] dadosArquivo;
 

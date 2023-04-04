@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import weg.com.Low.dto.CentroCustoDTO;
 import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.Status;
@@ -20,7 +19,9 @@ import weg.com.Low.model.service.*;
 import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +78,6 @@ public class DemandaController {
         headers.setContentLength(baos.size());
 
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
-//        return ResponseEntity.status(HttpStatus.OK).body("sdlghhfpoisdafpisdahflshdfiohfiosh");
     }
 
     //É necessário ter todos os campos mesmos que vazios("")
@@ -143,7 +143,6 @@ public class DemandaController {
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
         demanda.setArquivos(arquivos);
-        System.out.println(demanda.getArquivosDemanda());
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
@@ -156,12 +155,21 @@ public class DemandaController {
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
 
-        System.out.println(demanda);
-        //Geração manual a chave composta
         demanda.setVersion(0);
         demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+    }
+
+    public boolean verificaPorcentagemCentroCusto(List<CentroCusto> listCentroCusto){
+        int somaPorcentagem = 0;
+        for (CentroCusto centroCusto:listCentroCusto) {
+            somaPorcentagem += centroCusto.getPorcentagemCentroCusto();
+        }
+        if(somaPorcentagem != 100){
+            return false;
+    }
+        return  true;
     }
 
     @PutMapping("/update")
@@ -261,9 +269,23 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
 
-        System.out.println("Demanda 2 " + demanda);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
+
+    //Reprova uma demanda
+    @PutMapping("/cancell/{codigoDemanda}")
+    public ResponseEntity<Object> updateAprovacao(
+            @PathVariable(value = "codigoDemanda") Integer codigoDemanda, @RequestBody @NotBlank String motivoReprovacao) {
+
+        Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
+        demanda.setMotivoReprovacaoDemanda(motivoReprovacao);
+        demanda.setStatusDemanda(Status.CANCELLED);
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+    }
+
+
+
 
 //    //Não Deleta todas as demandas do codigo
     @DeleteMapping("/{codigo}")
