@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.security.service.JpaService;
 import weg.com.Low.security.users.UserJpa;
@@ -18,7 +19,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-@Controller
+@RestController
 @RequestMapping("/login")
 public class AutenticacaoController {
 

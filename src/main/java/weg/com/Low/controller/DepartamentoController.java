@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @AllArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/departamento")
 public class DepartamentoController {
     private DepartamentoService departamentoService;
