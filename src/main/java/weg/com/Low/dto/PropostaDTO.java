@@ -58,7 +58,7 @@ public class PropostaDTO {
     private Usuario solicitanteDemanda;
     @NotNull
     private String escopoDemandaProposta;
-
+    private String statusDemanda;
     //parecer e sugestão - adicionar na demanda maior
 //    private Arquivo arquivoProposta
 }
