@@ -203,7 +203,7 @@ public class DemandaController {
     }
 
     @PutMapping("/update/proposta")
-    public ResponseEntity<Object> update(
+    public ResponseEntity<Object> updateProposta(
             @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("proposta") String propostaJson) {
         PropostaUtil propostaUtil = new PropostaUtil();
         Proposta propostaNova = propostaUtil.convertJsonToModel(propostaJson);
