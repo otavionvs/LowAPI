@@ -32,7 +32,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @AllArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/reuniao")
 public class ReuniaoController {
     private ReuniaoService reuniaoService;

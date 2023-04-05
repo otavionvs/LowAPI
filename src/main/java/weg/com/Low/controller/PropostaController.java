@@ -21,7 +21,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @AllArgsConstructor
-@Controller
+@RestController
 @RequestMapping("/proposta")
 public class PropostaController {
     private PropostaService propostaService;

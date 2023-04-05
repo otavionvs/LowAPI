@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @CrossOrigin
-@Controller
+@RestController
 @AllArgsConstructor
 @RequestMapping("/centro-custo")
 public class CentroCustoController {
