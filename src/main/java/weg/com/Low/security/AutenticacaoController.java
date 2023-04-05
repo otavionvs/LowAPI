@@ -7,18 +7,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.security.service.JpaService;
 import weg.com.Low.security.users.UserJpa;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-@Controller
+@RestController
 @RequestMapping("/login")
 public class AutenticacaoController {
 
@@ -28,6 +27,19 @@ public class AutenticacaoController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @GetMapping("/verify-token")
+    public ResponseEntity<Object> autenticacao(HttpServletRequest request) {
+        Boolean valido = false;
+        try{
+            String token = tokenUtils.buscarCookie(request);
+            valido = tokenUtils.validarToken(token);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.OK).body(valido);
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(valido);
+    }
+
 
     @PostMapping("/auth")
     public ResponseEntity<Object> autenticacao(
