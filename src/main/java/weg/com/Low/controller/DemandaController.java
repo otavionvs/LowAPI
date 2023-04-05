@@ -18,6 +18,7 @@ import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.service.*;
 import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
+import weg.com.Low.util.PropostaUtil;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
@@ -147,13 +148,15 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
 
-        centroCustoService.saveAll(demanda.getCentroCustosDemanda());
+        if (!centroCustoService.verificaPorcentagemCentroCusto(demanda.getCentroCustosDemanda())){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Falta completar as porcentagem de centro de custos");
+        }
 
+        centroCustoService.saveAll(demanda.getCentroCustosDemanda());
 
         demanda.setBeneficioPotencialDemanda(beneficioService.save(demanda.getBeneficioPotencialDemanda()));
         demanda.setBeneficioRealDemanda(beneficioService.save(demanda.getBeneficioRealDemanda()));
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
-
 
         demanda.setVersion(0);
         demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
@@ -161,16 +164,7 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
-    public boolean verificaPorcentagemCentroCusto(List<CentroCusto> listCentroCusto){
-        int somaPorcentagem = 0;
-        for (CentroCusto centroCusto:listCentroCusto) {
-            somaPorcentagem += centroCusto.getPorcentagemCentroCusto();
-        }
-        if(somaPorcentagem != 100){
-            return false;
-    }
-        return  true;
-    }
+
 
     @PutMapping("/update")
     public ResponseEntity<Object> update(
@@ -206,6 +200,56 @@ public class DemandaController {
 //>>>>>>> main
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+    }
+
+    @PutMapping("/update/proposta")
+    public ResponseEntity<Object> update(
+            @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("proposta") String propostaJson) {
+        PropostaUtil propostaUtil = new PropostaUtil();
+        Proposta propostaNova = propostaUtil.convertJsonToModel(propostaJson);
+        propostaNova.setArquivos(arquivos);
+
+        if (!demandaService.existsById(propostaNova.getCodigoDemanda())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
+        }
+
+//<<<<<<< HEAD
+        centroCustoService.saveAll(propostaNova.getCentroCustosDemanda());
+
+        for(Recurso recurso: propostaNova.getRecursosProposta()){
+            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Porcentagem centro de custo incompleta em " + recurso.getNomeRecurso());
+            }
+            recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
+        }
+
+        if(propostaNova.getBeneficioPotencialDemanda().getCodigoBeneficio() == null){
+            propostaNova.setBeneficioPotencialDemanda(beneficioService.save(propostaNova.getBeneficioPotencialDemanda()));
+        }
+        if(propostaNova.getBeneficioRealDemanda().getCodigoBeneficio() == null){
+            propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
+        }
+
+//        propostaNova.setBeneficioPotencialDemanda(beneficioService.save(propostaNova.getBeneficioPotencialDemanda()));
+//        propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
+
+        Demanda demanda = demandaService.findLastDemandaById(propostaNova.getCodigoDemanda()).get();
+
+        propostaNova.setStatusDemanda(demanda.getStatusDemanda());
+        propostaNova.setVersion(demanda.getVersion() + 1);
+//=======
+//        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
+//        Demanda demandaNova = new Demanda();
+//
+//        BeanUtils.copyProperties(demandaDTO, demanda);
+//        demanda.setCodigoDemanda(codigo);
+//        BeanUtils.copyProperties(demanda, demandaNova);
+//        demandaNova.setCentroCustos(demanda.getCentroCustos());
+//        demandaNova.setVersion(demandaNova.getVersion() + 1);
+//        demandaNova.setCodigoDemanda(codigo);
+//>>>>>>> main
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova));
     }
 
 //    @PutMapping("/update/{codigo}")

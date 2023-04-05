@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "centro_custo")
@@ -20,4 +21,5 @@ public class CentroCusto {
 
     @Column
     private Integer porcentagemCentroCusto;
+
 }

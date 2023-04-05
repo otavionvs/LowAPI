@@ -39,4 +39,15 @@ public class CentroCustoService {
     public boolean existsByNome(String nome) {
         return centroCustoRepository.existsByNomeCentroCusto(nome);
     }
+
+    public boolean verificaPorcentagemCentroCusto(List<CentroCusto> listCentroCusto){
+        int somaPorcentagem = 0;
+        for (CentroCusto centroCusto:listCentroCusto) {
+            somaPorcentagem += centroCusto.getPorcentagemCentroCusto();
+        }
+        if(somaPorcentagem != 100){
+            return false;
+        }
+        return  true;
+    }
 }

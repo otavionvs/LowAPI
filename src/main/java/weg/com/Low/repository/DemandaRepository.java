@@ -32,7 +32,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(demanda.codigo_demanda) like %:codigoDemanda% " +
             "AND LOWER(u.nome_usuario) like %:solicitante% " +
             "AND LOWER(demanda.status_demanda) like %:status% " +
-            "AND LOWER(demanda.tamanho_demanda_analista) like %:tamanho% " +
+            "AND LOWER(demanda.tamanho_demanda_classificada) like %:tamanho% " +
             "AND LOWER(a.nome_usuario) like %:analista% " +
             "AND LOWER(de.nome_departamento) like %:departamento%", nativeQuery = true)
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,

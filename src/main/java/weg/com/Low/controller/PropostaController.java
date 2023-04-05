@@ -73,6 +73,9 @@ public class PropostaController {
 //        }
 
         for(Recurso recurso: proposta.getRecursosProposta()){
+            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Porcentagem centro de custo incompleta em " + recurso.getNomeRecurso());
+            }
             recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
         }
 
