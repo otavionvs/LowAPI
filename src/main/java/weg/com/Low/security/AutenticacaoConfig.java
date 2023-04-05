@@ -55,7 +55,7 @@ public class AutenticacaoConfig {
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
                 // Libera o acesso sem autenticação para /login
-                .antMatchers( "/login/auth",
+                .antMatchers( "/login/**",
                         "/logout",
                         "/usuario",
                         "/swagger-ui/**",
