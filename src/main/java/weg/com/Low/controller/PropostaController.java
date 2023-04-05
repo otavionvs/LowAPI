@@ -6,11 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.PropostaDTO;
 import weg.com.Low.dto.RecursoDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.service.*;
+import weg.com.Low.util.PropostaUtil;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public class PropostaController {
     private RecursoService recursoService;
     private CentroCustoService centroCustoService;
     private DemandaService demandaService;
+    private BeneficioService beneficioService;
 //    private DemandaAnalistaService demandaAnalistaService;
 
 //    @GetMapping
@@ -45,28 +48,82 @@ public class PropostaController {
     //ver como fica com status de aprovação
     //verificar se centro de custo existe?
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody @Valid PropostaDTO propostaDTO) {
-        List<RecursoDTO> recursosDTO = propostaDTO.getRecursosProposta();
-        List<Recurso> recursos = new ArrayList<>();
+    public ResponseEntity<Object> save(
+            @RequestParam("arquivos") MultipartFile[] arquivos,
+            @RequestParam("proposta") String propostaJson) {
+        PropostaUtil propostaUtil = new PropostaUtil();
+        Proposta proposta = propostaUtil.convertJsonToModel(propostaJson);
+        proposta.setArquivos(arquivos);
+        //Seta as informações
+        proposta.setAll((DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get());
 
-        Proposta proposta = new Proposta();
-        BeanUtils.copyProperties(propostaDTO, proposta);
+//        List<Recurso> recursos = proposta.getRecursosProposta();
+//        List<Recurso> recursos = new ArrayList<>();
 
-        for (int i = 0; i < recursosDTO.size(); i++) {
-            Recurso recurso = new Recurso();
-            RecursoDTO recursoDTO = recursosDTO.get(i);
-            BeanUtils.copyProperties(recursoDTO, recurso);
-//            centroCustoService.saveAll(recurso.getCentroCustos());
-            recurso = recursoService.save(recurso);
-            recursos.add(recurso);
+//        Proposta proposta = new Proposta();
+//        BeanUtils.copyProperties(propostaDTO, proposta);
+
+//        for (int i = 0; i < proposta.getRecursosProposta().size(); i++) {
+////            Recurso recurso = new Recurso();
+////            RecursoDTO recursoDTO = recursosDTO.get(i);
+////            BeanUtils.copyProperties(recursoDTO, recurso);
+////            centroCustoService.saveAll(recurso.getCentroCustos());
+//            recurso = recursoService.save(proposta.get);
+//            recursos.add(recurso);
+//        }
+
+        for(Recurso recurso: proposta.getRecursosProposta()){
+            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Porcentagem centro de custo incompleta em " + recurso.getNomeRecurso());
+            }
+            recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
         }
 
-        proposta.setRecursosProposta(recursos);
-        proposta.setStatusDemanda(Status.TO_DO);
+        if(proposta.getBeneficioPotencialDemanda().getCodigoBeneficio() == null){
+            proposta.setBeneficioPotencialDemanda(beneficioService.save(proposta.getBeneficioPotencialDemanda()));
+        }
+        if(proposta.getBeneficioRealDemanda().getCodigoBeneficio() == null){
+            proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
+        }
+
+//        proposta.setRecursosProposta(recursos);
+        proposta.setStatusDemanda(Status.ASSESSMENT);
         proposta.setVersion(proposta.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }
+
+
+//    @PostMapping
+//    public ResponseEntity<Object> save(@RequestBody @Valid PropostaDTO propostaDTO) {
+//        List<RecursoDTO> recursosDTO = propostaDTO.getRecursosProposta();
+//        List<Recurso> recursos = new ArrayList<>();
+//
+//        Proposta proposta = new Proposta();
+//        BeanUtils.copyProperties(propostaDTO, proposta);
+//
+//        for (int i = 0; i < recursosDTO.size(); i++) {
+//            Recurso recurso = new Recurso();
+//            RecursoDTO recursoDTO = recursosDTO.get(i);
+//            BeanUtils.copyProperties(recursoDTO, recurso);
+////            centroCustoService.saveAll(recurso.getCentroCustos());
+//            recurso = recursoService.save(recurso);
+//            recursos.add(recurso);
+//        }
+//
+//        if(proposta.getBeneficioPotencialDemanda().getCodigoBeneficio() == null){
+//            proposta.setBeneficioPotencialDemanda(beneficioService.save(proposta.getBeneficioPotencialDemanda()));
+//        }
+//        if(proposta.getBeneficioRealDemanda().getCodigoBeneficio() == null){
+//            proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
+//        }
+//
+//        proposta.setRecursosProposta(recursos);
+//        proposta.setStatusDemanda(Status.ASSESSMENT);
+//        proposta.setVersion(proposta.getVersion() + 1);
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
+//    }
 
 
 

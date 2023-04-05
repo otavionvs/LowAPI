@@ -35,10 +35,13 @@ public class Proposta extends DemandaClassificada {
     private TipoAtaProposta tipoAtaProposta;
 
     @Column
-    private String recomendacaoProposta;
+    private String SugestaoProposta;
 
     @Column
     private String ultimaDecisaoComissao;
+
+    @Column
+    private String escopoDemandaProposta;
 
     @OneToOne
     @JoinColumn(name = "codigo_responsavel")
@@ -50,8 +53,8 @@ public class Proposta extends DemandaClassificada {
             inverseJoinColumns = @JoinColumn(name = "codigo_recurso"))
     private List<Recurso> recursosProposta;
 
-    @ManyToOne
-    @JoinColumn(name = "codigo_arquivo")
-    private Arquivo arquivoProposta;
+//    @ManyToOne
+//    @JoinColumn(name = "codigo_arquivo")
+//    private Arquivo arquivoProposta;
 
 }

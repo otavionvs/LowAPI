@@ -26,17 +26,15 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     //É necessario que todas as informações existam para que ele busque
     @Query(value = "select * from demanda " +
             "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
-            "INNER JOIN demanda_analista da ON demanda.codigo_demanda = da.demanda_codigo " +
-            "INNER JOIN usuario a ON da.analista_codigo = u.codigo_usuario " +
+            "INNER JOIN usuario a ON demanda.analista_codigo = u.codigo_usuario " +
             "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +
             "WHERE LOWER(demanda.titulo_demanda) like %:tituloDemanda% " +
             "AND LOWER(demanda.codigo_demanda) like %:codigoDemanda% " +
             "AND LOWER(u.nome_usuario) like %:solicitante% " +
             "AND LOWER(demanda.status_demanda) like %:status% " +
-            "AND LOWER(da.tamanho_demanda_analista) like %:tamanho% " +
+            "AND LOWER(demanda.tamanho_demanda_classificada) like %:tamanho% " +
             "AND LOWER(a.nome_usuario) like %:analista% " +
-            "AND LOWER(de.nome_departamento) like %:departamento%" +
-            "AND ", nativeQuery = true)
+            "AND LOWER(de.nome_departamento) like %:departamento%", nativeQuery = true)
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
                          String tamanho, String analista, String departamento, Pageable page);
 

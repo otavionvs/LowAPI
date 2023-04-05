@@ -25,7 +25,7 @@ public class DemandaClassificada extends Demanda{
 
     @Enumerated(value = EnumType.STRING)
     @Column
-    private BussinessUnit buSolicitanteClassificada;
+    private BussinessUnit buSolicitanteDemandaClassificada;
 //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "bu_beneficiada", joinColumns = {
 //    @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda", nullable = false), @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)},
@@ -57,4 +57,15 @@ public class DemandaClassificada extends Demanda{
     @OneToOne
     @JoinColumn(name = "gerente_negocio_codigo")
     private Usuario gerenteNegocio;
+
+    public void setAll(DemandaClassificada demandaClassificada){
+        tamanhoDemandaClassificada = demandaClassificada.tamanhoDemandaClassificada;
+        buSolicitanteDemandaClassificada = demandaClassificada.buSolicitanteDemandaClassificada;
+        System.out.println(demandaClassificada.busBeneficiadasDemandaClassificada);
+        busBeneficiadasDemandaClassificada = demandaClassificada.busBeneficiadasDemandaClassificada;
+        secaoDemandaClassificada = demandaClassificada.secaoDemandaClassificada;
+        analista = demandaClassificada.analista;
+        gerenteNegocio = demandaClassificada.gerenteNegocio;
+        setCodigoDemanda(demandaClassificada.getCodigoDemanda());
+    }
 }

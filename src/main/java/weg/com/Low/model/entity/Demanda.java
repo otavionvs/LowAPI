@@ -145,18 +145,4 @@ public class Demanda{
         }
     }
 
-    public void setCentroCustosClassificada(List<CentroCusto> centroCustos){
-        centroCustosDemanda = new ArrayList<>();
-        try {
-            for (CentroCusto centroCusto : centroCustos) {
-                centroCustos.add(new CentroCusto(centroCusto.getCodigoCentroCusto(),
-                        centroCusto.getNomeCentroCusto(),
-                        centroCusto.getPorcentagemCentroCusto()));
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
-
 }
