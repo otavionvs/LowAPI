@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.model.entity.Usuario;
@@ -31,13 +32,18 @@ public class AutenticacaoController {
     @GetMapping("/verify-token")
     public ResponseEntity<Object> autenticacao(HttpServletRequest request) {
         Boolean valido = false;
+        UserDetails usuario = null;
         try{
             String token = tokenUtils.buscarCookie(request);
             valido = tokenUtils.validarToken(token);
+            if(valido){
+                String usuarioUsername = tokenUtils.getUsuarioUsername(token);
+                usuario = jpaService.loadUserByUsername(usuarioUsername);
+            }
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.OK).body(valido);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(valido);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(valido);
+        return ResponseEntity.status(HttpStatus.OK).body(usuario);
     }
 
 
