@@ -16,13 +16,16 @@ import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.service.*;
+import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
 import weg.com.Low.util.PropostaUtil;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +146,9 @@ public class DemandaController {
         //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
-        demanda.setArquivos(arquivos);
+        if(!arquivos[0].getOriginalFilename().equals("")){
+            demanda.setArquivos(arquivos);
+        }
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Solicitante não encontrado!");
         }
@@ -171,13 +176,14 @@ public class DemandaController {
             @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demandaNova = demandaUtil.convertJsonToModel(demandaJson);
-        demandaNova.setArquivos(arquivos);
+        if(!arquivos[0].getOriginalFilename().equals("")){
+            demandaNova.setArquivos(arquivos);
+        }
 
         if (!demandaService.existsById(demandaNova.getCodigoDemanda())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
         }
 
-//<<<<<<< HEAD
         centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
 
         demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
@@ -187,106 +193,33 @@ public class DemandaController {
 
         demandaNova.setStatusDemanda(demanda.getStatusDemanda());
         demandaNova.setVersion(demanda.getVersion() + 1);
-//=======
-//        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
-//        Demanda demandaNova = new Demanda();
-//
-//        BeanUtils.copyProperties(demandaDTO, demanda);
-//        demanda.setCodigoDemanda(codigo);
-//        BeanUtils.copyProperties(demanda, demandaNova);
-//        demandaNova.setCentroCustos(demanda.getCentroCustos());
-//        demandaNova.setVersion(demandaNova.getVersion() + 1);
-//        demandaNova.setCodigoDemanda(codigo);
-//>>>>>>> main
+
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
 
-    @PutMapping("/update/proposta")
-    public ResponseEntity<Object> updateProposta(
-            @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("proposta") String propostaJson) {
-        PropostaUtil propostaUtil = new PropostaUtil();
-        Proposta propostaNova = propostaUtil.convertJsonToModel(propostaJson);
-        propostaNova.setArquivos(arquivos);
-
-        if (!demandaService.existsById(propostaNova.getCodigoDemanda())) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
-        }
-
-//<<<<<<< HEAD
-        centroCustoService.saveAll(propostaNova.getCentroCustosDemanda());
-
-        for(Recurso recurso: propostaNova.getRecursosProposta()){
-            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Porcentagem centro de custo incompleta em " + recurso.getNomeRecurso());
-            }
-            recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
-        }
-
-        if(propostaNova.getBeneficioPotencialDemanda().getCodigoBeneficio() == null){
-            propostaNova.setBeneficioPotencialDemanda(beneficioService.save(propostaNova.getBeneficioPotencialDemanda()));
-        }
-        if(propostaNova.getBeneficioRealDemanda().getCodigoBeneficio() == null){
-            propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
-        }
-
-//        propostaNova.setBeneficioPotencialDemanda(beneficioService.save(propostaNova.getBeneficioPotencialDemanda()));
-//        propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
-
-        Demanda demanda = demandaService.findLastDemandaById(propostaNova.getCodigoDemanda()).get();
-
-        propostaNova.setStatusDemanda(demanda.getStatusDemanda());
-        propostaNova.setVersion(demanda.getVersion() + 1);
-//=======
-//        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
-//        Demanda demandaNova = new Demanda();
-//
-//        BeanUtils.copyProperties(demandaDTO, demanda);
-//        demanda.setCodigoDemanda(codigo);
-//        BeanUtils.copyProperties(demanda, demandaNova);
-//        demandaNova.setCentroCustos(demanda.getCentroCustos());
-//        demandaNova.setVersion(demandaNova.getVersion() + 1);
-//        demandaNova.setCodigoDemanda(codigo);
-//>>>>>>> main
-
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova));
-    }
-
-//    @PutMapping("/update/{codigo}")
-//    public ResponseEntity<Object> update(
-//            @PathVariable(value = "codigo") Integer codigo,
-//            @RequestBody @Valid DemandaDTO demandaDTO) {
-//        if (!demandaService.existsById(codigo)) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
-//        }
-//
-//        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
-//        Demanda demandaNova = new Demanda();
-//
-//        BeanUtils.copyProperties(demandaDTO, demanda);
-//        demanda.setCodigoDemanda(codigo);
-//        BeanUtils.copyProperties(demanda, demandaNova);
-//        demandaNova.setCentroCustos(demanda.getCentroCustos());
-//        demandaNova.setVersion(demandaNova.getVersion() + 1);
-//        demandaNova.setCodigoDemanda(codigo);
-//
-//        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
-//    }
 
     //Caso seja passado por parametro 1 - passa para o proximo status
     //Parametro != 1 - Cancela a demanda
-    @PutMapping("update/status/{codigo}")
+    @PutMapping("update/status")
     public ResponseEntity<Object> updateAprovacao(
-            @PathVariable(value = "codigo") Integer codigoDemanda,
-            @RequestBody @Valid Integer decisao) {
-        if (!demandaService.existsById(codigoDemanda)) {
+            @RequestParam("codigo") @NotNull Integer codigo,
+            @RequestParam("decisao") @NotNull Integer decisao,
+            HttpServletRequest request) {
+        if (!demandaService.existsById(codigo)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe");
         }
-        Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
+        DemandaClassificada demanda = (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
         if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
             if (decisao == 1) {
+                TokenUtils tokenUtils = new TokenUtils();
+                String token = tokenUtils.buscarCookie(request);
+                String user = tokenUtils.getUsuarioUsername(token);
+                Usuario usuario = usuarioService.findByUserUsuario(user).get();
+                demanda.setGerenteNegocio(usuario);
+
                 demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
             } else {
                 demanda.setStatusDemanda(Status.CANCELLED);
@@ -313,6 +246,8 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
 
+        demanda.setVersion(demanda.getVersion() + 1);
+
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 
@@ -327,8 +262,6 @@ public class DemandaController {
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
-
-
 
 
 //    //Não Deleta todas as demandas do codigo

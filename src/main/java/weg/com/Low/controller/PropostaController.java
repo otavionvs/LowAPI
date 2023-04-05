@@ -53,8 +53,19 @@ public class PropostaController {
             @RequestParam("proposta") String propostaJson) {
         PropostaUtil propostaUtil = new PropostaUtil();
         Proposta proposta = propostaUtil.convertJsonToModel(propostaJson);
-        proposta.setArquivos(arquivos);
-        //Seta as informações
+        if(!arquivos[0].getOriginalFilename().equals("")){
+            proposta.setArquivos(arquivos);
+        }
+
+        if(!demandaService.existsById(proposta.getCodigoDemanda())){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não Encontrada!");
+        }
+
+        if(proposta.getStatusDemanda() != Status.BACKLOG_APROVACAO){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda precisa estar no Status de Aprovação!");
+        }
+
+        //Seta as informações de demandaClassificada
         proposta.setAll((DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get());
 
 //        List<Recurso> recursos = proposta.getRecursosProposta();
@@ -86,11 +97,52 @@ public class PropostaController {
             proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
         }
 
-//        proposta.setRecursosProposta(recursos);
+//      proposta.setRecursosProposta(recursos);
         proposta.setStatusDemanda(Status.ASSESSMENT);
         proposta.setVersion(proposta.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateProposta(
+            @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("proposta") String propostaJson) {
+        PropostaUtil propostaUtil = new PropostaUtil();
+        Proposta propostaNova = propostaUtil.convertJsonToModel(propostaJson);
+        if(!arquivos[0].getOriginalFilename().equals("")){
+            propostaNova.setArquivos(arquivos);
+        }
+
+        if (!demandaService.existsById(propostaNova.getCodigoDemanda())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
+        }
+
+//        System.out.println(propostaNova.getCentroCustosDemanda());
+        centroCustoService.saveAll(propostaNova.getCentroCustosDemanda());
+
+        for(Recurso recurso: propostaNova.getRecursosProposta()){
+            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Porcentagem centro de custo incompleta em " + recurso.getNomeRecurso());
+            }
+            recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
+        }
+
+        if(propostaNova.getBeneficioPotencialDemanda().getCodigoBeneficio() == null){
+            propostaNova.setBeneficioPotencialDemanda(beneficioService.save(propostaNova.getBeneficioPotencialDemanda()));
+        }
+        if(propostaNova.getBeneficioRealDemanda().getCodigoBeneficio() == null){
+            propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
+        }
+
+
+        Proposta proposta = (Proposta) demandaService.findLastDemandaById(propostaNova.getCodigoDemanda()).get();
+
+        propostaNova.setAll(proposta);
+        propostaNova.setStatusDemanda(proposta.getStatusDemanda());
+        propostaNova.setVersion(propostaNova.getVersion() + 1);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova));
     }
 
 
