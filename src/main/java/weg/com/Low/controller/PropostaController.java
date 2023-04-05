@@ -86,6 +86,7 @@ public class PropostaController {
             proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
         }
 
+        centroCustoService.saveAll(proposta.getCentroCustosDemanda());
 //        proposta.setRecursosProposta(recursos);
         proposta.setStatusDemanda(Status.ASSESSMENT);
         proposta.setVersion(proposta.getVersion() + 1);
