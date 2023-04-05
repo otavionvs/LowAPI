@@ -96,8 +96,11 @@ public class PropostaController {
         if(proposta.getBeneficioRealDemanda().getCodigoBeneficio() == null){
             proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
         }
-
+        
 //      proposta.setRecursosProposta(recursos);
+
+        centroCustoService.saveAll(proposta.getCentroCustosDemanda());
+
         proposta.setStatusDemanda(Status.ASSESSMENT);
         proposta.setVersion(proposta.getVersion() + 1);
 
