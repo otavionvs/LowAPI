@@ -19,7 +19,7 @@ public class TokenUtils {
                 .setIssuer("Low API")
                 .setSubject(userJpa.getUsuario().getUserUsuario())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime() + 1800000))
+                .setExpiration(new Date(new Date().getTime() + 1800000000))
                 .signWith(SignatureAlgorithm.HS256, senhaForte)
                 .compact();
     }
@@ -43,12 +43,12 @@ public class TokenUtils {
     }
 
     public String getUsuarioUsername(String token) {
-        String token2 = Jwts.parser()
+        String usuario = Jwts.parser()
                 .setSigningKey(senhaForte)
                 .parseClaimsJws(token)
                 .getBody().getSubject();
 
-        return token2;
+        return usuario;
     }
 
     public String buscarCookie(HttpServletRequest request) {

@@ -38,7 +38,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
                          String tamanho, String analista, String departamento, Pageable page);
 
-    //Para o caso da demanda não ter demanda analista
+    //Para o caso da demanda não ter demanda classificada
     @Query(value = "select * from demanda " +
             "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
             "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +

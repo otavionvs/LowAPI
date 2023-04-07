@@ -16,9 +16,9 @@ public class Usuario {
     private Integer codigoUsuario;
     @Column(nullable = false, length = 100)
     private String nomeUsuario;
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String userUsuario;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String emailUsuario;
 //    @Column(nullable = false)
 //    private Date data_nascimentoUsuario;
