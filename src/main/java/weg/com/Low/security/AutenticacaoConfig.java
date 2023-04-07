@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -61,6 +62,7 @@ public class AutenticacaoConfig {
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**").permitAll()
+//                .antMatchers(HttpMethod.GET, "/demanda").hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
                 // Determina que todas as demais requisições terão de ser autenticadas
                 .anyRequest().authenticated()
                 .and().csrf().disable()

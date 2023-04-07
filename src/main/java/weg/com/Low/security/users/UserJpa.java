@@ -2,10 +2,13 @@ package weg.com.Low.security.users;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import weg.com.Low.model.entity.Usuario;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Data
 public class UserJpa implements UserDetails {
@@ -33,5 +36,14 @@ public class UserJpa implements UserDetails {
     @Override
     public String getUsername() {
         return usuario.getEmailUsuario();
+    }
+
+    @Override
+    public Collection<GrantedAuthority> getAuthorities(){
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority(
+                this.getUsuario().getNivelAcessoUsuario().toString()
+        ));
+        return authorities;
     }
 }

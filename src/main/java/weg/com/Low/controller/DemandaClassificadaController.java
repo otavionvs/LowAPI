@@ -86,8 +86,6 @@ public class DemandaClassificadaController {
         BeanUtils.copyProperties(demandaClassificadaDTO, demandaClassificada);
         BeanUtils.copyProperties(demanda, demandaClassificada);
 
-
-
         //Alguns atributos precisam ser setados manualmente
         demandaClassificada.setStatusDemanda(Status.BACKLOG_APROVACAO);
         demandaClassificada.setVersion(demandaClassificada.getVersion() + 1);
