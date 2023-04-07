@@ -14,8 +14,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.WebUtils;
 import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.service.*;
 import weg.com.Low.security.TokenUtils;
@@ -42,7 +44,6 @@ public class DemandaController {
     private BeneficioService beneficioService;
     private UsuarioService usuarioService;
     private CentroCustoService centroCustoService;
-//    private DemandaHistoricoService demandaHistoricoService;
     private NotificacaoService notificacaoService;
 
     @GetMapping
@@ -118,17 +119,29 @@ public class DemandaController {
                     page = 0,
                     size = 12,
             sort = "status_demanda",
-            direction = Sort.Direction.ASC) Pageable page) {
+            direction = Sort.Direction.ASC) Pageable page, HttpServletRequest request) {
         List<List<Demanda>> listaDemandas = new ArrayList<>();
         //envia o nome de cada status, usando o metodo search
-        for (int i = 0; i < 10; i++) {
-            listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
-        }
 
-        System.out.println(listaDemandas);
+        TokenUtils tokenUtils = new TokenUtils();
+        String token = tokenUtils.buscarCookie(request);
+        String username = tokenUtils.getUsuarioUsername(token);
+        Usuario usuario = usuarioService.findByUserUsuario(username).get();
+
+        if(usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI){
+            for (int i = 0; i < 10; i++) {
+                listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
+            }
+        }else if(usuario.getNivelAcessoUsuario() == NivelAcesso.Solicitante || usuario.getNivelAcessoUsuario() == NivelAcesso.GerenteNegocio){
+            for (int i = 0; i < 10; i++) {
+                listaDemandas.add(demandaService.search(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() , page));
+            }
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
+
+
 
     //Retorna uma lista com até dois status enviados
     @GetMapping("/filtro/status")

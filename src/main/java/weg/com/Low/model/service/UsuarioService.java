@@ -49,4 +49,8 @@ public class UsuarioService {
             String nome, String email, String usuario, String departamento, Pageable page) {
         return usuarioRepository.search(nome.toLowerCase(), email.toLowerCase(), usuario.toLowerCase(), departamento, page);
     }
+
+    public Optional<Usuario> findByUserUsuario(String nome) {
+        return usuarioRepository.findByUserUsuario(nome);
+    }
 }
