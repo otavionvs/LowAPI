@@ -94,6 +94,7 @@ public class ReuniaoController {
         for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
             Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
             proposta.setStatusDemanda(Status.DISCUSSION);
+            proposta.setVersion(proposta.getVersion() + 1);
             listaPropostas.add(proposta);
         }
 
@@ -151,9 +152,15 @@ public class ReuniaoController {
         Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
         reuniao.setStatusReuniao(StatusReuniao.CONCLUIDO);
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
-            //Aqui deve retornar ao status anterior. Coloquei assessment, porém pode ser bussiness case também
+            //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
-                proposta.setStatusDemanda(Status.ASSESSMENT);
+                for(Demanda demanda: demandaService.findByCodigoDemanda(proposta.getCodigoDemanda())){
+                    if(demanda.getStatusDemanda() == Status.ASSESSMENT){
+                        proposta.setStatusDemanda(Status.ASSESSMENT);
+                    }else if(demanda.getStatusDemanda() == Status.BUSINESS_CASE){
+                        proposta.setStatusDemanda(Status.BUSINESS_CASE);
+                    }
+                }
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
