@@ -9,6 +9,8 @@ import weg.com.Low.model.entity.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+
 @Component
 public class GeradorPDF {
 
@@ -21,7 +23,7 @@ public class GeradorPDF {
             Document document = new Document();
             document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin() + 50, document.bottomMargin());
             PdfWriter writer = PdfWriter.getInstance(document, baos);
-            String html = "<h1>12131kjfshdaklsdhfklsadhfklashdflkjshdlfkahsdklfhasdklfjhasldkfjhskladfhklasjdhfklsdahfsda2</h1>";
+
 
             HeaderFooter header = new HeaderFooter();
             writer.setPageEvent(header);
@@ -33,7 +35,7 @@ public class GeradorPDF {
 
             for (Demanda demanda :
                     reuniao.getPropostasReuniao()) {
-                setInformationsDocumentDemanda(document, demanda);
+                setInformationsDocumentDemanda(document, demanda, writer);
             }
 
 
@@ -47,7 +49,7 @@ public class GeradorPDF {
     }
 
 
-    private Document setInformationsDocumentDemanda(Document document, Demanda demanda){
+    private Document setInformationsDocumentDemanda(Document document, Demanda demanda, PdfWriter writer){
         try {
 
             Paragraph departamento = new Paragraph();
@@ -63,8 +65,8 @@ public class GeradorPDF {
             Paragraph conteudoTitulo = new Paragraph(demanda.getCodigoDemanda().toString()+". "+ demanda.getTituloDemanda().toUpperCase(), negritoFont);
             conteudoTitulo.setAlignment(Element.ALIGN_CENTER);
 
-            Paragraph conteudoObjetivo = new Paragraph(demanda.getObjetivoDemanda(), normalFont);
-            Paragraph conteudoSituacaoAtual = new Paragraph(demanda.getSituacaoAtualDemanda(), normalFont);
+            String conteudoObjetivo = demanda.getObjetivoDemanda();
+            String conteudoSituacaoAtual = demanda.getSituacaoAtualDemanda();
             Paragraph conteudoMBeneficioReal = new Paragraph(demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio(), normalFont);
             Paragraph conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont);
             Paragraph conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda(), normalFont);
@@ -100,15 +102,16 @@ public class GeradorPDF {
             departamento.add(new Chunk(demanda.getSolicitanteDemanda().getDepartamentoUsuario().getNomeDepartamento(), normalFont));
             document.add(departamento);
             document.add(objetivo);
-            document.add(conteudoObjetivo);
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(conteudoObjetivo.getBytes()));
             document.add(situacaoAtual);
-            document.add(conteudoSituacaoAtual);
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(conteudoSituacaoAtual.getBytes()));
 
             String tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioRealDemanda());
             beneficioReal.add(new Chunk("Benefício Real: ", negritoFont));
             beneficioReal.add(new Chunk(tipoValor + " " + demanda.getBeneficioRealDemanda().getValorBeneficio().toString(), normalFont));
             document.add(beneficioReal);
-//            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(html.getBytes()));
+
+
 
             document.add(mbeneficioReal);
             document.add(conteudoMBeneficioReal);
@@ -227,7 +230,7 @@ public class GeradorPDF {
             writer.setPageEvent(header);
             document.open();
 
-            setInformationsDocumentDemanda(document, demanda);
+            setInformationsDocumentDemanda(document, demanda, writer);
 
             document.close();
             return baos;
