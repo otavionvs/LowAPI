@@ -62,7 +62,7 @@ public class AutenticacaoConfig {
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**").permitAll()
-//                .antMatchers(HttpMethod.GET, "/demanda").hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
+                .antMatchers(HttpMethod.GET, "/demanda").hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
                 // Determina que todas as demais requisições terão de ser autenticadas
                 .anyRequest().authenticated()
                 .and().csrf().disable()
