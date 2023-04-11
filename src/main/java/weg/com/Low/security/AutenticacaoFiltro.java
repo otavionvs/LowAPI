@@ -24,6 +24,7 @@ public class AutenticacaoFiltro extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if(request.getRequestURI().startsWith("/login") ||
         request.getRequestURI().equals("/logout") ||
+                request.getRequestURI().equals("/departamento") ||
                 request.getRequestURI().equals("/usuario") ||
         request.getRequestURI().startsWith("/swagger-ui")||
                 request.getRequestURI().startsWith("/v3/api-docs")){

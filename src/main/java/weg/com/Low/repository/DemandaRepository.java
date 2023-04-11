@@ -71,7 +71,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  FROM demanda " +
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
-            "INNER JOIN usuario u ON d.usuario_codigo = u.codigo_usuario " +
+            "INNER JOIN usuario u ON d.solicitante_demanda = u.codigo_usuario " +
             "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento ", nativeQuery = true)
     List<Demanda> search(String status, Integer codigoDepartamento, Pageable page);
 

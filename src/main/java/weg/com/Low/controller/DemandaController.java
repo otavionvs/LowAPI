@@ -327,7 +327,7 @@ public class DemandaController {
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
-
+        demanda.setVersion(demanda.getVersion() + 1);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
 

@@ -28,19 +28,19 @@ public class Proposta extends DemandaClassificada {
     @Column
     private Double paybackProposta;
 
-    @Column
+    @Column(columnDefinition = "longtext")
     private String parecerComissaoProposta;
 
     @Column
     private TipoAtaProposta tipoAtaProposta;
 
-    @Column
-    private String SugestaoProposta;
+    @Column(columnDefinition = "longtext")
+    private String sugestaoProposta;
 
     @Column
     private String ultimaDecisaoComissao;
 
-    @Column
+    @Column(columnDefinition = "longtext")
     private String escopoDemandaProposta;
 
     @OneToOne
