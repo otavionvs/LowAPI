@@ -59,6 +59,7 @@ public class AutenticacaoConfig {
                 .antMatchers( "/login/**",
                         "/logout",
                         "/usuario",
+                        "/departamento",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**").permitAll()
