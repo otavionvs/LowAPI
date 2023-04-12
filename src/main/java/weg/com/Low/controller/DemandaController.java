@@ -59,7 +59,7 @@ public class DemandaController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(demandaOptional.get());
     }
-    // /demanda/versoes
+
     @GetMapping("versoes/{codigo}")
     public ResponseEntity<Object> findByIdAll(@PathVariable(value = "codigo") Integer codigo) {
         List<Demanda> demandas = demandaService.findByCodigoDemanda(codigo);
@@ -173,9 +173,16 @@ public class DemandaController {
 
         centroCustoService.saveAll(demanda.getCentroCustosDemanda());
 
-
+        if(demanda.getBeneficioPotencialDemanda().getValorBeneficio() != null){
         demanda.setBeneficioPotencialDemanda(beneficioService.save(demanda.getBeneficioPotencialDemanda()));
+        }else{
+            demanda.setBeneficioPotencialDemanda(null);
+        }
+        if(demanda.getBeneficioRealDemanda().getValorBeneficio() !=null){
         demanda.setBeneficioRealDemanda(beneficioService.save(demanda.getBeneficioRealDemanda()));
+        }else{
+            demanda.setBeneficioRealDemanda(null);
+        }
 
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
