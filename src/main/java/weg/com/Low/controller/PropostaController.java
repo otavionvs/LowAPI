@@ -29,21 +29,8 @@ public class PropostaController {
     private CentroCustoService centroCustoService;
     private DemandaService demandaService;
     private BeneficioService beneficioService;
-//    private DemandaAnalistaService demandaAnalistaService;
 
-//    @GetMapping
-//    public ResponseEntity<List<Proposta>> findAll() {
-//        return ResponseEntity.status(HttpStatus.OK).body(propostaService.findAll());
-//    }
-//
-//    @GetMapping("/{codigo}")
-//    public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
-//        Optional<Proposta> propostaOptional = propostaService.findById(codigo);
-//        if (propostaOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proposta não encontrado!");
-//        }
-//        return ResponseEntity.status(HttpStatus.OK).body(propostaOptional.get());
-//    }
+    //Gets são feitos em DemandaController
 
     //ver como fica com status de aprovação
     //verificar se centro de custo existe?
@@ -68,21 +55,6 @@ public class PropostaController {
         //Seta as informações de demandaClassificada
         proposta.setAll((DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get());
 
-//        List<Recurso> recursos = proposta.getRecursosProposta();
-//        List<Recurso> recursos = new ArrayList<>();
-
-//        Proposta proposta = new Proposta();
-//        BeanUtils.copyProperties(propostaDTO, proposta);
-
-//        for (int i = 0; i < proposta.getRecursosProposta().size(); i++) {
-////            Recurso recurso = new Recurso();
-////            RecursoDTO recursoDTO = recursosDTO.get(i);
-////            BeanUtils.copyProperties(recursoDTO, recurso);
-////            centroCustoService.saveAll(recurso.getCentroCustos());
-//            recurso = recursoService.save(proposta.get);
-//            recursos.add(recurso);
-//        }
-
         for(Recurso recurso: proposta.getRecursosProposta()){
             if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Porcentagem centro de custo incompleta em " + recurso.getNomeRecurso());
@@ -96,8 +68,6 @@ public class PropostaController {
         if(proposta.getBeneficioRealDemanda().getCodigoBeneficio() == null){
             proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
         }
-
-//      proposta.setRecursosProposta(recursos);
 
         centroCustoService.saveAll(proposta.getCentroCustosDemanda());
 
@@ -120,7 +90,6 @@ public class PropostaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
         }
 
-//        System.out.println(propostaNova.getCentroCustosDemanda());
         centroCustoService.saveAll(propostaNova.getCentroCustosDemanda());
 
         for(Recurso recurso: propostaNova.getRecursosProposta()){

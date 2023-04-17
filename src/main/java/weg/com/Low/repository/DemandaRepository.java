@@ -28,6 +28,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
             "INNER JOIN usuario a ON demanda.analista_codigo = u.codigo_usuario " +
             "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +
+            "INNER JOIN (SELECT codigo_demanda, MAX(version) AS versao_recente FROM demanda " +
+            "GROUP BY codigo_demanda) AS max_d " +
+            "ON demanda.codigo_demanda = max_d.codigo_demanda AND demanda.version = max_d.versao_recente " +
             "WHERE LOWER(demanda.titulo_demanda) like %:tituloDemanda% " +
             "AND LOWER(demanda.codigo_demanda) like %:codigoDemanda% " +
             "AND LOWER(u.nome_usuario) like %:solicitante% " +
@@ -42,6 +45,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     @Query(value = "select * from demanda " +
             "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
             "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +
+            "INNER JOIN (SELECT codigo_demanda, MAX(version) AS versao_recente FROM demanda " +
+            "GROUP BY codigo_demanda) AS max_d " +
+            "ON demanda.codigo_demanda = max_d.codigo_demanda AND demanda.version = max_d.versao_recente " +
             "WHERE LOWER(demanda.titulo_demanda) like %:tituloDemanda% " +
             "AND LOWER(demanda.codigo_demanda) like %:codigoDemanda% " +
             "AND LOWER(u.nome_usuario) like %:solicitante% " +

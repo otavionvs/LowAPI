@@ -68,6 +68,23 @@ public class ReuniaoController {
                 ppmProposta, analista, solicitante, page));
     }
 
+    @GetMapping("/ata/{codigoReuniao}")
+    public ResponseEntity<Object> downloadAta(
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao) {
+        Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
+        if (reuniao == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma reuniao encontrada!");
+        }
+        GeradorPDF geradorPDF = new GeradorPDF();
+        ByteArrayOutputStream baos = geradorPDF.gerarPDFAta(reuniao);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "documento.pdf");
+        headers.setContentLength(baos.size());
+
+        return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
+    }
 
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid ReuniaoDTO reuniaoDTO) {
@@ -183,25 +200,6 @@ public class ReuniaoController {
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
     }
 
-
-
-    @GetMapping("/ata/{codigoReuniao}")
-    public ResponseEntity<Object> downloadAta(
-            @PathVariable(value = "codigoReuniao") Integer codigoReuniao) {
-        Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
-        if (reuniao == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma reuniao encontrada!");
-        }
-        GeradorPDF geradorPDF = new GeradorPDF();
-        ByteArrayOutputStream baos = geradorPDF.gerarPDFAta(reuniao);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "documento.pdf");
-        headers.setContentLength(baos.size());
-
-        return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
-    }
     @PutMapping("/update/{codigo}")
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
