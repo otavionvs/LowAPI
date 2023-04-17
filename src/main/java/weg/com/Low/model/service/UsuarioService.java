@@ -29,6 +29,10 @@ public class UsuarioService {
         return usuarioRepository.findById(codigo);
     }
 
+    public Optional<Usuario> findByUserUsuario(String nome) {
+        return usuarioRepository.findByUserUsuario(nome);
+    }
+
     public boolean existsById(Integer codigo) {
         return usuarioRepository.existsById(codigo);
     }
@@ -46,7 +50,4 @@ public class UsuarioService {
         return usuarioRepository.search(nome.toLowerCase(), email.toLowerCase(), usuario.toLowerCase(), departamento, page);
     }
 
-    public Optional<Usuario> findByUserUsuario(String nome) {
-        return usuarioRepository.findByUserUsuario(nome);
-    }
 }

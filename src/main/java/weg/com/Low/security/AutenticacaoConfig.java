@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -27,14 +28,13 @@ public class AutenticacaoConfig {
 
 
     // Configura as autorizações de acesso
-
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(jpaService)
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
-
+    // Configura o Cors
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration =
                 new CorsConfiguration();
@@ -55,6 +55,7 @@ public class AutenticacaoConfig {
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
                 // Libera o acesso sem autenticação para /login
+                // /* - um parâmetro depois da rota,  /** - dois os mais parâmetros
                 .antMatchers( "/login/**",
                         "/logout",
                         "/usuario",
@@ -62,6 +63,18 @@ public class AutenticacaoConfig {
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**").permitAll()
+                //Rotas e nível de usuário que pode acessa-las
+                .antMatchers(HttpMethod.GET, "/demanda/*", "/demanda/pdf/*", "/demanda/filtro/**", "/demanda/status")
+                .hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
+                .antMatchers(HttpMethod.GET, "/demanda/versoes/*", "/demanda/filtro/status/**", "/reuniao/*", "/reuniao/filtro/**", "/reuniao/ata/*")
+                .hasAnyAuthority("Analista", "GestorTI")
+                .antMatchers(HttpMethod.POST, "/demanda/*").hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
+                .antMatchers(HttpMethod.POST, "/demandaClassificada", "/proposta/**", "/reuniao").hasAnyAuthority("Analista", "GestorTI")
+                .antMatchers(HttpMethod.PUT, "/demanda/update/**", "/demanda/cancell/*").hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
+                .antMatchers(HttpMethod.PUT, "/demanda/update/status/**").hasAnyAuthority("Analista", "GerenteNegocio", "GestorTI")
+                .antMatchers(HttpMethod.PUT, "/reuniao/parecer/*", "/reuniao/finalizar/*", "/reuniao/cancelar/*", "/reuniao/update/*")
+                .hasAnyAuthority("Analista", "GestorTI")
+
                 // Determina que todas as demais requisições terão de ser autenticadas
                 .anyRequest().authenticated()
                 .and().csrf().disable()

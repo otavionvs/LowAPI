@@ -27,34 +27,8 @@ public class DemandaClassificadaController {
     private DemandaClassificadaService demandaClassificadaService;
     private UsuarioService usuarioService;
     private DemandaService demandaService;
-    private CentroCustoService centroCustoService;
 
-    //Gets são feitos em demanda
-
-//    @GetMapping
-//    public ResponseEntity<List<DemandaAnalista>> findAll() {
-//        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findAll());
-//    }
-//    @GetMapping("/demanda/{codigo}")
-//    public ResponseEntity<Object> findAll(@PathVariable(value = "codigo")Integer codigo) {
-//        if(!demandaService.existsById(codigo)){
-//            return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
-//        }
-//        Demanda demanda = (Demanda) demandaService.findLastDemandaById(codigo).get();
-//
-////        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaService.findByDemandaDemandaAnalista(demanda));
-//        return ResponseEntity.status(HttpStatus.OK).body("Temporario");
-//    }
-//
-//
-//    @GetMapping("/{codigo}")
-//    public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
-//        Optional<DemandaAnalista> demandaAnalistaOptional = demandaAnalistaService.findById(codigo);
-//        if (demandaAnalistaOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("DemandaAnalista não encontrada!");
-//        }
-//        return ResponseEntity.status(HttpStatus.OK).body(demandaAnalistaOptional.get());
-//    }
+    //Gets são feitos em DemandaController
 
     //verificar o analista
     //aprovação do gerente de negocio
@@ -71,7 +45,6 @@ public class DemandaClassificadaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
         }
 
-
         Optional demandaOptional = demandaService.findLastDemandaById(demandaClassificadaDTO.getCodigoDemanda());
         if(demandaOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
@@ -86,45 +59,40 @@ public class DemandaClassificadaController {
         BeanUtils.copyProperties(demandaClassificadaDTO, demandaClassificada);
         BeanUtils.copyProperties(demanda, demandaClassificada);
 
-
-
         //Alguns atributos precisam ser setados manualmente
         demandaClassificada.setStatusDemanda(Status.BACKLOG_APROVACAO);
         demandaClassificada.setVersion(demandaClassificada.getVersion() + 1);
-//        System.out.println(demandaClassificada);
 
-        //Alguns precisam ser salvos novamente no banco
         //O sout n deve ser tirado
         System.out.println(demandaClassificada.getCentroCustosDemanda());
-//        demandaClassificada.setCentroCustosClassificada(demanda.getCentroCustosDemanda());
-//        demandaClassificada.setCentroCustosClassificada(demandaClassificada.getCentroCustosDemanda());
-//        centroCustoService.saveAll(demandaClassificada.getCentroCustosDemanda());
+
+        //Alguns precisam ser salvos novamente no banco
         demandaClassificada.setArquivosClassificada(demanda.getArquivosDemanda());
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaClassificadaService.save(demandaClassificada));
     }
 
-    //verificar o status da demanda
-    @PutMapping("/{codigo}")
-    public ResponseEntity<Object> update(
-            @PathVariable(value = "codigo") Integer codigo,
-            @RequestBody @Valid DemandaClassificadaDTO demandaClassificadaDTO) {
-        if (!demandaClassificadaService.existsById(codigo)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demandaClassificada não existe!");
-        }
-        DemandaClassificada demandaClassificada = demandaClassificadaService.findById(codigo).get();
-        BeanUtils.copyProperties(demandaClassificadaDTO, demandaClassificada);
-        return ResponseEntity.status(HttpStatus.OK).body(demandaClassificadaService.save(demandaClassificada));
-    }
+//    //verificar o status da demanda
+//    @PutMapping("/{codigo}")
+//    public ResponseEntity<Object> update(
+//            @PathVariable(value = "codigo") Integer codigo,
+//            @RequestBody @Valid DemandaClassificadaDTO demandaClassificadaDTO) {
+//        if (!demandaClassificadaService.existsById(codigo)) {
+//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demandaClassificada não existe!");
+//        }
+//        DemandaClassificada demandaClassificada = demandaClassificadaService.findById(codigo).get();
+//        BeanUtils.copyProperties(demandaClassificadaDTO, demandaClassificada);
+//        return ResponseEntity.status(HttpStatus.OK).body(demandaClassificadaService.save(demandaClassificada));
+//    }
 
-    //verificar o status da demanda
-    @DeleteMapping("/{codigo}")
-    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-        if (!demandaClassificadaService.existsById(codigo)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("demandaClassificada não encontrada!");
-        }
-        demandaClassificadaService.deleteById(codigo);
-        return ResponseEntity.status(HttpStatus.OK).body("demandaClassificada Deletada!");
-    }
+//    //verificar o status da demanda
+//    @DeleteMapping("/{codigo}")
+//    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
+//        if (!demandaClassificadaService.existsById(codigo)) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("demandaClassificada não encontrada!");
+//        }
+//        demandaClassificadaService.deleteById(codigo);
+//        return ResponseEntity.status(HttpStatus.OK).body("demandaClassificada Deletada!");
+//    }
 
 }

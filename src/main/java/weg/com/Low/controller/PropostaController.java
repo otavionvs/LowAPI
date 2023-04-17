@@ -29,21 +29,8 @@ public class PropostaController {
     private CentroCustoService centroCustoService;
     private DemandaService demandaService;
     private BeneficioService beneficioService;
-//    private DemandaAnalistaService demandaAnalistaService;
 
-//    @GetMapping
-//    public ResponseEntity<List<Proposta>> findAll() {
-//        return ResponseEntity.status(HttpStatus.OK).body(propostaService.findAll());
-//    }
-//
-//    @GetMapping("/{codigo}")
-//    public ResponseEntity<Object> findById(@PathVariable(value = "codigo") Integer codigo) {
-//        Optional<Proposta> propostaOptional = propostaService.findById(codigo);
-//        if (propostaOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Proposta não encontrado!");
-//        }
-//        return ResponseEntity.status(HttpStatus.OK).body(propostaOptional.get());
-//    }
+    //Gets são feitos em DemandaController
 
     //ver como fica com status de aprovação
     //verificar se centro de custo existe?
@@ -53,24 +40,20 @@ public class PropostaController {
             @RequestParam("proposta") String propostaJson) {
         PropostaUtil propostaUtil = new PropostaUtil();
         Proposta proposta = propostaUtil.convertJsonToModel(propostaJson);
-        proposta.setArquivos(arquivos);
-        //Seta as informações
+        if(!arquivos[0].getOriginalFilename().equals("")){
+            proposta.setArquivos(arquivos);
+        }
+
+        if(!demandaService.existsById(proposta.getCodigoDemanda())){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não Encontrada!");
+        }
+
+        if(proposta.getStatusDemanda() != Status.BACKLOG_APROVACAO){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda precisa estar no Status de Aprovação!");
+        }
+
+        //Seta as informações de demandaClassificada
         proposta.setAll((DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get());
-
-//        List<Recurso> recursos = proposta.getRecursosProposta();
-//        List<Recurso> recursos = new ArrayList<>();
-
-//        Proposta proposta = new Proposta();
-//        BeanUtils.copyProperties(propostaDTO, proposta);
-
-//        for (int i = 0; i < proposta.getRecursosProposta().size(); i++) {
-////            Recurso recurso = new Recurso();
-////            RecursoDTO recursoDTO = recursosDTO.get(i);
-////            BeanUtils.copyProperties(recursoDTO, recurso);
-////            centroCustoService.saveAll(recurso.getCentroCustos());
-//            recurso = recursoService.save(proposta.get);
-//            recursos.add(recurso);
-//        }
 
         for(Recurso recurso: proposta.getRecursosProposta()){
             if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
@@ -87,11 +70,51 @@ public class PropostaController {
         }
 
         centroCustoService.saveAll(proposta.getCentroCustosDemanda());
-//        proposta.setRecursosProposta(recursos);
 
+        proposta.setStatusDemanda(Status.ASSESSMENT);
         proposta.setVersion(proposta.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<Object> updateProposta(
+            @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("proposta") String propostaJson) {
+        PropostaUtil propostaUtil = new PropostaUtil();
+        Proposta propostaNova = propostaUtil.convertJsonToModel(propostaJson);
+        if(!arquivos[0].getOriginalFilename().equals("")){
+            propostaNova.setArquivos(arquivos);
+        }
+
+        if (!demandaService.existsById(propostaNova.getCodigoDemanda())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
+        }
+
+        centroCustoService.saveAll(propostaNova.getCentroCustosDemanda());
+
+        for(Recurso recurso: propostaNova.getRecursosProposta()){
+            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Porcentagem centro de custo incompleta em " + recurso.getNomeRecurso());
+            }
+            recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
+        }
+
+        if(propostaNova.getBeneficioPotencialDemanda().getCodigoBeneficio() == null){
+            propostaNova.setBeneficioPotencialDemanda(beneficioService.save(propostaNova.getBeneficioPotencialDemanda()));
+        }
+        if(propostaNova.getBeneficioRealDemanda().getCodigoBeneficio() == null){
+            propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
+        }
+
+
+        Proposta proposta = (Proposta) demandaService.findLastDemandaById(propostaNova.getCodigoDemanda()).get();
+
+        propostaNova.setAll(proposta);
+        propostaNova.setStatusDemanda(proposta.getStatusDemanda());
+        propostaNova.setVersion(propostaNova.getVersion() + 1);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova));
     }
 
 
