@@ -171,13 +171,8 @@ public class ReuniaoController {
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
-                for(Demanda demanda: demandaService.findByCodigoDemanda(proposta.getCodigoDemanda())){
-                    if(demanda.getStatusDemanda() == Status.ASSESSMENT){
-                        proposta.setStatusDemanda(Status.ASSESSMENT);
-                    }else if(demanda.getStatusDemanda() == Status.BUSINESS_CASE){
-                        proposta.setStatusDemanda(Status.BUSINESS_CASE);
-                    }
-                }
+
+                System.out.println(demandaService.findFirstByCodigoDemandaAndVersionBefore(proposta.getCodigoDemanda(), proposta.getVersion()));
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
