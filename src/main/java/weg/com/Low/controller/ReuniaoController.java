@@ -112,7 +112,11 @@ public class ReuniaoController {
             Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
             proposta.setStatusDemanda(Status.DISCUSSION);
             proposta.setVersion(proposta.getVersion() + 1);
-            listaPropostas.add(proposta);
+            //É criado uma nova proposta para atulizar a versão corretamente.
+            //Necessário para a realização de um PUT
+            Proposta propostaNova = new Proposta();
+            BeanUtils.copyProperties(proposta, propostaNova);
+            listaPropostas.add(propostaService.save(propostaNova));
         }
 
         BeanUtils.copyProperties(reuniaoDTO, reuniao);
@@ -171,13 +175,9 @@ public class ReuniaoController {
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
-                for(Demanda demanda: demandaService.findByCodigoDemanda(proposta.getCodigoDemanda())){
-                    if(demanda.getStatusDemanda() == Status.ASSESSMENT){
-                        proposta.setStatusDemanda(Status.ASSESSMENT);
-                    }else if(demanda.getStatusDemanda() == Status.BUSINESS_CASE){
-                        proposta.setStatusDemanda(Status.BUSINESS_CASE);
-                    }
-                }
+
+
+                System.out.println(demandaService.findFirstByCodigoDemandaAndVersionBefore(proposta.getCodigoDemanda(), proposta.getVersion()));
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
