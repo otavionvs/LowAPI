@@ -2,6 +2,7 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -175,9 +176,12 @@ public class ReuniaoController {
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
-
-
-                System.out.println(demandaService.findFirstByCodigoDemandaAndVersionBefore(proposta.getCodigoDemanda(), proposta.getVersion()));
+                Proposta propostaAnterior = (Proposta) demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
+                System.out.println(propostaAnterior);
+                propostaAnterior.setVersion(proposta.getVersion() + 1);
+                Proposta propostaNova = new Proposta();
+                BeanUtils.copyProperties(propostaAnterior, propostaNova);
+                propostaService.save(propostaNova);
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
