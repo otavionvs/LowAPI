@@ -271,10 +271,12 @@ public class DemandaController {
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
-
+        //Necessário para a realização de um PUT
         demanda.setVersion(demanda.getVersion() + 1);
-
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+        DemandaClassificada demandaNova = new DemandaClassificada();
+        BeanUtils.copyProperties(demanda, demandaNova);
+        //2
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
 
     //Reprova uma demanda
@@ -285,8 +287,10 @@ public class DemandaController {
         Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
         demanda.setMotivoReprovacaoDemanda(motivoReprovacao);
         demanda.setStatusDemanda(Status.CANCELLED);
-
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+        //Necessário para a realização de um PUT
+        Demanda demandaNova = new Demanda();
+        BeanUtils.copyProperties(demanda, demandaNova);
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
 
 

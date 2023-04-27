@@ -16,6 +16,10 @@ public class DemandaService {
     private DemandaRepository demandaRepository;
     private NotificacaoService notificacaoService;
 
+    public Optional<Demanda> findFirstByCodigoDemandaAndVersionBefore(Integer codigoDemanda, Integer version) {
+        return demandaRepository.findFirstByCodigoDemandaAndVersionBefore(codigoDemanda, version);
+    }
+
     public List<Demanda> findAll() {
         return demandaRepository.findAll();
     }

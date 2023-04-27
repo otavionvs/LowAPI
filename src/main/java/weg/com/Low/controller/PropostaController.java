@@ -47,9 +47,9 @@ public class PropostaController {
         if(!demandaService.existsById(proposta.getCodigoDemanda())){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não Encontrada!");
         }
-
-        if(proposta.getStatusDemanda() != Status.BACKLOG_APROVACAO){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda precisa estar no Status de Aprovação!");
+        Demanda demanda = demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get();
+        if(demanda.getStatusDemanda() != Status.BACKLOG_PROPOSTA){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda precisa estar no Status de BACKLOG_PROPOSTA!");
         }
 
         //Seta as informações de demandaClassificada
@@ -71,8 +71,7 @@ public class PropostaController {
 
         centroCustoService.saveAll(proposta.getCentroCustosDemanda());
 
-        proposta.setStatusDemanda(Status.ASSESSMENT);
-        proposta.setVersion(proposta.getVersion() + 1);
+        proposta.setVersion(demanda.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.enums.Status;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +15,7 @@ import java.util.Optional;
 @Repository
 public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     Optional<Demanda> findFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
+    Optional<Demanda> findFirstByCodigoDemandaAndVersionBefore(Integer codigoDemanda, Integer version);
     List<Demanda> findByCodigoDemanda(Integer codigo);
     boolean existsByCodigoDemanda(Integer codigo);
     Long countAllByCodigoDemanda(Integer codigoDemanda);
