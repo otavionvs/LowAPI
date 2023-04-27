@@ -24,7 +24,7 @@ public class Usuario {
 //    private Date data_nascimentoUsuario;
 //    @Column(nullable = false, length = 11)
 //    private Integer telefoneUsuario;
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     @JsonIgnore
     private String senhaUsuario;
     @ManyToOne
