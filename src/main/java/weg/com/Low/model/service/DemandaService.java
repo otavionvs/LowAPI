@@ -20,6 +20,9 @@ public class DemandaService {
         return demandaRepository.findFirstByCodigoDemandaAndVersionBefore(codigoDemanda, version);
     }
 
+    public Optional<Demanda> findFirstByCodigoDemandaAndVersion(Integer codigoDemanda, Integer version) {
+        return demandaRepository.findFirstByCodigoDemandaAndVersion(codigoDemanda, version);
+    }
     public List<Demanda> findAll() {
         return demandaRepository.findAll();
     }
