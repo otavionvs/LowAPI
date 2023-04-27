@@ -90,14 +90,14 @@ public class DemandaService {
 
     public List<Demanda> search(
             String tituloDemanda, String solicitante, String codigoDemanda, String status,
-            String tamanho, String analista, String departamento, Pageable page) {
+            String tamanho, String analista, String departamento, String ordenar, Pageable page) {
         return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda,
-                status, tamanho, analista, departamento, page);
+                status, tamanho, analista, departamento, ordenar, page);
     }
 
     public List<Demanda> search(
-            String tituloDemanda, String solicitante, String codigoDemanda, String status, String departamento, Pageable page) {
-        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, departamento, page);
+            String tituloDemanda, String solicitante, String codigoDemanda, String status, String departamento, String ordenar, Pageable page) {
+        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, departamento, ordenar, page);
     }
 
     public List<Demanda> search(String status, Pageable page) {

@@ -39,9 +39,15 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(demanda.status_demanda) like %:status% " +
             "AND LOWER(demanda.tamanho_demanda_classificada) like %:tamanho% " +
             "AND LOWER(a.nome_usuario) like %:analista% " +
-            "AND LOWER(de.nome_departamento) like %:departamento%", nativeQuery = true)
+            "AND LOWER(de.nome_departamento) like %:departamento% " +
+            "order by " +
+            "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
+            "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
+            "case when :ordenar = '3' then demanda.score end desc," +
+            "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
+            "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
-                         String tamanho, String analista, String departamento, Pageable page);
+                         String tamanho, String analista, String departamento, String ordenar, Pageable page);
 
     //Para o caso da demanda não ter demanda classificada
     @Query(value = "select * from demanda " +
@@ -54,9 +60,15 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(demanda.codigo_demanda) like %:codigoDemanda% " +
             "AND LOWER(u.nome_usuario) like %:solicitante% " +
             "AND LOWER(demanda.status_demanda) like %:status% " +
-            "AND LOWER(de.nome_departamento) like %:departamento%", nativeQuery = true)
+            "AND LOWER(de.nome_departamento) like %:departamento% " +
+            "order by " +
+            "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
+            "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
+            "case when :ordenar = '3' then demanda.score end desc," +
+            "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
+            "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
-                         String status, String departamento, Pageable page);
+                         String status, String departamento, String ordenar, Pageable page);
 
     //Retorna a última versão de uma demanda de um status
     @Query(value = "SELECT d.* " +

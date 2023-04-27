@@ -16,7 +16,7 @@ import java.util.List;
 @CrossOrigin
 @AllArgsConstructor
 @RestController
-@RequestMapping("/notificacao")
+@RequestMapping("/low/notificacao")
 public class NotificacaoController {
     NotificacaoService notificacaoService;
     UsuarioService usuarioService;
