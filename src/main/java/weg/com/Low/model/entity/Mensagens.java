@@ -18,6 +18,8 @@ public class Mensagens {
     @JoinColumn(name = "codigo_usuario", nullable = false)
     private Usuario usuarioMensagens;
     @ManyToOne
-    @JoinColumn(name = "codigo_demanda")
+    @JoinColumns({
+            @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"),
+            @JoinColumn(name = "version_demanda", referencedColumnName = "version")})
     private Demanda demandaMensagens;
 }

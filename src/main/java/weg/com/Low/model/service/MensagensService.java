@@ -14,7 +14,7 @@ public class MensagensService {
     private MensagensRepository mensagensRepository;
 
     public List<Mensagens> findAllByDemanda(Demanda demanda) {
-        return mensagensRepository.findAllByDemanda(demanda);
+        return mensagensRepository.findAllByDemandaMensagens(demanda);
     }
 
     public Mensagens save(Mensagens entity) {
