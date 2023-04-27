@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/low/login")
 public class AutenticacaoController {
 
     private TokenUtils tokenUtils = new TokenUtils();
