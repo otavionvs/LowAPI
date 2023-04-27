@@ -1,13 +1,10 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.web.multipart.MultipartFile;
-import weg.com.Low.dto.CentroCustoDTO;
 import weg.com.Low.model.enums.Status;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

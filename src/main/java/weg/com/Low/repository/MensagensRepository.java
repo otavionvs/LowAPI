@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface MensagensRepository extends JpaRepository<Mensagens, Integer> {
-//    List<Mensagens> findAllByDemanda(Demanda demanda);
+    List<Mensagens> findAllByDemandaMensagens(Demanda demanda);
 }
