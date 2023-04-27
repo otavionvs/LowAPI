@@ -172,6 +172,7 @@ public class ReuniaoController {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
 
+
                 System.out.println(demandaService.findFirstByCodigoDemandaAndVersionBefore(proposta.getCodigoDemanda(), proposta.getVersion()));
             }
         }
