@@ -48,9 +48,7 @@ public class PropostaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não Encontrada!");
         }
         Demanda demanda = demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get();
-        if(demanda.getStatusDemanda() != Status.BACKLOG_PROPOSTA){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda precisa estar no Status de BACKLOG_PROPOSTA!");
-        }
+
 
         //Seta as informações de demandaClassificada
         proposta.setAll((DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get());
