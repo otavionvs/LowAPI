@@ -4,19 +4,16 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.DemandaClassificadaDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.Status;
-import weg.com.Low.model.service.CentroCustoService;
 import weg.com.Low.model.service.DemandaClassificadaService;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.UsuarioService;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @CrossOrigin
