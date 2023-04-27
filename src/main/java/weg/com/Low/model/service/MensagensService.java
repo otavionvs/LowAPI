@@ -13,9 +13,9 @@ import java.util.List;
 public class MensagensService {
     private MensagensRepository mensagensRepository;
 
-    public List<Mensagens> findAllByDemanda(Demanda demanda) {
-        return mensagensRepository.findAllByDemanda(demanda);
-    }
+//    public List<Mensagens> findAllByDemanda(Demanda demanda) {
+//        return mensagensRepository.findAllByDemanda(demanda);
+//    }
 
     public Mensagens save(Mensagens entity) {
         return mensagensRepository.save(entity);

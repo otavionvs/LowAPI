@@ -22,10 +22,10 @@ public class AutenticacaoFiltro extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getRequestURI().startsWith("/login") ||
+        if(request.getRequestURI().startsWith("/low/login") ||
         request.getRequestURI().equals("/logout") ||
-                request.getRequestURI().equals("/departamento") ||
-                request.getRequestURI().equals("/usuario") ||
+                request.getRequestURI().equals("/low/departamento") ||
+                request.getRequestURI().equals("/low/usuario") ||
         request.getRequestURI().startsWith("/swagger-ui")||
                 request.getRequestURI().startsWith("/v3/api-docs")){
             filterChain.doFilter(request,response);

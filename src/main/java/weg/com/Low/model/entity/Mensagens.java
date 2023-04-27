@@ -17,7 +17,7 @@ public class Mensagens {
     @ManyToOne
     @JoinColumn(name = "codigo_usuario", nullable = false)
     private Usuario usuarioMensagens;
-    @ManyToOne
-    @JoinColumn(name = "codigo_demanda")
-    private Demanda demandaMensagens;
+//    @ManyToOne
+//    @JoinColumn(name = "codigo_demanda")
+//    private Demanda demandaMensagens;
 }
