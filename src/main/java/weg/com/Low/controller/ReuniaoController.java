@@ -112,7 +112,11 @@ public class ReuniaoController {
             Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
             proposta.setStatusDemanda(Status.DISCUSSION);
             proposta.setVersion(proposta.getVersion() + 1);
-            listaPropostas.add(proposta);
+            //É criado uma nova proposta para atulizar a versão corretamente.
+            //Necessário para a realização de um PUT
+            Proposta propostaNova = new Proposta();
+            BeanUtils.copyProperties(proposta, propostaNova);
+            listaPropostas.add(propostaService.save(propostaNova));
         }
 
         BeanUtils.copyProperties(reuniaoDTO, reuniao);
