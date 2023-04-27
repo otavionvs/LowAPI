@@ -8,6 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.UsuarioDTO;
@@ -49,6 +50,8 @@ public class UsuarioController {
         }
         Usuario usuario = new Usuario();
         BeanUtils.copyProperties(usuarioDTO, usuario);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        usuario.setSenhaUsuario(encoder.encode(usuario.getSenhaUsuario()));
         return ResponseEntity.status(HttpStatus.OK).body(usuarioService.save(usuario));
     }
 
