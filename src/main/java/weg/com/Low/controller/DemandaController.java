@@ -238,43 +238,45 @@ public class DemandaController {
         DemandaClassificada demanda = (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
+        DemandaClassificada demandaNova = new DemandaClassificada();
+        BeanUtils.copyProperties(demanda, demandaNova);
+        demandaNova.setVersion(demanda.getVersion() + 1);
+
         if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
             if (decisao == 1) {
                 TokenUtils tokenUtils = new TokenUtils();
                 String token = tokenUtils.buscarCookie(request);
                 String user = tokenUtils.getUsuarioUsername(token);
                 Usuario usuario = usuarioService.findByUserUsuario(user).get();
-                demanda.setGerenteNegocio(usuario);
+                demandaNova.setGerenteNegocio(usuario);
 
-                demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+                demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
             } else {
-                demanda.setStatusDemanda(Status.CANCELLED);
+                demandaNova.setStatusDemanda(Status.CANCELLED);
             }
         } else if (demandaStatus.equals(Status.TO_DO.getStatus())) {
             if (decisao == 1) {
-                demanda.setStatusDemanda(Status.DESIGN_AND_BUILD);
+                demandaNova.setStatusDemanda(Status.DESIGN_AND_BUILD);
             } else {
-                demanda.setStatusDemanda(Status.CANCELLED);
+                demandaNova.setStatusDemanda(Status.CANCELLED);
             }
         } else if (demandaStatus.equals(Status.DESIGN_AND_BUILD.getStatus())) {
             if (decisao == 1) {
-                demanda.setStatusDemanda(Status.SUPPORT);
+                demandaNova.setStatusDemanda(Status.SUPPORT);
             } else {
-                demanda.setStatusDemanda(Status.CANCELLED);
+                demandaNova.setStatusDemanda(Status.CANCELLED);
             }
         } else if (demandaStatus.equals(Status.SUPPORT.getStatus())) {
             if (decisao == 1) {
-                demanda.setStatusDemanda(Status.DONE);
+                demandaNova.setStatusDemanda(Status.DONE);
             } else {
-                demanda.setStatusDemanda(Status.CANCELLED);
+                demandaNova.setStatusDemanda(Status.CANCELLED);
             }
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
         //Necessário para a realização de um PUT
-        demanda.setVersion(demanda.getVersion() + 1);
-        DemandaClassificada demandaNova = new DemandaClassificada();
-        BeanUtils.copyProperties(demanda, demandaNova);
+
         //2
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }

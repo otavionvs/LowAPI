@@ -16,6 +16,7 @@ import java.util.Optional;
 public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     Optional<Demanda> findFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
     Optional<Demanda> findFirstByCodigoDemandaAndVersionBefore(Integer codigoDemanda, Integer version);
+    Optional<Demanda> findFirstByCodigoDemandaAndVersion(Integer codigoDemanda, Integer version);
     List<Demanda> findByCodigoDemanda(Integer codigo);
     boolean existsByCodigoDemanda(Integer codigo);
     Long countAllByCodigoDemanda(Integer codigoDemanda);

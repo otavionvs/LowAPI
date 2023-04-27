@@ -2,6 +2,7 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -110,12 +111,15 @@ public class ReuniaoController {
         ArrayList<Proposta> listaPropostas = new ArrayList<>();
         for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
             Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
-            proposta.setStatusDemanda(Status.DISCUSSION);
-            proposta.setVersion(proposta.getVersion() + 1);
-            //É criado uma nova proposta para atulizar a versão corretamente.
-            //Necessário para a realização de um PUT
+
             Proposta propostaNova = new Proposta();
             BeanUtils.copyProperties(proposta, propostaNova);
+
+
+            propostaNova.setStatusDemanda(Status.DISCUSSION);
+            propostaNova.setVersion(proposta.getVersion() + 1);
+            //É criado uma nova proposta para atulizar a versão corretamente.
+            //Necessário para a realização de um PUT
             listaPropostas.add(propostaService.save(propostaNova));
         }
 
@@ -175,11 +179,14 @@ public class ReuniaoController {
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
-
-
-                System.out.println(demandaService.findFirstByCodigoDemandaAndVersionBefore(proposta.getCodigoDemanda(), proposta.getVersion()));
+                Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
+                Proposta propostaNova = new Proposta();
+                BeanUtils.copyProperties(propostaAnterior, propostaNova);
+                propostaNova.setVersion(propostaAnterior.getVersion() + 2);
+                propostaService.save(propostaNova);
             }
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
     }
 
