@@ -39,7 +39,7 @@ import java.util.Optional;
 @CrossOrigin
 @AllArgsConstructor
 @RestController
-@RequestMapping("/demanda")
+@RequestMapping("/low/demanda")
 public class DemandaController {
     private DemandaService demandaService;
     private BeneficioService beneficioService;
