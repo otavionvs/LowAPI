@@ -56,10 +56,10 @@ public class AutenticacaoConfig {
         httpSecurity.authorizeRequests()
                 // Libera o acesso sem autenticação para /login
                 // /* - um parâmetro depois da rota,  /** - dois os mais parâmetros
-                .antMatchers( "/login/**",
+                .antMatchers( "/low/login/**",
                         "/logout",
-                        "/usuario",
-                        "/departamento",
+                        "/low/usuario",
+                        "/low/departamento",
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/v3/api-docs/**").permitAll()
