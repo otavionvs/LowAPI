@@ -2,6 +2,7 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -38,7 +39,7 @@ import java.util.Optional;
 @CrossOrigin
 @AllArgsConstructor
 @RestController
-@RequestMapping("/demanda")
+@RequestMapping("/low/demanda")
 public class DemandaController {
     private DemandaService demandaService;
     private BeneficioService beneficioService;
@@ -99,16 +100,18 @@ public class DemandaController {
             @RequestParam("tamanho") String tamanho,
             @RequestParam("analista") String analista,
             @RequestParam("departamento") String departamento,
+            @RequestParam("ordenar") String ordenar,
             @PageableDefault(
                     page = 0,
                     size = 24) Pageable page){
+
         //requisições com tamanho e analista, exigem demanda analista(Backlog_Aprovação)
         if(tamanho.equals("") && analista.equals("")){
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, departamento, page));
+                    status, departamento, ordenar, page));
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, tamanho, analista, departamento, page));
+                    status, tamanho, analista, departamento, ordenar, page));
         }
     }
 

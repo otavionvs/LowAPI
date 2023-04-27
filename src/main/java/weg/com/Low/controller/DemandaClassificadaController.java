@@ -22,7 +22,7 @@ import java.util.Optional;
 @CrossOrigin
 @AllArgsConstructor
 @RestController
-@RequestMapping("/demandaClassificada")
+@RequestMapping("/low/demandaClassificada")
 public class DemandaClassificadaController {
     private DemandaClassificadaService demandaClassificadaService;
     private UsuarioService usuarioService;
