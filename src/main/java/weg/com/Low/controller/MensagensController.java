@@ -33,9 +33,10 @@ public class MensagensController {
         return ResponseEntity.ok(mensagensService.findAllByDemanda(demandaService.findLastDemandaById(codigo).get()));
     }
 
-    @MessageMapping("/{codigo}")
-    @SendTo("/chat/{codigo}")
+    @MessageMapping("/demanda/{codigo}")
+    @SendTo("/demanda/{codigo}/chat")
     public Mensagens save(MensagensDTO mensagensDTO) {
+        System.out.println("Recebeu mensagem");
         Mensagens mensagens = new Mensagens();
         BeanUtils.copyProperties(mensagensDTO, mensagens);
         return mensagensService.save(mensagens);
