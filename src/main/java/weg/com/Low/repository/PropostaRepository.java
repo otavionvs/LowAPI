@@ -18,6 +18,5 @@ public  interface PropostaRepository extends JpaRepository<Proposta, Integer> {
             "WHERE LOWER(d.codigo_demanda) like :codigoDemanda ", nativeQuery = true)
     Proposta porDemanda(String codigoDemanda);
 
-    List<Proposta> findAllBySolicitanteDemandaOrAnalista(Usuario usuario);
 
 }

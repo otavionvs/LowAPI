@@ -14,10 +14,7 @@ import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Mensagens;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Usuario;
-import weg.com.Low.model.service.DemandaService;
-import weg.com.Low.model.service.MensagensService;
-import weg.com.Low.model.service.PropostaService;
-import weg.com.Low.model.service.UsuarioService;
+import weg.com.Low.model.service.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +28,7 @@ public class MensagensController {
     private DemandaService demandaService;
     private UsuarioService usuarioService;
     private PropostaService propostaService;
+    private DemandaClassificadaService demandaClassificadaService;
 
     @GetMapping("/{codigo}")
     public ResponseEntity<?> findAllByDemanda(@PathVariable(value = "codigo") Integer codigo) {
@@ -47,7 +45,8 @@ public class MensagensController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demandas não encontradas!");
         }
         Usuario usuario = usuarioService.findById(codigoUsuario).get();
-        return ResponseEntity.ok(propostaService.findAllBySolicitanteDemandaOrAnalista(usuario));
+        System.out.println(usuario);
+        return ResponseEntity.ok(demandaClassificadaService.findBySolicitanteDemandaOrAnalista(usuario));
     }
 
     @MessageMapping("/demanda/{codigo}")

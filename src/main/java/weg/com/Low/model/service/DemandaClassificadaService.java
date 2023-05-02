@@ -2,7 +2,9 @@ package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.DemandaClassificada;
+import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.repository.DemandaClassificadaRepository;
 
 import java.util.List;
@@ -16,6 +18,10 @@ public class DemandaClassificadaService {
 
     public List<DemandaClassificada> findAll() {
         return demandaClassificadaRepository.findAll();
+    }
+
+    public List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario analista) {
+        return demandaClassificadaRepository.findBySolicitanteDemandaOrAnalista(analista, analista);
     }
 
     public DemandaClassificada save(DemandaClassificada entity) {

@@ -28,9 +28,7 @@ public class PropostaService {
         return propostaRepository.save(proposta);
     }
 
-    public List<Proposta> findAllBySolicitanteDemandaOrAnalista(Usuario usuario) {
-        return propostaRepository.findAllBySolicitanteDemandaOrAnalista(usuario);
-    }
+
 
 //    public Proposta save(Proposta proposta) {
 //        List<Usuario> usuarios = null;
