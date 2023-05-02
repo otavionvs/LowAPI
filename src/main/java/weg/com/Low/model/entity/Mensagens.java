@@ -19,8 +19,6 @@ public class Mensagens {
     @JoinColumn(name = "codigo_usuario", nullable = false)
     private Usuario usuarioMensagens;
     @ManyToOne
-
-
     @JoinColumns({
             @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"),
             @JoinColumn(name = "version", referencedColumnName = "version")})

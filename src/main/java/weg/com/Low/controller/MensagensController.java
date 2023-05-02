@@ -38,15 +38,20 @@ public class MensagensController {
         return ResponseEntity.ok(mensagensService.findAllByDemanda(demandaService.findLastDemandaById(codigo).get()));
     }
 
+    @GetMapping("/usuario/{codigo}")
+    public ResponseEntity<?> findAllByUsuario(@PathVariable(value = "codigo") Integer codigo) {
+        if(!demandaService.existsById(codigo)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
+        }
+        return ResponseEntity.ok(mensagensService.findAllByDemanda(demandaService.findLastDemandaById(codigo).get()));
+    }
+
     @MessageMapping("/demanda/{codigo}")
     @SendTo("/demanda/{codigo}/chat")
     public Object    save(@Payload MensagensDTO mensagensDTO) {
         Mensagens mensagens = new Mensagens();
         mensagensDTO.getDemandaMensagens().setVersion(demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get().getVersion());
         BeanUtils.copyProperties(mensagensDTO, mensagens);
-//            mensagens.setDemandaMensagens(demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get());
-//            mensagens.setUsuarioMensagens(usuarioService.findById(mensagensDTO.getUsuarioMensagens().getCodigoUsuario()).get());
-//            mensagens.setTextoMensagens(mensagensDTO.getTextoMensagens());
             return mensagensService.save(mensagens);
 
     }
