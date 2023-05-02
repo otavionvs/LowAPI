@@ -16,6 +16,7 @@ import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.MensagensService;
+import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.UsuarioService;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class MensagensController {
     private MensagensService mensagensService;
     private DemandaService demandaService;
     private UsuarioService usuarioService;
+    private PropostaService propostaService;
 
     @GetMapping("/{codigo}")
     public ResponseEntity<?> findAllByDemanda(@PathVariable(value = "codigo") Integer codigo) {
@@ -38,12 +40,14 @@ public class MensagensController {
         return ResponseEntity.ok(mensagensService.findAllByDemanda(demandaService.findLastDemandaById(codigo).get()));
     }
 
-    @GetMapping("/usuario/{codigo}")
-    public ResponseEntity<?> findAllByUsuario(@PathVariable(value = "codigo") Integer codigo) {
-        if(!demandaService.existsById(codigo)){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
+    @GetMapping("/demandasDiscutidas/{codigoUsuario}")
+    public Object findAllByUsuario(@PathVariable(value = "codigoUsuario") Integer codigoUsuario) {
+
+        if(!demandaService.existsById(codigoUsuario)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demandas não encontradas!");
         }
-        return ResponseEntity.ok(mensagensService.findAllByDemanda(demandaService.findLastDemandaById(codigo).get()));
+        Usuario usuario = usuarioService.findById(codigoUsuario).get();
+        return ResponseEntity.ok(propostaService.findAllBySolicitanteDemandaOrAnalista(usuario));
     }
 
     @MessageMapping("/demanda/{codigo}")
