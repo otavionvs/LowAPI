@@ -1,6 +1,7 @@
 package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.LazyInitializationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,17 +41,13 @@ public class MensagensController {
     @MessageMapping("/demanda/{codigo}")
     @SendTo("/demanda/{codigo}/chat")
     public Object    save(@Payload MensagensDTO mensagensDTO) {
-        System.out.println(mensagensDTO.getDemandaMensagens());
-        System.out.println(mensagensDTO.getTextoMensagens());
-        System.out.println(mensagensDTO.getUsuarioMensagens());
-
         Mensagens mensagens = new Mensagens();
+        mensagensDTO.getDemandaMensagens().setVersion(demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get().getVersion());
         BeanUtils.copyProperties(mensagensDTO, mensagens);
-        Demanda demanda = demandaService.save(demandaService.findLastDemandaById(mensagens.getDemandaMensagens().getCodigoDemanda()).get());
-        mensagens.setDemandaMensagens(demanda);
-        Usuario usuario = usuarioService.save(usuarioService.findById(mensagens.getUsuarioMensagens().getCodigoUsuario()).get());
-        mensagens.setUsuarioMensagens(usuario);
-        Mensagens mensagens1 = mensagensService.save(mensagens);
-        return mensagens1;
+//            mensagens.setDemandaMensagens(demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get());
+//            mensagens.setUsuarioMensagens(usuarioService.findById(mensagensDTO.getUsuarioMensagens().getCodigoUsuario()).get());
+//            mensagens.setTextoMensagens(mensagensDTO.getTextoMensagens());
+            return mensagensService.save(mensagens);
+
     }
 }
