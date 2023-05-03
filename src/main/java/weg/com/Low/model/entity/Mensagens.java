@@ -2,6 +2,7 @@ package weg.com.Low.model.entity;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import weg.com.Low.model.enums.StatusMensagens;
 
 import javax.persistence.*;
 
@@ -23,4 +24,7 @@ public class Mensagens {
             @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"),
             @JoinColumn(name = "version", referencedColumnName = "version")})
     private Demanda demandaMensagens;
+
+    @Column
+    private StatusMensagens statusMensagens;
 }
