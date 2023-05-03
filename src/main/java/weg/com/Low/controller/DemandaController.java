@@ -127,9 +127,7 @@ public class DemandaController {
         //envia o nome de cada status, usando o metodo search
 
         TokenUtils tokenUtils = new TokenUtils();
-        String token = tokenUtils.buscarCookie(request);
-        String username = tokenUtils.getUsuarioUsername(token);
-        Usuario usuario = usuarioService.findByUserUsuario(username).get();
+        Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
 
         if(usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI){
             for (int i = 0; i < 10; i++) {
