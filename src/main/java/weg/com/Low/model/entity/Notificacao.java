@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -29,9 +30,7 @@ public class Notificacao {
     @Column
     private String descricaoNotificacao;
     @Column
-    private LocalDateTime horaNotificacao;
-    @Column
-    private LocalDate dataNotificacao;
+    private Date dataNotificacao = new Date();
     @Column
     private Boolean lido;
     @ManyToMany
@@ -39,5 +38,10 @@ public class Notificacao {
     @JoinColumn(name = "codigo_notificacao", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "codigo_usuario", nullable = false))
     private List<Usuario> usuariosNotificacao;
+
+
+    public void criarNoticacao(){
+
+    }
 
 }

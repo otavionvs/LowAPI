@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.enums.Status;
 
 import javax.persistence.criteria.CriteriaBuilder;

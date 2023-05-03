@@ -30,7 +30,7 @@ public class PropostaService {
 
 
 
-    //    public Proposta save(Proposta proposta) {
+//    public Proposta save(Proposta proposta) {
 //        List<Usuario> usuarios = null;
 //        DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
 //        usuarios.add(demandaAnalista.getAnalista());
