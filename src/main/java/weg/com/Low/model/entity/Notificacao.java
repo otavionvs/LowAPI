@@ -25,8 +25,6 @@ public class Notificacao {
     @Column
     private String tituloDemandaNotificacao;
     @Column
-    private Integer codigo;
-    @Column
     private TipoNotificacao tipoNotificacao;
     @Column
     private String descricaoNotificacao;
@@ -35,7 +33,7 @@ public class Notificacao {
     @Column
     private LocalDate dataNotificacao;
     @Column
-    private StatusNotificacao statusNotificacao;
+    private Boolean lido;
     @ManyToMany
     @JoinTable(name = "usuario_notificacoes", joinColumns =
     @JoinColumn(name = "codigo_notificacao", nullable = false),

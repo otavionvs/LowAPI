@@ -1,10 +1,13 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.entity.Notificacao;
 import weg.com.Low.model.enums.Status;
+import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.DemandaRepository;
 
 import java.util.List;
@@ -27,8 +30,16 @@ public class DemandaService {
         return demandaRepository.findAll();
     }
 
-    public Demanda save(Demanda entity) {
-        return demandaRepository.save(entity);
+    public Demanda save(Demanda demanda, TipoNotificacao tipoNotificacao) {
+        Notificacao notificacao;
+        switch (tipoNotificacao){
+            case CRIOU_DEMANDA: {
+//                notificacao = new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
+//                        "Demanda criada com sucesso!", );
+                break;
+            }
+        }
+        return demandaRepository.save(demanda);
     }
 
     //    public Demanda save(Demanda demanda) {

@@ -20,6 +20,7 @@ import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.Status;
+import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
 import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.DemandaUtil;
@@ -195,7 +196,7 @@ public class DemandaController {
         demanda.setVersion(0);
         demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
 
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda, TipoNotificacao.CRIOU_DEMANDA));
     }
 
     @PutMapping("/update")
@@ -232,7 +233,7 @@ public class DemandaController {
         demandaNova.setStatusDemanda(demanda.getStatusDemanda());
         demandaNova.setVersion(demanda.getVersion() + 1);
 
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.EDITOU_DEMANDA));
     }
 
     //Caso seja passado por parametro 1 - passa para o proximo status
@@ -286,7 +287,8 @@ public class DemandaController {
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova,
+                (decisao == 1 ? TipoNotificacao.AVANCOU_STATUS_DEMANDA : TipoNotificacao.CANCELOU_DEMANDA)));
     }
 
     //Reprova uma demanda
@@ -300,7 +302,7 @@ public class DemandaController {
         //Necessário para a realização de um PUT
         Demanda demandaNova = new Demanda();
         BeanUtils.copyProperties(demanda, demandaNova);
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
     }
 
 //    //Não Deleta todas as demandas do codigo
