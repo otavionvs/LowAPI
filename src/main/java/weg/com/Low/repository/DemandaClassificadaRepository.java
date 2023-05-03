@@ -14,5 +14,6 @@ public interface DemandaClassificadaRepository extends JpaRepository<DemandaClas
 //    DemandaAnalista findByDemandaDemandaAnalista(Demanda demanda);
     List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario solicitanteDemanda, Usuario analista);
     
+    
 
 }
