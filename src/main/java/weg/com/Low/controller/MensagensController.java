@@ -1,20 +1,18 @@
 package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
-import org.hibernate.LazyInitializationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.MensagensDTO;
-import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Mensagens;
-import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.service.*;
+import weg.com.Low.model.service.DemandaService;
+import weg.com.Low.model.service.MensagensService;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +25,7 @@ public class MensagensController {
     private MensagensService mensagensService;
     private DemandaService demandaService;
     private UsuarioService usuarioService;
-    private PropostaService propostaService;
     private DemandaClassificadaService demandaClassificadaService;
-
     @GetMapping("/{codigo}")
     public ResponseEntity<?> findAllByDemanda(@PathVariable(value = "codigo") Integer codigo) {
         if(!demandaService.existsById(codigo)){
@@ -49,13 +45,12 @@ public class MensagensController {
         return ResponseEntity.ok(demandaClassificadaService.findBySolicitanteDemandaOrAnalista(usuario));
     }
 
-    @MessageMapping("/demanda/{codigo}")
-    @SendTo("/demanda/{codigo}/chat")
-    public Object    save(@Payload MensagensDTO mensagensDTO) {
+    @MessageMapping("/{codigo}")
+    @SendTo("/chat/{codigo}")
+    public Mensagens save(MensagensDTO mensagensDTO) {
         Mensagens mensagens = new Mensagens();
         mensagensDTO.getDemandaMensagens().setVersion(demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get().getVersion());
         BeanUtils.copyProperties(mensagensDTO, mensagens);
-            return mensagensService.save(mensagens);
-
+        return mensagensService.save(mensagens);
     }
 }
