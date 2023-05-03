@@ -2,6 +2,8 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -127,6 +129,7 @@ public class PropostaController {
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova));
     }
+
 
 
 //    @PostMapping

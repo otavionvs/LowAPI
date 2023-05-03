@@ -1,6 +1,8 @@
 package weg.com.Low.model.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
+import weg.com.Low.model.enums.StatusMensagens;
 
 import javax.persistence.*;
 
@@ -20,6 +22,9 @@ public class Mensagens {
     @ManyToOne
     @JoinColumns({
             @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"),
-            @JoinColumn(name = "version_demanda", referencedColumnName = "version")})
+            @JoinColumn(name = "version", referencedColumnName = "version")})
     private Demanda demandaMensagens;
+
+    @Column
+    private StatusMensagens statusMensagens;
 }
