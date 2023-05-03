@@ -45,8 +45,8 @@ public class MensagensController {
         return ResponseEntity.ok(demandaClassificadaService.findBySolicitanteDemandaOrAnalista(usuario));
     }
 
-    @MessageMapping("/{codigo}")
-    @SendTo("/chat/{codigo}")
+    @MessageMapping("/demanda/{codigo}")
+    @SendTo("/demanda/{codigo}/chat")
     public Mensagens save(MensagensDTO mensagensDTO) {
         Mensagens mensagens = new Mensagens();
         mensagensDTO.getDemandaMensagens().setVersion(demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get().getVersion());
