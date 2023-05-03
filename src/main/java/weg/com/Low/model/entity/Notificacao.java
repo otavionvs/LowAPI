@@ -39,9 +39,4 @@ public class Notificacao {
             inverseJoinColumns = @JoinColumn(name = "codigo_usuario", nullable = false))
     private List<Usuario> usuariosNotificacao;
 
-
-    public void criarNoticacao(){
-
-    }
-
 }

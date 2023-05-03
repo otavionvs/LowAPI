@@ -50,22 +50,14 @@ public class DemandaClassificada extends Demanda{
 //    @JoinColumn(name = "demanda_codigo", nullable = false)
 //    private Demanda demandaDemandaAnalista;
 
-    @OneToOne
-    @JoinColumn(name = "analista_codigo")
-    private Usuario analista;
-
-    @OneToOne
-    @JoinColumn(name = "gerente_negocio_codigo")
-    private Usuario gerenteNegocio;
-
     public void setAll(DemandaClassificada demandaClassificada){
         tamanhoDemandaClassificada = demandaClassificada.tamanhoDemandaClassificada;
         buSolicitanteDemandaClassificada = demandaClassificada.buSolicitanteDemandaClassificada;
         System.out.println(demandaClassificada.busBeneficiadasDemandaClassificada);
         busBeneficiadasDemandaClassificada = demandaClassificada.busBeneficiadasDemandaClassificada;
         secaoDemandaClassificada = demandaClassificada.secaoDemandaClassificada;
-        analista = demandaClassificada.analista;
-        gerenteNegocio = demandaClassificada.gerenteNegocio;
+        this.setAnalista(demandaClassificada.getAnalista());
+        this.setGerenteNegocio(demandaClassificada.getGerenteNegocio());
         setCodigoDemanda(demandaClassificada.getCodigoDemanda());
     }
 }

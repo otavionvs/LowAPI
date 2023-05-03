@@ -5,9 +5,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Notificacao;
+import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.DemandaRepository;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,64 +27,45 @@ public class DemandaService {
     public Optional<Demanda> findFirstByCodigoDemandaAndVersion(Integer codigoDemanda, Integer version) {
         return demandaRepository.findFirstByCodigoDemandaAndVersion(codigoDemanda, version);
     }
+
     public List<Demanda> findAll() {
         return demandaRepository.findAll();
     }
 
     public Demanda save(Demanda demanda, TipoNotificacao tipoNotificacao) {
-        Notificacao notificacao;
-        switch (tipoNotificacao){
-            case CRIOU_DEMANDA: {
-//                notificacao = new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
-//                        "Demanda criada com sucesso!", );
-                break;
+        List<Usuario> usuarios = new ArrayList<>();
+        usuarios.add(demanda.getSolicitanteDemanda());
+        switch (tipoNotificacao) {
+            case CRIOU_DEMANDA -> {
+                notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
+                        "Demanda criada com sucesso!", new Date(), false, usuarios));
+            }
+            case EDITOU_DEMANDA -> {
+                if (demanda.getAnalista() != null) {
+                    usuarios.add(demanda.getAnalista());
+                }
+                notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
+                        "A Demanda foi editada!", new Date(), false, usuarios));
+            }
+            case AVANCOU_STATUS_DEMANDA -> {
+                if (demanda.getGerenteNegocio() != null) {
+                    usuarios.add(demanda.getGerenteNegocio());
+                }
+                usuarios.add(demanda.getAnalista());
+                notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
+                        "A Demanda avançou um status!", new Date(), false, usuarios));
+            }
+            case CANCELOU_DEMANDA -> {
+                if (demanda.getAnalista() != null) {
+                    usuarios.add(demanda.getAnalista());
+                }
+                notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
+                        "A Demanda foi cancelada!", new Date(), false, usuarios));
             }
         }
         return demandaRepository.save(demanda);
     }
 
-    //    public Demanda save(Demanda demanda) {
-//        switch (demanda.getStatusDemanda()) {
-//            case BACKLOG_CLASSIFICACAO -> {
-//                notificacaoService.save(new Notificacao(
-//                        null,
-//                        demanda.getTituloDemanda(),
-//                        demanda.getCodigoDemanda(),
-//                        TipoNotificacao.CRIOU_DEMANDA,
-//                        "Sua demanda foi criada!",
-//                        LocalDateTime.now(),
-//                        LocalDate.now(),
-//                        StatusNotificacao.ATIVADA,
-//                        (List<Usuario>) demanda.getSolicitanteDemanda()));
-//            }
-//            case CANCELLED -> {
-//                notificacaoService.save(new Notificacao(
-//                        null,
-//                        demanda.getTituloDemanda(),
-//                        demanda.getCodigoDemanda(),
-//                        TipoNotificacao.CANCELOU_DEMANDA,
-//                        "Sua demanda foi cancelada!",
-//                        LocalDateTime.now(),
-//                        LocalDate.now(),
-//                        StatusNotificacao.ATIVADA,
-//                        (List<Usuario>) demanda.getSolicitanteDemanda()));
-//            }
-//            default -> {
-//                notificacaoService.save(new Notificacao(
-//                        null,
-//                        demanda.getTituloDemanda(),
-//                        demanda.getCodigoDemanda(),
-//                        TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-//                        "Sua demanda progrediu de status!",
-//                        LocalDateTime.now(),
-//                        LocalDate.now(),
-//                        StatusNotificacao.ATIVADA,
-//                        (List<Usuario>) demanda.getSolicitanteDemanda()));
-//
-//        }
-//        }
-//        return demandaRepository.save(demanda);
-//    }
 
     public List<Demanda> findByCodigoDemanda(Integer codigo) {
         return demandaRepository.findByCodigoDemanda(codigo);
@@ -98,8 +82,6 @@ public class DemandaService {
     public void deleteById(Integer codigo) {
         demandaRepository.deleteFirstByCodigoDemandaOrderByVersionDesc(codigo);
     }
-
-
 
     public List<Demanda> search(
             String tituloDemanda, String solicitante, String codigoDemanda, String status,
@@ -124,7 +106,6 @@ public class DemandaService {
     public List<Demanda> search(String status, Integer codigoDepartamento, Pageable page) {
         return demandaRepository.search(status, codigoDepartamento, page);
     }
-
 
     public Long countAllByCodigoDemanda(Integer codigoDemanda) {
         return demandaRepository.countAllByCodigoDemanda(codigoDemanda);

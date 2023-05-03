@@ -15,10 +15,7 @@ import weg.com.Low.dto.*;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
-import weg.com.Low.model.enums.Comissao;
-import weg.com.Low.model.enums.DecisaoProposta;
-import weg.com.Low.model.enums.Status;
-import weg.com.Low.model.enums.StatusReuniao;
+import weg.com.Low.model.enums.*;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.ReuniaoService;
@@ -132,7 +129,7 @@ public class ReuniaoController {
         }else{
             reuniao.setStatusReuniao(StatusReuniao.AGUARDANDO);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO));
     }
 
     @PutMapping("/parecer/{codigoProposta}")
@@ -164,7 +161,7 @@ public class ReuniaoController {
         BeanUtils.copyProperties(parecerComissaoDTO, demanda);
         demanda.setUltimaDecisaoComissao(parecerComissaoDTO.getDecisaoProposta().toString());
         demanda.setVersion(demanda.getVersion() + 1);
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda, TipoNotificacao.MARCOU_REUNIAO));
     }
 
 
@@ -187,7 +184,7 @@ public class ReuniaoController {
             }
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.FINALIZOU_REUNIAO));
     }
 
 
@@ -204,7 +201,7 @@ public class ReuniaoController {
         reuniao.setStatusReuniao(StatusReuniao.CANCELADO);
         reuniao.setMotivoCancelamentoReuniao(motivoCancelamentoReuniao);
 
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.DESMARCOU_REUNIAO));
     }
 
     @PutMapping("/update/{codigo}")
@@ -230,6 +227,6 @@ public class ReuniaoController {
         }else{
             reuniao.setStatusReuniao(reuniaoDTO.getStatusReuniao());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO));
     }
 }

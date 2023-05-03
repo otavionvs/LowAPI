@@ -4,9 +4,13 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.DemandaClassificada;
+import weg.com.Low.model.entity.Notificacao;
 import weg.com.Low.model.entity.Usuario;
+import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.DemandaClassificadaRepository;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,27 +28,14 @@ public class DemandaClassificadaService {
         return demandaClassificadaRepository.findBySolicitanteDemandaOrAnalista(analista, analista);
     }
 
-    public DemandaClassificada save(DemandaClassificada entity) {
-        return demandaClassificadaRepository.save(entity);
+    public DemandaClassificada save(DemandaClassificada demanda) {
+        List<Usuario> usuarios = new ArrayList<>();
+        usuarios.add(demanda.getSolicitanteDemanda());
+        usuarios.add(demanda.getAnalista());
+        notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+                "A Demanda avançou um status!", new Date(), false, usuarios));
+        return demandaClassificadaRepository.save(demanda);
     }
-
-    //    public DemandaAnalista save(DemandaAnalista entity) {
-//        ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
-//        usuarios.add(entity.getAnalista());
-//        usuarios.add(entity.getGerenteNegocio());
-//        usuarios.add(entity.getSolicitanteDemanda());
-//
-//        notificacaoService.save(new Notificacao(null,
-//                entity.getTituloDemanda(),
-//                entity.getCodigoDemanda(),
-//                TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-//                "Sua demanda foi classificada!",
-//                LocalDateTime.now(),
-//                LocalDate.now(),
-//                StatusNotificacao.ATIVADA, usuarios));
-//
-//        return demandaAnalistaRepository.save(entity);
-//    }
 
     public Optional<DemandaClassificada> findById(Integer codigo) {
         return demandaClassificadaRepository.findById(codigo);
