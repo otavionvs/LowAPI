@@ -49,7 +49,6 @@ public class PropostaController {
         }
         Demanda demanda = demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get();
 
-
         //Seta as informações de demandaClassificada
         proposta.setAll((DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get());
 
@@ -60,12 +59,19 @@ public class PropostaController {
             recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
         }
 
-        if(proposta.getBeneficioPotencialDemanda().getCodigoBeneficio() == null){
-            proposta.setBeneficioPotencialDemanda(beneficioService.save(proposta.getBeneficioPotencialDemanda()));
-        }
-        if(proposta.getBeneficioRealDemanda().getCodigoBeneficio() == null){
-            proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
-        }
+            if(proposta.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null &&
+                    proposta.getBeneficioPotencialDemanda().getValorBeneficio() != null){
+                proposta.setBeneficioPotencialDemanda(beneficioService.save(proposta.getBeneficioPotencialDemanda()));
+            }else {
+                proposta.setBeneficioPotencialDemanda(null);
+            }
+
+            if(proposta.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null &&
+                    proposta.getBeneficioRealDemanda().getValorBeneficio() != null){
+                proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
+            }else {
+                proposta.setBeneficioRealDemanda(null);
+            }
 
         centroCustoService.saveAll(proposta.getCentroCustosDemanda());
 
@@ -96,13 +102,21 @@ public class PropostaController {
             recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
         }
 
-        if(propostaNova.getBeneficioPotencialDemanda().getCodigoBeneficio() == null){
+        if(propostaNova.getBeneficioPotencialDemanda().getCodigoBeneficio() == null &&
+                propostaNova.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null &&
+                propostaNova.getBeneficioPotencialDemanda().getValorBeneficio() != null){
             propostaNova.setBeneficioPotencialDemanda(beneficioService.save(propostaNova.getBeneficioPotencialDemanda()));
-        }
-        if(propostaNova.getBeneficioRealDemanda().getCodigoBeneficio() == null){
-            propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
+        }else{
+            propostaNova.setBeneficioPotencialDemanda(null);
         }
 
+        if(propostaNova.getBeneficioRealDemanda().getCodigoBeneficio() == null &&
+                propostaNova.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null &&
+                propostaNova.getBeneficioRealDemanda().getValorBeneficio() != null){
+            propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
+        }else{
+            propostaNova.setBeneficioRealDemanda(null);
+        }
 
         Proposta proposta = (Proposta) demandaService.findLastDemandaById(propostaNova.getCodigoDemanda()).get();
 

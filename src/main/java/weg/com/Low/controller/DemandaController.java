@@ -147,8 +147,6 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
 
-
-
     //Retorna uma lista com até dois status enviados
     @GetMapping("/filtro/status")
     public ResponseEntity<List<Demanda>> search(
@@ -179,12 +177,14 @@ public class DemandaController {
 
         centroCustoService.saveAll(demanda.getCentroCustosDemanda());
 
-        if(demanda.getBeneficioPotencialDemanda().getValorBeneficio() != null){
+        if(demanda.getBeneficioPotencialDemanda().getValorBeneficio() != null &&
+        demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null){
         demanda.setBeneficioPotencialDemanda(beneficioService.save(demanda.getBeneficioPotencialDemanda()));
         }else{
             demanda.setBeneficioPotencialDemanda(null);
         }
-        if(demanda.getBeneficioRealDemanda().getValorBeneficio() !=null){
+        if(demanda.getBeneficioRealDemanda().getValorBeneficio() !=null &&
+        demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null){
         demanda.setBeneficioRealDemanda(beneficioService.save(demanda.getBeneficioRealDemanda()));
         }else{
             demanda.setBeneficioRealDemanda(null);
@@ -197,8 +197,6 @@ public class DemandaController {
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
     }
-
-
 
     @PutMapping("/update")
     public ResponseEntity<Object> update(
@@ -215,18 +213,27 @@ public class DemandaController {
 
         centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
 
-        demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
-        demandaNova.setBeneficioRealDemanda(beneficioService.save(demandaNova.getBeneficioRealDemanda()));
+        if(demandaNova.getBeneficioPotencialDemanda().getValorBeneficio() != null &&
+                demandaNova.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null){
+            demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
+        }else{
+            demandaNova.setBeneficioPotencialDemanda(null);
+        }
+
+        if(demandaNova.getBeneficioRealDemanda().getValorBeneficio() !=null &&
+                demandaNova.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null){
+            demandaNova.setBeneficioRealDemanda(beneficioService.save(demandaNova.getBeneficioRealDemanda()));
+        }else{
+            demandaNova.setBeneficioRealDemanda(null);
+        }
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
 
         demandaNova.setStatusDemanda(demanda.getStatusDemanda());
         demandaNova.setVersion(demanda.getVersion() + 1);
 
-
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
-
 
     //Caso seja passado por parametro 1 - passa para o proximo status
     //Parametro != 1 - Cancela a demanda
@@ -241,6 +248,7 @@ public class DemandaController {
         DemandaClassificada demanda = (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
+        //Necessario para realizar um put
         DemandaClassificada demandaNova = new DemandaClassificada();
         BeanUtils.copyProperties(demanda, demandaNova);
         demandaNova.setVersion(demanda.getVersion() + 1);
@@ -278,9 +286,6 @@ public class DemandaController {
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
-        //Necessário para a realização de um PUT
-
-        //2
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
 
@@ -298,7 +303,6 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
 
-
 //    //Não Deleta todas as demandas do codigo
     @DeleteMapping("/{codigo}")
     public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
@@ -313,6 +317,4 @@ public class DemandaController {
         demandaService.deleteById(codigo);
         return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
     }
-
-
 }
