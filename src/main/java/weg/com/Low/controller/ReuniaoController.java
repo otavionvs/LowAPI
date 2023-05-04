@@ -151,7 +151,8 @@ public class ReuniaoController {
             }
 
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)){
-            demanda.setStatusDemanda(Status.RETURNED);
+
+            demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
 
             if(parecerComissaoDTO.getParecerComissaoProposta().length() == 0){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
