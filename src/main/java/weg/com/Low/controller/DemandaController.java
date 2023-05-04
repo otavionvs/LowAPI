@@ -226,7 +226,6 @@ public class DemandaController {
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
 
-        demandaNova.setStatusDemanda(demanda.getStatusDemanda());
         demandaNova.setVersion(demanda.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
@@ -280,12 +279,7 @@ public class DemandaController {
             } else {
                 demandaNova.setStatusDemanda(Status.CANCELLED);
             }
-        } else if(demandaStatus.equals(Status.CANCELLED.getStatus())){
-            if (decisao == 1) {
-                demandaNova.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
-            } else {
-                demandaNova.setStatusDemanda(Status.CANCELLED);
-            }
+
         }else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
