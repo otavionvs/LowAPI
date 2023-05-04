@@ -138,9 +138,6 @@ public class DemandaController {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() , page));
             }
         }
-        for(List<Demanda> demanda: listaDemandas){
-            System.out.println(demanda.size());
-        }
 
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
