@@ -5,13 +5,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import weg.com.Low.dto.MensagensDTO;
+import weg.com.Low.dto.ReturnMensagens;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Mensagens;
 import weg.com.Low.model.entity.Usuario;
@@ -22,8 +22,7 @@ import weg.com.Low.model.service.MensagensService;
 import weg.com.Low.security.TokenUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin
 @AllArgsConstructor
@@ -59,7 +58,21 @@ public class MensagensController {
         if(statusAtualizado){
             messagingTemplate.convertAndSend("/demanda/" + codigo + "/chat", mensagens);
         }
+
+
         return ResponseEntity.ok(mensagens);
+    }
+
+    public Date encontrarDataMaisAtual(List<Mensagens> mensagens) {
+        Date dataMaisAtual = null;
+
+        for (Mensagens mensagem : mensagens) {
+            if (dataMaisAtual == null || mensagem.getDataMensagens().after(dataMaisAtual)) {
+                dataMaisAtual = mensagem.getDataMensagens();
+            }
+        }
+
+        return dataMaisAtual;
     }
 
     @GetMapping("/demandasDiscutidas/{codigoUsuario}")
@@ -69,8 +82,28 @@ public class MensagensController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demandas não encontradas!");
         }
         Usuario usuario = usuarioService.findById(codigoUsuario).get();
-        System.out.println(usuario);
-        return ResponseEntity.ok(demandaClassificadaService.findBySolicitanteDemandaOrAnalista(usuario));
+        List<Demanda> listaDemandas = demandaClassificadaService.findBySolicitanteDemandaOrAnalista(usuario);
+        List<ReturnMensagens> returnMensagens = new ArrayList<>();
+
+        for (Demanda demanda: listaDemandas){
+            List<Mensagens> mensagens = mensagensService.findAllByDemanda(demanda);
+            Date dataMaisAtual = encontrarDataMaisAtual(mensagens);
+            Integer qtdNaoLidas = 0;
+            for(Mensagens mensagem: mensagens){
+                if(mensagem.getStatusMensagens().equals(StatusMensagens.ENVIADA)){
+                    qtdNaoLidas++;
+                }
+            }
+            returnMensagens.add(new ReturnMensagens(qtdNaoLidas, dataMaisAtual, demanda.getCodigoDemanda()));
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("demandas", listaDemandas);
+        System.out.println(response);
+        response.put("infoCard", returnMensagens);
+
+
+        return ResponseEntity.ok(response);
     }
 
     //    @MessageMapping("/visualizar/{codigo}")
@@ -85,6 +118,7 @@ public class MensagensController {
     @MessageMapping("/demanda/{codigo}")
     @SendTo("/demanda/{codigo}/chat")
     public Mensagens save(@Payload MensagensDTO mensagensDTO) {
+        System.out.println(mensagensDTO.getMultipartFile().get("file"));
         Mensagens mensagens = new Mensagens();
         mensagensDTO.getDemandaMensagens().setVersion(demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get().getVersion());
         BeanUtils.copyProperties(mensagensDTO, mensagens);

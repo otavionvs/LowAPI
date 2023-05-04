@@ -138,9 +138,6 @@ public class DemandaController {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() , page));
             }
         }
-        for(List<Demanda> demanda: listaDemandas){
-            System.out.println(demanda.size());
-        }
 
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
@@ -229,7 +226,6 @@ public class DemandaController {
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
 
-        demandaNova.setStatusDemanda(demanda.getStatusDemanda());
         demandaNova.setVersion(demanda.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
@@ -283,7 +279,8 @@ public class DemandaController {
             } else {
                 demandaNova.setStatusDemanda(Status.CANCELLED);
             }
-        } else {
+
+        }else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
@@ -300,6 +297,7 @@ public class DemandaController {
         //Necessário para a realização de um PUT
         Demanda demandaNova = new Demanda();
         BeanUtils.copyProperties(demanda, demandaNova);
+        demandaNova.setVersion(demanda.getVersion() + 1);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
 

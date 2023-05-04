@@ -4,6 +4,7 @@ import lombok.Getter;
 import weg.com.Low.model.entity.Beneficio;
 import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.model.entity.Usuario;
+import weg.com.Low.model.enums.Status;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -31,4 +32,5 @@ public class DemandaDTO {
     @NotEmpty
     private List<CentroCustoDTO> centroCustosDemanda;
     private Integer codigoDemanda;
+    private Status statusDemanda;
 }
