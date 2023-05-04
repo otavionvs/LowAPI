@@ -20,8 +20,6 @@ import java.util.Optional;
 public class ReuniaoService {
     private ReuniaoRepository reuniaoRepository;
     private NotificacaoService notificacaoService;
-    private DemandaClassificadaService demandaClassificadaService;
-    private DemandaService demandaService;
 
     public List<Reuniao> findAll() {
         return reuniaoRepository.findAll();
@@ -35,7 +33,7 @@ public class ReuniaoService {
                 notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
                         "Reunião Marcada!", new Date(), false, usuarios));
             }
-            case EDITOU_DEMANDA -> {
+            case EDITOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
                         "Reunião Alterada!", new Date(), false, usuarios));
             }

@@ -26,6 +26,7 @@ public class Notificacao {
     @Column(nullable = false)
     private String tituloDemandaNotificacao;
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private TipoNotificacao tipoNotificacao;
     @Column(nullable = false)
     private String descricaoNotificacao;
