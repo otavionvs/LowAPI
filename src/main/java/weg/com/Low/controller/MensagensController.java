@@ -10,8 +10,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import weg.com.Low.dto.MensagensDTO;
 import weg.com.Low.dto.ReturnMensagens;
 import weg.com.Low.model.entity.Demanda;
@@ -101,6 +99,7 @@ public class MensagensController {
 
         Map<String, Object> response = new HashMap<>();
         response.put("demandas", listaDemandas);
+        System.out.println(response);
         response.put("infoCard", returnMensagens);
 
 
@@ -119,9 +118,7 @@ public class MensagensController {
     @MessageMapping("/demanda/{codigo}")
     @SendTo("/demanda/{codigo}/chat")
     public Mensagens save(@Payload MensagensDTO mensagensDTO) {
-//        MultipartFile arquivo = request.getMultipartFile().get("file");
-//        System.out.println(arquivo);
-//        System.out.println(request.getFile("arquivo"));
+        System.out.println(mensagensDTO.getMultipartFile().get("file"));
         Mensagens mensagens = new Mensagens();
         mensagensDTO.getDemandaMensagens().setVersion(demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get().getVersion());
         BeanUtils.copyProperties(mensagensDTO, mensagens);

@@ -12,5 +12,5 @@ public class MensagensDTO {
     private String textoMensagens;
     private Demanda demandaMensagens;
     private Usuario usuarioMensagens;
-//    private Map<String, MultipartFile> multipartFile;
+    private Map<String, MultipartFile> multipartFile;
 }
