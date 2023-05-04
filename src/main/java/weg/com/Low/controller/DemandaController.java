@@ -280,7 +280,13 @@ public class DemandaController {
             } else {
                 demandaNova.setStatusDemanda(Status.CANCELLED);
             }
-        } else {
+        } else if(demandaStatus.equals(Status.CANCELLED.getStatus())){
+            if (decisao == 1) {
+                demandaNova.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
+            } else {
+                demandaNova.setStatusDemanda(Status.CANCELLED);
+            }
+        }else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
@@ -297,6 +303,7 @@ public class DemandaController {
         //Necessário para a realização de um PUT
         Demanda demandaNova = new Demanda();
         BeanUtils.copyProperties(demanda, demandaNova);
+        demandaNova.setVersion(demanda.getVersion() + 1);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
     }
 
