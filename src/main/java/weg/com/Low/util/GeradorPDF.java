@@ -61,7 +61,6 @@ public class GeradorPDF {
             Paragraph mbeneficioPotencial = new Paragraph("Memória de Cálculo do Benefício Potencial:", negritoFont);
             Paragraph beneficioQualitativo = new Paragraph("Beneficio Qualitativo:", negritoFont);
 
-            Paragraph anexos = new Paragraph("Anexos:", negritoFont);
             Paragraph conteudoTitulo = new Paragraph(demanda.getCodigoDemanda().toString()+". "+ demanda.getTituloDemanda().toUpperCase(), negritoFont);
             conteudoTitulo.setAlignment(Element.ALIGN_CENTER);
 
@@ -71,7 +70,6 @@ public class GeradorPDF {
             Paragraph conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont);
             Paragraph conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda(), normalFont);
 
-            Paragraph conteudoAnexos = new Paragraph("Arquivo 1.pdf\nArquivo 2.docx", normalFont);
 
             PdfPTable table = new PdfPTable(2);
             table.setWidthPercentage(100);
@@ -126,11 +124,6 @@ public class GeradorPDF {
 
             document.add(beneficioQualitativo);
             document.add(conteudoBeneficioQualitativo);
-
-
-            document.add(anexos);
-            document.add(conteudoAnexos);
-
 
             // Caso a demanda tiver dados da DemandaClassificada adicionar o tamanho da demanda ao documento
             if (demanda.getStatusDemanda().ordinal() > 0 && (demanda instanceof DemandaClassificada || demanda instanceof Proposta)) {

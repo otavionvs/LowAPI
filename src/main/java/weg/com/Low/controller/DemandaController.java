@@ -81,7 +81,7 @@ public class DemandaController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "documento.pdf");
+        headers.setContentDispositionFormData("attachment", demanda.getTituloDemanda()+".pdf");
         headers.setContentLength(baos.size());
 
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
