@@ -23,16 +23,16 @@ public class Notificacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoNotificacao;
-    @Column
+    @Column(nullable = false)
     private String tituloDemandaNotificacao;
-    @Column
+    @Column(nullable = false)
     private TipoNotificacao tipoNotificacao;
-    @Column
+    @Column(nullable = false)
     private String descricaoNotificacao;
     @Column
     private Date dataNotificacao = new Date();
     @Column
-    private Boolean lido;
+    private Boolean lido = false;
     @ManyToMany
     @JoinTable(name = "usuario_notificacoes", joinColumns =
     @JoinColumn(name = "codigo_notificacao", nullable = false),
