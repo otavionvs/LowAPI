@@ -36,6 +36,9 @@ public class GeradorPDF {
             for (Demanda demanda :
                     reuniao.getPropostasReuniao()) {
                 setInformationsDocumentDemanda(document, demanda, writer);
+                Paragraph p = new Paragraph();
+                p.setSpacingAfter(30);
+                document.add(p);
             }
 
 
@@ -154,7 +157,7 @@ public class GeradorPDF {
                 paybackProposta.add(new Chunk(((Proposta) demanda).getPaybackProposta().toString(), normalFont));
 
                 Paragraph escopoDemandaProposta = new Paragraph("Escopo Proposta: ", negritoFont);
-                Paragraph conteudoEscopoDemandaProposta = new Paragraph("Conteudo do escopo que ainda não existe no banco de dados infelizmente", normalFont);
+                Paragraph conteudoEscopoDemandaProposta = new Paragraph(((Proposta) demanda).getEscopoDemandaProposta(), normalFont);
 
                 Paragraph responsavelProposta = new Paragraph();
                 responsavelProposta.add(new Chunk("Responsável Proposta: ", negritoFont));
