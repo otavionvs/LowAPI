@@ -136,12 +136,18 @@ public class ReuniaoController {
     public ResponseEntity<Object> parecer(
             @PathVariable(value = "codigoProposta") Integer codigoProposta,
             @RequestBody @Valid ParecerComissaoDTO parecerComissaoDTO) {
+
+
         Proposta demanda = (Proposta) demandaService.findLastDemandaById(codigoProposta).get();
+
+        Proposta novaDemanda = new Proposta();
+        BeanUtils.copyProperties(demanda, novaDemanda);
+
         if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR)){
-            demanda.setStatusDemanda(Status.TO_DO);
+            novaDemanda.setStatusDemanda(Status.TO_DO);
 
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR_COM_RECOMENDACAO)){
-            demanda.setStatusDemanda(Status.TO_DO);
+            novaDemanda.setStatusDemanda(Status.TO_DO);
 
             if(parecerComissaoDTO.getParecerComissaoProposta().length() == 0){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
@@ -149,23 +155,18 @@ public class ReuniaoController {
 
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)){
 
-            demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+            novaDemanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
 
             if(parecerComissaoDTO.getParecerComissaoProposta().length() == 0){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
             }
 
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REPROVAR)){
-            demanda.setStatusDemanda(Status.CANCELLED);
+            novaDemanda.setStatusDemanda(Status.CANCELLED);
         }
-        Proposta novaDemanda = new Proposta();
-
-        BeanUtils.copyProperties(demanda, novaDemanda);
 
         novaDemanda.setUltimaDecisaoComissao(parecerComissaoDTO.getDecisaoProposta().toString());
         novaDemanda.setVersion(demanda.getVersion() + 1);
-
-
         BeanUtils.copyProperties(parecerComissaoDTO, novaDemanda);
 
 
