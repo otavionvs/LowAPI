@@ -162,6 +162,7 @@ public class DemandaController {
         if(!arquivos[0].getOriginalFilename().equals("")){
             demanda.setArquivos(arquivos);
         }
+
         if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitante não encontrado!");
         }

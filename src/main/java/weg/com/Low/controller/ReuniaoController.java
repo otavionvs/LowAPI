@@ -161,11 +161,18 @@ public class ReuniaoController {
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REPROVAR)){
             demanda.setStatusDemanda(Status.CANCELLED);
         }
+        Proposta novaDemanda = new Proposta();
 
-        BeanUtils.copyProperties(parecerComissaoDTO, demanda);
-        demanda.setUltimaDecisaoComissao(parecerComissaoDTO.getDecisaoProposta().toString());
-        demanda.setVersion(demanda.getVersion() + 1);
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+        BeanUtils.copyProperties(demanda, novaDemanda);
+
+        novaDemanda.setUltimaDecisaoComissao(parecerComissaoDTO.getDecisaoProposta().toString());
+        novaDemanda.setVersion(demanda.getVersion() + 1);
+
+
+        BeanUtils.copyProperties(parecerComissaoDTO, novaDemanda);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(novaDemanda));
     }
 
 
