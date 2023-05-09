@@ -17,14 +17,12 @@ import java.util.Optional;
 public class NotificacaoService {
     private NotificacaoRepository notificacaoRepository;
 
-    public void sendNotification(String tituloDemanda, String Descricao){
-        LocalDateTime now = LocalDateTime.now();
-        NotificacaoDTO notificacaoDTO = new NotificacaoDTO();
-        notificacaoDTO.setDataNotificacao(now.toLocalDate());
-        notificacaoDTO.setHoraNotificacao(now);
-        notificacaoDTO.setTituloDemandaNotificacao("asdsfda");
-        notificacaoDTO.setDescricaoNotificacao("teste");
-    }
+//    public void sendNotification(String tituloDemanda, String Descricao){
+//        LocalDateTime now = LocalDateTime.now();
+//        NotificacaoDTO notificacaoDTO = new NotificacaoDTO();
+//        notificacaoDTO.setTituloDemandaNotificacao("asdsfda");
+//        notificacaoDTO.setDescricaoNotificacao("teste");
+//    }
 
     public Notificacao save(Notificacao entity) {
 
@@ -34,8 +32,6 @@ public class NotificacaoService {
     public List<Notificacao> findAllByUsuario(Integer usuario){
         return notificacaoRepository.findAllByUsuario(usuario);
     }
-
-
 
     public Optional<Notificacao> findById(Integer integer) {
         return notificacaoRepository.findById(integer);

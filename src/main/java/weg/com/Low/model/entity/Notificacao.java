@@ -23,27 +23,21 @@ public class Notificacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoNotificacao;
-    @Column
+    @Column(nullable = false)
     private String tituloDemandaNotificacao;
-    @Column
-    private Integer codigo;
-    @Column
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     private TipoNotificacao tipoNotificacao;
-    @Column
+    @Column(nullable = false)
     private String descricaoNotificacao;
     @Column
     private Date dataNotificacao = new Date();
     @Column
-    private StatusNotificacao statusNotificacao;
+    private Boolean lido = false;
     @ManyToMany
     @JoinTable(name = "usuario_notificacoes", joinColumns =
     @JoinColumn(name = "codigo_notificacao", nullable = false),
             inverseJoinColumns = @JoinColumn(name = "codigo_usuario", nullable = false))
     private List<Usuario> usuariosNotificacao;
-
-
-    public void criarNoticacao(){
-
-    }
 
 }
