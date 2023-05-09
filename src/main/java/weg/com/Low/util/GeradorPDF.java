@@ -6,6 +6,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.tool.xml.XMLWorkerHelper;
 import org.springframework.stereotype.Component;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.TipoAtaProposta;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,7 +18,7 @@ public class GeradorPDF {
     private final Font negritoFont = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
     private final Font normalFont = new Font(Font.FontFamily.TIMES_ROMAN, 11, Font.NORMAL);
 
-    public ByteArrayOutputStream gerarPDFAta(Reuniao reuniao){
+    public ByteArrayOutputStream gerarPDFAta(Reuniao reuniao, TipoAtaProposta tipoAtaProposta){
         try{
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Document document = new Document();
@@ -33,12 +34,14 @@ public class GeradorPDF {
             conteudoTitulo.setAlignment(Element.ALIGN_CENTER);
             document.add(conteudoTitulo);
 
-            for (Demanda demanda :
+            for (Proposta demanda :
                     reuniao.getPropostasReuniao()) {
-                setInformationsDocumentDemanda(document, demanda, writer);
-                Paragraph p = new Paragraph();
-                p.setSpacingAfter(30);
-                document.add(p);
+                if(demanda.getTipoAtaProposta() == tipoAtaProposta){
+                    setInformationsDocumentDemanda(document, demanda, writer);
+                    Paragraph p = new Paragraph();
+                    p.setSpacingAfter(30);
+                    document.add(p);
+                }
             }
 
 
@@ -161,11 +164,7 @@ public class GeradorPDF {
 
                 Paragraph responsavelProposta = new Paragraph();
                 responsavelProposta.add(new Chunk("Responsável Proposta: ", negritoFont));
-                responsavelProposta.add(new Chunk(((Proposta) demanda).getResponsavelProposta().getNomeUsuario(), normalFont));
-
-                Paragraph areaResponsavelProposta = new Paragraph();
-                areaResponsavelProposta.add(new Chunk("Área Responsável Proposta: ", negritoFont));
-                areaResponsavelProposta.add(new Chunk(((Proposta) demanda).getResponsavelProposta().getDepartamentoUsuario().getNomeDepartamento(), normalFont));
+                responsavelProposta.add(new Chunk(((Proposta) demanda).getResponsavelProposta(), normalFont));
 
                 Paragraph recursos = new Paragraph("Recursos: ", negritoFont);
                 recursos.setSpacingAfter(10);
@@ -195,8 +194,6 @@ public class GeradorPDF {
                     tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getPeriodoExMesesRecurso().toString(), normalFont)));
                 }
                 document.add(tableRecurso);
-
-
                 document.add(prazoElaboracao);
                 document.add(inicioExDemandaProposta);
                 document.add(fimExDemandaProposta);
@@ -204,8 +201,6 @@ public class GeradorPDF {
                 document.add(escopoDemandaProposta);
                 document.add(conteudoEscopoDemandaProposta);
                 document.add(responsavelProposta);
-                document.add(areaResponsavelProposta);
-
             }
         }catch (Exception e){
             e.printStackTrace();

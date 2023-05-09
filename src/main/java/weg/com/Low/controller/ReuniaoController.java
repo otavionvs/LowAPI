@@ -15,10 +15,7 @@ import weg.com.Low.dto.*;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
-import weg.com.Low.model.enums.Comissao;
-import weg.com.Low.model.enums.DecisaoProposta;
-import weg.com.Low.model.enums.Status;
-import weg.com.Low.model.enums.StatusReuniao;
+import weg.com.Low.model.enums.*;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.ReuniaoService;
@@ -71,13 +68,13 @@ public class ReuniaoController {
 
     @GetMapping("/ata/{codigoReuniao}")
     public ResponseEntity<Object> downloadAta(
-            @PathVariable(value = "codigoReuniao") Integer codigoReuniao) {
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao, @RequestBody TipoAtaProposta tipoAta) {
         Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
         if (reuniao == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma reuniao encontrada!");
         }
         GeradorPDF geradorPDF = new GeradorPDF();
-        ByteArrayOutputStream baos = geradorPDF.gerarPDFAta(reuniao);
+        ByteArrayOutputStream baos = geradorPDF.gerarPDFAta(reuniao, tipoAta);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);

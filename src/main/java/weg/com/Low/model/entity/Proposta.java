@@ -43,9 +43,8 @@ public class Proposta extends DemandaClassificada {
     @Column(columnDefinition = "longtext")
     private String escopoDemandaProposta;
 
-    @OneToOne
-    @JoinColumn(name = "codigo_responsavel")
-    private Usuario responsavelProposta;
+    @Column(columnDefinition = "longtext")
+    private String responsavelProposta;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "proposta_recurso", joinColumns = {
