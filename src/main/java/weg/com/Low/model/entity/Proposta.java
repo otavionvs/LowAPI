@@ -35,7 +35,7 @@ public class Proposta extends DemandaClassificada {
     private TipoAtaProposta tipoAtaProposta;
 
     @Column(columnDefinition = "longtext")
-    private String sugestaoProposta;
+    private String recomendacaoProposta;
 
     @Column
     private String ultimaDecisaoComissao;
