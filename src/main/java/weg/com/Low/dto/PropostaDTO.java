@@ -49,7 +49,7 @@ public class PropostaDTO {
     @NotNull
     private Double paybackProposta;
     private String parecerComissaoProposta;
-    private String SugestaoProposta;
+    private String recomendacaoProposta;
     @NotNull
     private Usuario responsavelProposta;
     @NotEmpty

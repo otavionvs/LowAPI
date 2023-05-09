@@ -34,14 +34,14 @@ public class HeaderFooter extends PdfPageEventHelper {
     @Override
     public void onEndPage(PdfWriter writer, Document document) {
         PdfContentByte cb = writer.getDirectContent();
-        Phrase header = new Phrase("1", headerFont);
+//        Phrase header = new Phrase("1", headerFont);
 
         float headerX = document.leftMargin();
         float headerY = document.topMargin()-50;
         float footerX = document.leftMargin();
         float footerY = document.bottom() - 10;
 
-        ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, header, headerX, document.top() + 30, 0);
+//        ColumnText.showTextAligned(cb, Element.ALIGN_LEFT, header, headerX, document.top() + 30, 0);
 
         try {
 

@@ -72,7 +72,7 @@ public class DemandaController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "documento.pdf");
+        headers.setContentDispositionFormData("attachment", demanda.getTituloDemanda()+".pdf");
         headers.setContentLength(baos.size());
 
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
@@ -230,7 +230,7 @@ public class DemandaController {
             @RequestParam("decisao") @NotNull Integer decisao,
             HttpServletRequest request) {
         if (!demandaService.existsById(codigo)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
         DemandaClassificada demanda = (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
         String demandaStatus = demanda.getStatusDemanda().getStatus();
@@ -282,7 +282,9 @@ public class DemandaController {
     @PutMapping("/cancell/{codigoDemanda}")
     public ResponseEntity<Object> updateAprovacao(
             @PathVariable(value = "codigoDemanda") Integer codigoDemanda, @RequestBody @NotBlank String motivoReprovacao) {
-
+        if (!demandaService.existsById(codigoDemanda)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
+        }
         Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
         demanda.setMotivoReprovacaoDemanda(motivoReprovacao);
         demanda.setStatusDemanda(Status.CANCELLED);

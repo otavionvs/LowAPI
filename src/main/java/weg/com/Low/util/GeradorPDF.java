@@ -36,6 +36,9 @@ public class GeradorPDF {
             for (Demanda demanda :
                     reuniao.getPropostasReuniao()) {
                 setInformationsDocumentDemanda(document, demanda, writer);
+                Paragraph p = new Paragraph();
+                p.setSpacingAfter(30);
+                document.add(p);
             }
 
 
@@ -61,7 +64,6 @@ public class GeradorPDF {
             Paragraph mbeneficioPotencial = new Paragraph("Memória de Cálculo do Benefício Potencial:", negritoFont);
             Paragraph beneficioQualitativo = new Paragraph("Beneficio Qualitativo:", negritoFont);
 
-            Paragraph anexos = new Paragraph("Anexos:", negritoFont);
             Paragraph conteudoTitulo = new Paragraph(demanda.getCodigoDemanda().toString()+". "+ demanda.getTituloDemanda().toUpperCase(), negritoFont);
             conteudoTitulo.setAlignment(Element.ALIGN_CENTER);
 
@@ -71,7 +73,6 @@ public class GeradorPDF {
             Paragraph conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont);
             Paragraph conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda(), normalFont);
 
-            Paragraph conteudoAnexos = new Paragraph("Arquivo 1.pdf\nArquivo 2.docx", normalFont);
 
             PdfPTable table = new PdfPTable(2);
             table.setWidthPercentage(100);
@@ -127,11 +128,6 @@ public class GeradorPDF {
             document.add(beneficioQualitativo);
             document.add(conteudoBeneficioQualitativo);
 
-
-            document.add(anexos);
-            document.add(conteudoAnexos);
-
-
             // Caso a demanda tiver dados da DemandaClassificada adicionar o tamanho da demanda ao documento
             if (demanda.getStatusDemanda().ordinal() > 0 && (demanda instanceof DemandaClassificada || demanda instanceof Proposta)) {
                 Paragraph tamanhoDemanda = new Paragraph();
@@ -161,7 +157,7 @@ public class GeradorPDF {
                 paybackProposta.add(new Chunk(((Proposta) demanda).getPaybackProposta().toString(), normalFont));
 
                 Paragraph escopoDemandaProposta = new Paragraph("Escopo Proposta: ", negritoFont);
-                Paragraph conteudoEscopoDemandaProposta = new Paragraph("Conteudo do escopo que ainda não existe no banco de dados infelizmente", normalFont);
+                Paragraph conteudoEscopoDemandaProposta = new Paragraph(((Proposta) demanda).getEscopoDemandaProposta(), normalFont);
 
                 Paragraph responsavelProposta = new Paragraph();
                 responsavelProposta.add(new Chunk("Responsável Proposta: ", negritoFont));
