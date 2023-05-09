@@ -184,6 +184,7 @@ public class ReuniaoController {
         }
         Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
         reuniao.setStatusReuniao(StatusReuniao.CONCLUIDO);
+        List<Proposta> listaPropostas = new ArrayList<>();
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
@@ -191,9 +192,11 @@ public class ReuniaoController {
                 Proposta propostaNova = new Proposta();
                 BeanUtils.copyProperties(propostaAnterior, propostaNova);
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
-                propostaService.save(propostaNova);
+                proposta = propostaService.save(propostaNova);
             }
+            listaPropostas.add(proposta);
         }
+        reuniao.setPropostasReuniao(listaPropostas);
 
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
     }
