@@ -68,7 +68,7 @@ public class ReuniaoController {
 
     @GetMapping("/ata/{codigoReuniao}")
     public ResponseEntity<Object> downloadAta(
-            @PathVariable(value = "codigoReuniao") Integer codigoReuniao, @RequestBody TipoAtaProposta tipoAta) {
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao, @RequestParam TipoAtaProposta tipoAta) {
         Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
         if (reuniao == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma reuniao encontrada!");
