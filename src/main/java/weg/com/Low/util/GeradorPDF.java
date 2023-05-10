@@ -11,6 +11,7 @@ import weg.com.Low.model.enums.TipoAtaProposta;
 import javax.print.Doc;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @Component
@@ -91,186 +92,185 @@ public class GeradorPDF {
         document.add(new Chunk("Departamento:", negritoFont));
         document.add(new Chunk(nomeDep, normalFont));
     }
-    private void addObjetivo(){
-        document.add(departamento);
-        document.add(objetivo);
-        XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(conteudoObjetivo.getBytes()));
+    private void addObjetivo(Document document, String conteudoObjetivo, PdfWriter writer) throws DocumentException, IOException {
+        document.add(new Paragraph("Objetivo:", negritoFont));
+        try{
+            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(conteudoObjetivo.getBytes()));
+        }catch (IOException e){
+            document.add(new Paragraph(conteudoObjetivo, normalFont));
+        }
     }
 
-    private void addSituacaoAtual(){
+    private void addSituacaoAtual(Document document, String conteudoSituacaoAtual, PdfWriter writer) throws DocumentException, IOException {
+        Paragraph situacaoAtual = new Paragraph("Situação Atual:", negritoFont);
         document.add(situacaoAtual);
         XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(conteudoSituacaoAtual.getBytes()));
     }
-    private void addBeneficios(){
+    private void addBeneficios(Document document, Demanda demanda) throws DocumentException {
+        Paragraph beneficioReal = new Paragraph();
+        Paragraph mbeneficioReal = new Paragraph("Memória de Cálculo do Benefício Real:", negritoFont);
+        Paragraph beneficioPotencial = new Paragraph();
+        Paragraph mbeneficioPotencial = new Paragraph("Memória de Cálculo do Benefício Potencial:", negritoFont);
+        Paragraph beneficioQualitativo = new Paragraph("Beneficio Qualitativo:", negritoFont);
+        try{
+            String tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioRealDemanda());
+            beneficioReal.add(new Chunk("Benefício Real: ", negritoFont));
+            beneficioReal.add(new Chunk(tipoValor + " " + demanda.getBeneficioRealDemanda().getValorBeneficio().toString(), normalFont));
+
+            tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioPotencialDemanda());
+            beneficioPotencial.add(new Chunk("Benefício Potencial: ", negritoFont));
+            beneficioPotencial.add(new Chunk(tipoValor + " " + demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont));
+
+            document.add(beneficioReal);
+            document.add(mbeneficioReal);
+            document.add(new Paragraph(demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio(), normalFont));
+
+            document.add(beneficioPotencial);
+            document.add(mbeneficioPotencial);
+            document.add(new Paragraph(demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio(), normalFont));
+
+            document.add(beneficioQualitativo);
+            document.add(new Paragraph(demanda.getBeneficioQualitativoDemanda(), normalFont));
+
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
 
     }
-    private void addTamanhoDemanda(){
-
+    private void addTamanhoDemanda(Document document, String tamanho) throws DocumentException {
+        Paragraph tamanhoDemanda = new Paragraph();
+        tamanhoDemanda.add(new Chunk("Tamanho Demanda: ", negritoFont));
+        tamanhoDemanda.add(new Chunk(tamanho, normalFont));
+        document.add(tamanhoDemanda);
     }
-    private void addRecursos(){
+    private void addRecursos(Document document, Demanda demanda) throws DocumentException {
+        Paragraph recursos = new Paragraph("Recursos: ", negritoFont);
+        recursos.setSpacingAfter(10);
+        document.add(recursos);
 
+        PdfPTable tableRecurso = new PdfPTable(7);
+        tableRecurso.setWidthPercentage(100);
+        tableRecurso.addCell(new PdfPCell(new Phrase("Recurso Necessário", negritoFont)));
+        tableRecurso.addCell(new PdfPCell(new Phrase("Tipo da despesa", negritoFont)));
+        tableRecurso.addCell(new PdfPCell(new Phrase("Perfil da despesa", negritoFont)));
+        tableRecurso.addCell(new PdfPCell(new Phrase("C.C. pagantes", negritoFont)));
+        tableRecurso.addCell(new PdfPCell(new Phrase("Qtd de horas", negritoFont)));
+        tableRecurso.addCell(new PdfPCell(new Phrase("Valor da hora", negritoFont)));
+        tableRecurso.addCell(new PdfPCell(new Phrase("Período de execução (Mensal)", negritoFont)));
+
+
+        for (Recurso recurso : ((Proposta) demanda).getRecursosProposta()) {
+            tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getNomeRecurso(), normalFont)));
+            tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getTipoDespesaRecurso().toString(), normalFont)));
+            tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getPerfilDespesaRecurso().toString(), normalFont)));
+            PdfPCell cellCC = new PdfPCell();
+            //Adicionar Centro de custo: por algum motivo estava comentado
+            cellCC.addElement(new Phrase("Centro de ", normalFont));
+            tableRecurso.addCell(cellCC);
+            tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getQuantidadeHorasRecurso().toString(), normalFont)));
+            tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getValorHoraRecurso().toString(), normalFont)));
+            tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getPeriodoExMesesRecurso().toString(), normalFont)));
+        }
+        document.add(tableRecurso);
     }
-    private void addPrazos(){
+    private void addPrazos(Document document, Demanda demanda) throws DocumentException {
+        Paragraph prazoElaboracao = new Paragraph();
+        prazoElaboracao.add(new Chunk("Prazo Elaboração Proposta: ", negritoFont));
+        prazoElaboracao.add(new Chunk(((Proposta) demanda).getPrazoProposta().toString(), normalFont));
 
+
+        Paragraph inicioExDemandaProposta = new Paragraph();
+        inicioExDemandaProposta.add(new Chunk("Inicio Execução Proposta: ", negritoFont));
+        inicioExDemandaProposta.add(new Chunk(((Proposta) demanda).getInicioExDemandaProposta().toString(), normalFont));
+
+
+        Paragraph fimExDemandaProposta = new Paragraph();
+        fimExDemandaProposta.add(new Chunk("Fim Execução Proposta: ", negritoFont));
+        fimExDemandaProposta.add(new Chunk(((Proposta) demanda).getFimExDemandaProposta().toString(), normalFont));
+
+
+        document.add(prazoElaboracao);
+        document.add(inicioExDemandaProposta);
+        document.add(fimExDemandaProposta);
     }
-    private void addPayback(){
+    private void addPayback(Document document, String payback) throws DocumentException {
 
+        Paragraph paybackProposta = new Paragraph();
+        paybackProposta.add(new Chunk("Payback: ", negritoFont));
+        paybackProposta.add(new Chunk(payback, normalFont));
+        document.add(paybackProposta);
     }
-    private void addEscopo(){
+    private void addEscopo(Document document, String escopo) throws DocumentException {
 
+        Paragraph escopoDemandaProposta = new Paragraph("Escopo Proposta: ", negritoFont);
+        Paragraph conteudoEscopoDemandaProposta = new Paragraph(escopo, normalFont);
+        document.add(escopoDemandaProposta);
+        document.add(conteudoEscopoDemandaProposta);
     }
-    private void responsavel(){
 
+    private void addParecerEDecisao(Document document, String parecer, String ultimaDecisao) throws DocumentException {
+        Paragraph parecerComissao = new Paragraph();
+        parecerComissao.add(new Chunk("Parecer da Comissão: ", negritoFont));
+        parecerComissao.add(new Chunk(parecer, normalFont));
+
+        Paragraph decisao = new Paragraph();
+        decisao.add(new Chunk("Decisão: ", negritoFont));
+        decisao.add(new Chunk(ultimaDecisao, normalFont));
+
+        document.add(parecerComissao);
+        document.add(decisao);
     }
-    private void addParecerEDecisao(){
 
+    private void addFrequenciaUso(Document document, String frequencia) throws DocumentException {
+        Paragraph frequenciaUso = new Paragraph();
+        frequenciaUso.add(new Chunk("Frequência de Uso do Sistema: ", negritoFont));
+        frequenciaUso.add(new Chunk(frequencia, normalFont));
+        document.add(frequenciaUso);
     }
 
     private Document setInformationsDocumentDemanda(Document document, Demanda demanda, PdfWriter writer){
         try {
-            Paragraph departamento = new Paragraph();
-            Paragraph objetivo = new Paragraph("Objetivo:", negritoFont);
-            Paragraph situacaoAtual = new Paragraph("Situação Atual:", negritoFont);
-            Paragraph beneficioReal = new Paragraph();
-            Paragraph mbeneficioReal = new Paragraph("Memória de Cálculo do Benefício Real:", negritoFont);
-            Paragraph beneficioPotencial = new Paragraph();
-            Paragraph mbeneficioPotencial = new Paragraph("Memória de Cálculo do Benefício Potencial:", negritoFont);
-            Paragraph beneficioQualitativo = new Paragraph("Beneficio Qualitativo:", negritoFont);
 
             addTitulo(document, demanda.getCodigoDemanda().toString()+". "+ demanda.getTituloDemanda().toUpperCase());
             addSolicitanteEData(document, demanda.getSolicitanteDemanda().getNomeUsuario(), demanda.getDataCriacaoDemanda().toString());
             addEspaco(document);
             addDepartamento(document, demanda.getSolicitanteDemanda().getDepartamentoUsuario().getNomeDepartamento());
-            addObjetivo(document, demanda.getObjetivoDemanda());
-            addSituacaoAtual(document, demanda.getSituacaoAtualDemanda());
-            addBeneficios();
-
-            Paragraph conteudoMBeneficioReal = new Paragraph();
-            Paragraph conteudoMBeneficioPotencial = new Paragraph();
-            Paragraph conteudoBeneficioQualitativo = new Paragraph();
-            boolean beneficiosVazios = false;
-            // Não adicionar benefícios caso não tenham nada escrito
-            try{
-                conteudoMBeneficioReal = new Paragraph(demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio(), normalFont);
-                conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont);
-                conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda(), normalFont);
-            }catch (NullPointerException e){
-                beneficiosVazios = true;
-            }
-
-
-
-
-
-            // Não adicionar benefícios caso não tenham nada escrito
-            if(!beneficiosVazios) {
-                String tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioRealDemanda());
-                beneficioReal.add(new Chunk("Benefício Real: ", negritoFont));
-                beneficioReal.add(new Chunk(tipoValor + " " + demanda.getBeneficioRealDemanda().getValorBeneficio().toString(), normalFont));
-                document.add(beneficioReal);
-
-
-                document.add(mbeneficioReal);
-                document.add(conteudoMBeneficioReal);
-
-                tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioPotencialDemanda());
-                beneficioPotencial.add(new Chunk("Benefício Potencial: ", negritoFont));
-                beneficioPotencial.add(new Chunk(tipoValor + " " + demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont));
-                document.add(beneficioPotencial);
-
-                document.add(mbeneficioPotencial);
-                document.add(conteudoMBeneficioPotencial);
-
-                document.add(beneficioQualitativo);
-                document.add(conteudoBeneficioQualitativo);
-            }
+            addObjetivo(document, demanda.getObjetivoDemanda(), writer);
+            addSituacaoAtual(document, demanda.getSituacaoAtualDemanda(), writer);
+            addBeneficios(document, demanda);
+            addFrequenciaUso(document, demanda.getFrequenciaDeUsoDemanda());
             // Caso a demanda tiver dados da DemandaClassificada adicionar o tamanho da demanda ao documento
             if (demanda.getStatusDemanda().ordinal() > 0 && (demanda instanceof DemandaClassificada || demanda instanceof Proposta)) {
-                Paragraph tamanhoDemanda = new Paragraph();
-                tamanhoDemanda.add(new Chunk("Tamanho Demanda: ", negritoFont));
-                tamanhoDemanda.add(new Chunk(((DemandaClassificada) demanda).getTamanhoDemandaClassificada().toString(), normalFont));
-                document.add(tamanhoDemanda);
+                addTamanhoDemanda(document, ((DemandaClassificada) demanda).getTamanhoDemandaClassificada().toString());
             }
-
             // Caso a demanda tiver dados da Proposta, está sendo adicionado os dados relativos
             if (demanda.getStatusDemanda().ordinal() > 1 && demanda instanceof Proposta) {
-                Paragraph prazoElaboracao = new Paragraph();
-                prazoElaboracao.add(new Chunk("Prazo Elaboração Proposta: ", negritoFont));
-                prazoElaboracao.add(new Chunk(((Proposta) demanda).getPrazoProposta().toString(), normalFont));
+                addPrazos(document, demanda);
+                addPayback(document, ((Proposta) demanda).getPaybackProposta().toString());
+                addEscopo(document, ((Proposta) demanda).getEscopoDemandaProposta());
+                //Responsável
+                addResponsaveis(document, ((Proposta) demanda).getResponsavelProposta());
+                addRecursos(document, demanda);
+                try {
+                    addParecerEDecisao(document, ((Proposta) demanda).getParecerComissaoProposta(), ((Proposta) demanda).getUltimaDecisaoComissao());
 
+                }catch (Exception e ){
 
-                Paragraph inicioExDemandaProposta = new Paragraph();
-                inicioExDemandaProposta.add(new Chunk("Inicio Execução Proposta: ", negritoFont));
-                inicioExDemandaProposta.add(new Chunk(((Proposta) demanda).getInicioExDemandaProposta().toString(), normalFont));
-
-
-                Paragraph fimExDemandaProposta = new Paragraph();
-                fimExDemandaProposta.add(new Chunk("Fim Execução Proposta: ", negritoFont));
-                fimExDemandaProposta.add(new Chunk(((Proposta) demanda).getFimExDemandaProposta().toString(), normalFont));
-
-                Paragraph paybackProposta = new Paragraph();
-                paybackProposta.add(new Chunk("Payback: ", negritoFont));
-                paybackProposta.add(new Chunk(((Proposta) demanda).getPaybackProposta().toString(), normalFont));
-
-                Paragraph escopoDemandaProposta = new Paragraph("Escopo Proposta: ", negritoFont);
-                Paragraph conteudoEscopoDemandaProposta = new Paragraph(((Proposta) demanda).getEscopoDemandaProposta(), normalFont);
-
-                Paragraph responsavelProposta = new Paragraph();
-                responsavelProposta.add(new Chunk("Responsável Proposta: ", negritoFont));
-                responsavelProposta.add(new Chunk(((Proposta) demanda).getResponsavelProposta(), normalFont));
-
-                Paragraph recursos = new Paragraph("Recursos: ", negritoFont);
-                recursos.setSpacingAfter(10);
-                document.add(recursos);
-
-                PdfPTable tableRecurso = new PdfPTable(7);
-                tableRecurso.setWidthPercentage(100);
-                tableRecurso.addCell(new PdfPCell(new Phrase("Recurso Necessário", negritoFont)));
-                tableRecurso.addCell(new PdfPCell(new Phrase("Tipo da despesa", negritoFont)));
-                tableRecurso.addCell(new PdfPCell(new Phrase("Perfil da despesa", negritoFont)));
-                tableRecurso.addCell(new PdfPCell(new Phrase("C.C. pagantes", negritoFont)));
-                tableRecurso.addCell(new PdfPCell(new Phrase("Qtd de horas", negritoFont)));
-                tableRecurso.addCell(new PdfPCell(new Phrase("Valor da hora", negritoFont)));
-                tableRecurso.addCell(new PdfPCell(new Phrase("Período de execução (Mensal)", negritoFont)));
-
-
-                for (Recurso recurso : ((Proposta) demanda).getRecursosProposta()) {
-                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getNomeRecurso(), normalFont)));
-                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getTipoDespesaRecurso().toString(), normalFont)));
-                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getPerfilDespesaRecurso().toString(), normalFont)));
-                    PdfPCell cellCC = new PdfPCell();
-                    //Adicionar Centro de custo: por algum motivo estava comentado
-                    cellCC.addElement(new Phrase("Centro de ", normalFont));
-                    tableRecurso.addCell(cellCC);
-                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getQuantidadeHorasRecurso().toString(), normalFont)));
-                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getValorHoraRecurso().toString(), normalFont)));
-                    tableRecurso.addCell(new PdfPCell(new Phrase(recurso.getPeriodoExMesesRecurso().toString(), normalFont)));
                 }
-                document.add(tableRecurso);
-                document.add(prazoElaboracao);
-                document.add(inicioExDemandaProposta);
-                document.add(fimExDemandaProposta);
-                document.add(paybackProposta);
-                document.add(escopoDemandaProposta);
-                document.add(conteudoEscopoDemandaProposta);
-                document.add(responsavelProposta);
-
-                Paragraph parecerComissao = new Paragraph();
-                parecerComissao.add(new Chunk("Parecer da Comissão: ", negritoFont));
-                parecerComissao.add(new Chunk(((Proposta) demanda).getParecerComissaoProposta(), normalFont));
-
-                Paragraph decisao = new Paragraph();
-                decisao.add(new Chunk("Decisão: ", negritoFont));
-                decisao.add(new Chunk(((Proposta) demanda).getUltimaDecisaoComissao(), normalFont));
-
-                document.add(parecerComissao);
-                document.add(decisao);
 
             }
         }catch (Exception e){
             e.printStackTrace();
         }
         return document;
+    }
+
+    private void addResponsaveis(Document document, String responsavel) throws DocumentException {
+        Paragraph responsavelProposta = new Paragraph();
+        responsavelProposta.add(new Chunk("Responsável Proposta: ", negritoFont));
+        responsavelProposta.add(new Chunk(responsavel, normalFont));
+        document.add(responsavelProposta);
     }
 
     public ByteArrayOutputStream gerarPDFDemanda(Demanda demanda) {
