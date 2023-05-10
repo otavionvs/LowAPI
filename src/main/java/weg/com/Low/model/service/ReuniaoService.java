@@ -31,19 +31,19 @@ public class ReuniaoService {
         switch (tipoNotificacao){
             case MARCOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
-                        "Reunião Marcada!", new Date(), false, usuarios));
+                        "Reunião Marcada!", LocalDateTime.now(), false, usuarios));
             }
             case EDITOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
-                        "Reunião Alterada!", new Date(), false, usuarios));
+                        "Reunião Alterada!", LocalDateTime.now(), false, usuarios));
             }
             case FINALIZOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
-                        "Reunião Finalizada com sucesso!", new Date(), false, usuarios));
+                        "Reunião Finalizada com sucesso!", LocalDateTime.now(), false, usuarios));
             }
             case DESMARCOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
-                        "Reunião Desmarcada!", new Date(), false, usuarios));
+                        "Reunião Desmarcada!", LocalDateTime.now(), false, usuarios));
             }
         }
         return reuniaoRepository.save(reuniao);

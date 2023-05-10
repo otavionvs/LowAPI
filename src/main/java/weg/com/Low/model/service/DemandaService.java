@@ -9,6 +9,7 @@ import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.DemandaRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,30 +39,32 @@ public class DemandaService {
         usuarios.add(demanda.getSolicitanteDemanda());
         switch (tipoNotificacao) {
             case CRIOU_DEMANDA -> {
-                notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
-                        "Demanda criada com sucesso!", new Date(), false, usuarios));
+                notificacaoService.save(new Notificacao(null, "Demanda Criada!", tipoNotificacao,
+                        "Demanda: " + demanda.getTituloDemanda() + ", criada com sucesso! Logo entrará" +
+                                " em processo de aprovação, fique atento a futuras mudanças.",
+                        LocalDateTime.now(), false, usuarios));
             }
             case EDITOU_DEMANDA -> {
                 if (demanda.getAnalista() != null) {
                     usuarios.add(demanda.getAnalista());
                 }
-                notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
-                        "A Demanda foi editada!", new Date(), false, usuarios));
+                notificacaoService.save(new Notificacao(null, "Demanda Editada!", tipoNotificacao,
+                        "Demanda: " + demanda.getTituloDemanda() +", foi editada!", LocalDateTime.now(), false, usuarios));
             }
             case AVANCOU_STATUS_DEMANDA -> {
                 if (demanda.getGerenteNegocio() != null) {
                     usuarios.add(demanda.getGerenteNegocio());
                 }
                 usuarios.add(demanda.getAnalista());
-                notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
-                        "A Demanda avançou um status!", new Date(), false, usuarios));
+                notificacaoService.save(new Notificacao(null, "Status Avançado!", tipoNotificacao,
+                        "Demanda: " + demanda.getTituloDemanda() + ", avançou um status! O status atual é: " + demanda.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuarios));
             }
             case CANCELOU_DEMANDA -> {
                 if (demanda.getAnalista() != null) {
                     usuarios.add(demanda.getAnalista());
                 }
-                notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), tipoNotificacao,
-                        "A Demanda foi cancelada!", new Date(), false, usuarios));
+                notificacaoService.save(new Notificacao(null, "Demanda Cancelada!", tipoNotificacao,
+                        "Demanda: " + demanda.getTituloDemanda() + ", foi cancelada!", LocalDateTime.now(), false, usuarios));
             }
         }
         return demandaRepository.save(demanda);
