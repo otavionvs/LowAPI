@@ -149,7 +149,7 @@ public class DemandaController {
             @RequestParam("status2") String status2,
             @PageableDefault(
                     page = 0,
-                    size = 10) Pageable page){
+            size = 255) Pageable page){
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(status1,status2,page));
     }
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.TipoAtaProposta;
 
+import javax.print.Doc;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -30,17 +31,17 @@ public class GeradorPDF {
             writer.setPageEvent(header);
             document.open();
 
-            Paragraph conteudoTitulo = new Paragraph("ATA REUNIÃO " + reuniao.getComissaoReuniao().getComissao().toUpperCase(), negritoFont);
+            Paragraph conteudoTitulo = new Paragraph("ATA "+ tipoAtaProposta.toString() +" REUNIÃO DA" + reuniao.getComissaoReuniao().getComissao().toUpperCase(), negritoFont);
             conteudoTitulo.setAlignment(Element.ALIGN_CENTER);
             document.add(conteudoTitulo);
 
             for (Proposta demanda :
                     reuniao.getPropostasReuniao()) {
                 if(demanda.getTipoAtaProposta() == tipoAtaProposta){
-                    setInformationsDocumentDemanda(document, demanda, writer);
                     Paragraph p = new Paragraph();
                     p.setSpacingAfter(30);
                     document.add(p);
+                    setInformationsDocumentDemanda(document, demanda, writer);
                 }
             }
 
@@ -54,10 +55,79 @@ public class GeradorPDF {
         return null;
     }
 
+    private void addTitulo(Document document, String textoTitulo) throws DocumentException {
+        Paragraph conteudoTitulo = new Paragraph(textoTitulo, negritoFont);
+        conteudoTitulo.setAlignment(Element.ALIGN_CENTER);
+        document.add(conteudoTitulo);
+    }
+    private void addSolicitanteEData(Document document, String solicitante, String dataCriacao) throws DocumentException {
+        PdfPTable table = new PdfPTable(2);
+        table.setWidthPercentage(100);
+        PdfPCell leftCell = new PdfPCell();
+        Paragraph paragraph = new Paragraph();
+        paragraph.add(new Chunk("Solicitante:", negritoFont));
+        paragraph.add(new Chunk(solicitante, normalFont));
+        leftCell.addElement(paragraph);
+        leftCell.setBorder(Rectangle.NO_BORDER);
+        leftCell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        table.addCell(leftCell);
+        PdfPCell rightCell = new PdfPCell();
+        Paragraph paragraph2 = new Paragraph();
+        paragraph2.add(new Chunk("Data:", negritoFont));
+        paragraph2.add(new Chunk(dataCriacao, normalFont));
+        paragraph2.setAlignment(Element.ALIGN_RIGHT);
+        rightCell.addElement(paragraph2);
+        rightCell.setBorder(Rectangle.NO_BORDER);
+        rightCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        table.addCell(rightCell);
+        document.add(table);
+    }
+    private void addEspaco(Document document) throws DocumentException {
+        Paragraph p = new Paragraph();
+        p.setSpacingAfter(30);
+        document.add(p);
+    }
+    private void addDepartamento(Document document, String nomeDep) throws DocumentException {
+        document.add(new Chunk("Departamento:", negritoFont));
+        document.add(new Chunk(nomeDep, normalFont));
+    }
+    private void addObjetivo(){
+        document.add(departamento);
+        document.add(objetivo);
+        XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(conteudoObjetivo.getBytes()));
+    }
+
+    private void addSituacaoAtual(){
+        document.add(situacaoAtual);
+        XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(conteudoSituacaoAtual.getBytes()));
+    }
+    private void addBeneficios(){
+
+    }
+    private void addTamanhoDemanda(){
+
+    }
+    private void addRecursos(){
+
+    }
+    private void addPrazos(){
+
+    }
+    private void addPayback(){
+
+    }
+    private void addEscopo(){
+
+    }
+    private void responsavel(){
+
+    }
+    private void addParecerEDecisao(){
+
+    }
 
     private Document setInformationsDocumentDemanda(Document document, Demanda demanda, PdfWriter writer){
         try {
-
             Paragraph departamento = new Paragraph();
             Paragraph objetivo = new Paragraph("Objetivo:", negritoFont);
             Paragraph situacaoAtual = new Paragraph("Situação Atual:", negritoFont);
@@ -67,70 +137,53 @@ public class GeradorPDF {
             Paragraph mbeneficioPotencial = new Paragraph("Memória de Cálculo do Benefício Potencial:", negritoFont);
             Paragraph beneficioQualitativo = new Paragraph("Beneficio Qualitativo:", negritoFont);
 
-            Paragraph conteudoTitulo = new Paragraph(demanda.getCodigoDemanda().toString()+". "+ demanda.getTituloDemanda().toUpperCase(), negritoFont);
-            conteudoTitulo.setAlignment(Element.ALIGN_CENTER);
+            addTitulo(document, demanda.getCodigoDemanda().toString()+". "+ demanda.getTituloDemanda().toUpperCase());
+            addSolicitanteEData(document, demanda.getSolicitanteDemanda().getNomeUsuario(), demanda.getDataCriacaoDemanda().toString());
+            addEspaco(document);
+            addDepartamento(document, demanda.getSolicitanteDemanda().getDepartamentoUsuario().getNomeDepartamento());
+            addObjetivo(document, demanda.getObjetivoDemanda());
+            addSituacaoAtual(document, demanda.getSituacaoAtualDemanda());
+            addBeneficios();
 
-            String conteudoObjetivo = demanda.getObjetivoDemanda();
-            String conteudoSituacaoAtual = demanda.getSituacaoAtualDemanda();
-            Paragraph conteudoMBeneficioReal = new Paragraph(demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio(), normalFont);
-            Paragraph conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont);
-            Paragraph conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda(), normalFont);
-
-
-            PdfPTable table = new PdfPTable(2);
-            table.setWidthPercentage(100);
-
-            PdfPCell leftCell = new PdfPCell();
-            Paragraph paragraph = new Paragraph();
-            paragraph.add(new Chunk("Solicitante:", negritoFont));
-            paragraph.add(new Chunk(demanda.getSolicitanteDemanda().getNomeUsuario(), normalFont));
-            leftCell.addElement(paragraph);
-            leftCell.setBorder(Rectangle.NO_BORDER);
-            leftCell.setHorizontalAlignment(Element.ALIGN_LEFT);
-            table.addCell(leftCell);
-
-
-            PdfPCell rightCell = new PdfPCell();
-            Paragraph paragraph2 = new Paragraph();
-            paragraph2.add(new Chunk("Data:", negritoFont));
-            paragraph2.add(new Chunk(demanda.getDataCriacaoDemanda().toString(), normalFont));
-            paragraph2.setAlignment(Element.ALIGN_RIGHT);
-            rightCell.addElement(paragraph2);
-            rightCell.setBorder(Rectangle.NO_BORDER);
-            rightCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            table.addCell(rightCell);
-            document.add(conteudoTitulo);
-
-            document.add(table);
-            departamento.add(new Chunk("Departamento:", negritoFont));
-            departamento.add(new Chunk(demanda.getSolicitanteDemanda().getDepartamentoUsuario().getNomeDepartamento(), normalFont));
-            document.add(departamento);
-            document.add(objetivo);
-            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(conteudoObjetivo.getBytes()));
-            document.add(situacaoAtual);
-            XMLWorkerHelper.getInstance().parseXHtml(writer, document, new ByteArrayInputStream(conteudoSituacaoAtual.getBytes()));
-
-            String tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioRealDemanda());
-            beneficioReal.add(new Chunk("Benefício Real: ", negritoFont));
-            beneficioReal.add(new Chunk(tipoValor + " " + demanda.getBeneficioRealDemanda().getValorBeneficio().toString(), normalFont));
-            document.add(beneficioReal);
+            Paragraph conteudoMBeneficioReal = new Paragraph();
+            Paragraph conteudoMBeneficioPotencial = new Paragraph();
+            Paragraph conteudoBeneficioQualitativo = new Paragraph();
+            boolean beneficiosVazios = false;
+            // Não adicionar benefícios caso não tenham nada escrito
+            try{
+                conteudoMBeneficioReal = new Paragraph(demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio(), normalFont);
+                conteudoMBeneficioPotencial = new Paragraph(demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont);
+                conteudoBeneficioQualitativo = new Paragraph(demanda.getBeneficioQualitativoDemanda(), normalFont);
+            }catch (NullPointerException e){
+                beneficiosVazios = true;
+            }
 
 
 
-            document.add(mbeneficioReal);
-            document.add(conteudoMBeneficioReal);
 
-            tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioPotencialDemanda());
-            beneficioPotencial.add(new Chunk("Benefício Potencial: ", negritoFont));
-            beneficioPotencial.add(new Chunk(tipoValor + " " + demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont));
-            document.add(beneficioPotencial);
 
-            document.add(mbeneficioPotencial);
-            document.add(conteudoMBeneficioPotencial);
+            // Não adicionar benefícios caso não tenham nada escrito
+            if(!beneficiosVazios) {
+                String tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioRealDemanda());
+                beneficioReal.add(new Chunk("Benefício Real: ", negritoFont));
+                beneficioReal.add(new Chunk(tipoValor + " " + demanda.getBeneficioRealDemanda().getValorBeneficio().toString(), normalFont));
+                document.add(beneficioReal);
 
-            document.add(beneficioQualitativo);
-            document.add(conteudoBeneficioQualitativo);
 
+                document.add(mbeneficioReal);
+                document.add(conteudoMBeneficioReal);
+
+                tipoValor = resgatarTipoValorBeneficio(demanda.getBeneficioPotencialDemanda());
+                beneficioPotencial.add(new Chunk("Benefício Potencial: ", negritoFont));
+                beneficioPotencial.add(new Chunk(tipoValor + " " + demanda.getBeneficioPotencialDemanda().getValorBeneficio().toString(), normalFont));
+                document.add(beneficioPotencial);
+
+                document.add(mbeneficioPotencial);
+                document.add(conteudoMBeneficioPotencial);
+
+                document.add(beneficioQualitativo);
+                document.add(conteudoBeneficioQualitativo);
+            }
             // Caso a demanda tiver dados da DemandaClassificada adicionar o tamanho da demanda ao documento
             if (demanda.getStatusDemanda().ordinal() > 0 && (demanda instanceof DemandaClassificada || demanda instanceof Proposta)) {
                 Paragraph tamanhoDemanda = new Paragraph();
@@ -201,6 +254,18 @@ public class GeradorPDF {
                 document.add(escopoDemandaProposta);
                 document.add(conteudoEscopoDemandaProposta);
                 document.add(responsavelProposta);
+
+                Paragraph parecerComissao = new Paragraph();
+                parecerComissao.add(new Chunk("Parecer da Comissão: ", negritoFont));
+                parecerComissao.add(new Chunk(((Proposta) demanda).getParecerComissaoProposta(), normalFont));
+
+                Paragraph decisao = new Paragraph();
+                decisao.add(new Chunk("Decisão: ", negritoFont));
+                decisao.add(new Chunk(((Proposta) demanda).getUltimaDecisaoComissao(), normalFont));
+
+                document.add(parecerComissao);
+                document.add(decisao);
+
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -215,7 +280,6 @@ public class GeradorPDF {
             Document document = new Document();
             document.setMargins(document.leftMargin(), document.rightMargin(), document.topMargin() + 50, document.bottomMargin());
             PdfWriter writer = PdfWriter.getInstance(document, baos);
-            String html = "<h1>12131kjfshdaklsdhfklsadhfklashdflkjshdlfkahsdklfhasdklfjhasldkfjhskladfhklasjdhfklsdahfsda2</h1>";
 
             HeaderFooter header = new HeaderFooter();
             writer.setPageEvent(header);

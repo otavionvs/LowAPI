@@ -78,7 +78,7 @@ public class ReuniaoController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "documento.pdf");
+        headers.setContentDispositionFormData("attachment", reuniao.getComissaoReuniao().getComissao() + " - " + reuniao.getDataReuniao() + ".pdf");
         headers.setContentLength(baos.size());
 
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
