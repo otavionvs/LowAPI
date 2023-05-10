@@ -135,10 +135,12 @@ public class ReuniaoController {
     @PutMapping("/parecer/{codigoProposta}")
     public ResponseEntity<Object> parecer(
             @PathVariable(value = "codigoProposta") Integer codigoProposta,
+            @RequestParam Integer codigoReuniao,
             @RequestBody @Valid ParecerComissaoDTO parecerComissaoDTO) {
 
 
         Proposta demanda = (Proposta) demandaService.findLastDemandaById(codigoProposta).get();
+        Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
 
         Proposta novaDemanda = new Proposta();
         BeanUtils.copyProperties(demanda, novaDemanda);
@@ -170,7 +172,20 @@ public class ReuniaoController {
         BeanUtils.copyProperties(parecerComissaoDTO, novaDemanda);
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(novaDemanda));
+        Demanda demandaComParecer = demandaService.save(novaDemanda);
+
+        //Atualizando a demanda na reunião
+        List<Proposta> listaPropostaReuniao = new ArrayList<>();
+        for(Demanda i: reuniao.getPropostasReuniao()){
+            if(i.getCodigoDemanda() == demandaComParecer.getCodigoDemanda()){
+                i = demandaComParecer;
+            }
+            listaPropostaReuniao.add((Proposta) i);
+        }
+        reuniao.setPropostasReuniao(listaPropostaReuniao);
+        reuniaoService.save(reuniao);
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaComParecer);
     }
 
 
@@ -190,7 +205,8 @@ public class ReuniaoController {
                 Proposta propostaNova = new Proposta();
                 BeanUtils.copyProperties(propostaAnterior, propostaNova);
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
-                proposta = propostaService.save(propostaNova);
+                proposta = propostaNova;
+                propostaService.save(propostaNova);
             }
             listaPropostas.add(proposta);
         }

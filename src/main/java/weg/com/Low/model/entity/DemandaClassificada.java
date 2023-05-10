@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "demanda_classificada")
 @Data
 public class DemandaClassificada extends Demanda{
 //    @Id
