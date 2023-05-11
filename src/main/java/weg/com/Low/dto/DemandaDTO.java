@@ -27,8 +27,6 @@ public class DemandaDTO {
     private BeneficioDTO beneficioPotencialDemanda;
     @NotNull
     private BeneficioDTO beneficioRealDemanda;
-    @NotNull
-    private Usuario solicitanteDemanda;
     @NotEmpty
     private List<CentroCustoDTO> centroCustosDemanda;
     private Integer codigoDemanda;

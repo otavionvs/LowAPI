@@ -64,6 +64,13 @@ public class Demanda{
     @JoinColumn(name = "solicitante_demanda", nullable = false)
     private Usuario solicitanteDemanda;
 
+    @OneToOne
+    @JoinColumn(name = "analista_codigo")
+    private Usuario analista;
+    @OneToOne
+    @JoinColumn(name = "gerente_negocio_codigo")
+    private Usuario gerenteNegocio;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "arquivo_demanda",

@@ -14,6 +14,7 @@ import weg.com.Low.repository.ReuniaoRepository;
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -24,26 +25,33 @@ import java.util.Optional;
 public class ReuniaoService {
     private ReuniaoRepository reuniaoRepository;
     private NotificacaoService notificacaoService;
-    private DemandaClassificadaService demandaClassificadaService;
-    private DemandaService demandaService;
 
 
     public List<Reuniao> findAll() {
         return reuniaoRepository.findAll();
     }
 
-    public Reuniao save(Reuniao reuniao) {
-//        notificacaoService.save(new Notificacao(
-//                null,
-//                reuniao.getDataReuniao().toString(),
-//                reuniao.getCodigoReuniao(),
-//                TipoNotificacao.MARCOU_REUNIAO,
-//                "Uma reunião de uma demanda que você está envolvido foi marcada! ",
-//                LocalDateTime.now(),
-//                LocalDate.now(),
-//                StatusNotificacao.ATIVADA,
-//                usuarios
-//                ));
+    public Reuniao save(Reuniao reuniao, TipoNotificacao tipoNotificacao) {
+        List<Usuario> usuarios = new ArrayList<>();
+        usuarios.add(reuniao.getPropostasReuniao().get(0).getAnalista());
+        switch (tipoNotificacao){
+            case MARCOU_REUNIAO -> {
+                notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
+                        "Reunião Marcada!", LocalDateTime.now(), false, usuarios));
+            }
+            case EDITOU_REUNIAO -> {
+                notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
+                        "Reunião Alterada!", LocalDateTime.now(), false, usuarios));
+            }
+            case FINALIZOU_REUNIAO -> {
+                notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
+                        "Reunião Finalizada com sucesso!", LocalDateTime.now(), false, usuarios));
+            }
+            case DESMARCOU_REUNIAO -> {
+                notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
+                        "Reunião Desmarcada!", LocalDateTime.now(), false, usuarios));
+            }
+        }
         return reuniaoRepository.save(reuniao);
     }
     @PostConstruct

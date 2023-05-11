@@ -129,7 +129,7 @@ public class ReuniaoController {
         }else{
             reuniao.setStatusReuniao(StatusReuniao.AGUARDANDO);
         }
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO));
     }
 
     @PutMapping("/parecer/{codigoProposta}")
@@ -172,7 +172,7 @@ public class ReuniaoController {
         BeanUtils.copyProperties(parecerComissaoDTO, novaDemanda);
 
 
-        Demanda demandaComParecer = demandaService.save(novaDemanda);
+        Demanda demandaComParecer = demandaService.save(novaDemanda, TipoNotificacao.SEM_NOTIFICACAO);
 
         //Atualizando a demanda na reunião
         List<Proposta> listaPropostaReuniao = new ArrayList<>();
@@ -183,7 +183,7 @@ public class ReuniaoController {
             listaPropostaReuniao.add((Proposta) i);
         }
         reuniao.setPropostasReuniao(listaPropostaReuniao);
-        reuniaoService.save(reuniao);
+        reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaComParecer);
     }
@@ -212,7 +212,7 @@ public class ReuniaoController {
         }
         reuniao.setPropostasReuniao(listaPropostas);
 
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.FINALIZOU_REUNIAO));
     }
 
 
@@ -229,7 +229,7 @@ public class ReuniaoController {
         reuniao.setStatusReuniao(StatusReuniao.CANCELADO);
         reuniao.setMotivoCancelamentoReuniao(motivoCancelamentoReuniao);
 
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.DESMARCOU_REUNIAO));
     }
 
     @PutMapping("/update/{codigo}")
@@ -255,6 +255,6 @@ public class ReuniaoController {
         }else{
             reuniao.setStatusReuniao(reuniaoDTO.getStatusReuniao());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao));
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO));
     }
 }

@@ -2,7 +2,6 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -10,25 +9,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.WebUtils;
-import weg.com.Low.dto.DemandaDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.Status;
+import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
 import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
-import weg.com.Low.util.PropostaUtil;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
@@ -45,7 +37,6 @@ public class DemandaController {
     private BeneficioService beneficioService;
     private UsuarioService usuarioService;
     private CentroCustoService centroCustoService;
-    private NotificacaoService notificacaoService;
 
     @GetMapping
     public ResponseEntity<List<Demanda>> findAll() {
@@ -155,16 +146,15 @@ public class DemandaController {
 
     //Exige de outro formato para enviar as informações (body - form data)
     @PostMapping
-    public ResponseEntity<Object> save(@RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
+    public ResponseEntity<Object> save(
+            @RequestParam("arquivos") MultipartFile[] arquivos,
+            @RequestParam("demanda") String demandaJson,
+            HttpServletRequest request) {
         //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
         if(!arquivos[0].getOriginalFilename().equals("")){
             demanda.setArquivos(arquivos);
-        }
-
-        if (!usuarioService.existsById(demanda.getSolicitanteDemanda().getCodigoUsuario())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Solicitante não encontrado!");
         }
 
         if (!centroCustoService.verificaPorcentagemCentroCusto(demanda.getCentroCustosDemanda())){
@@ -191,9 +181,9 @@ public class DemandaController {
         demanda.setVersion(0);
         demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
 
+        demanda.setSolicitanteDemanda(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
 
-
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda, TipoNotificacao.CRIOU_DEMANDA));
     }
 
     @PutMapping("/update")
@@ -229,7 +219,7 @@ public class DemandaController {
 
         demandaNova.setVersion(demanda.getVersion() + 1);
 
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.EDITOU_DEMANDA));
     }
 
     //Caso seja passado por parametro 1 - passa para o proximo status
@@ -284,7 +274,8 @@ public class DemandaController {
         }else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova,
+                (decisao == 1 ? TipoNotificacao.AVANCOU_STATUS_DEMANDA : TipoNotificacao.CANCELOU_DEMANDA)));
     }
 
     //Reprova uma demanda
@@ -301,7 +292,7 @@ public class DemandaController {
         Demanda demandaNova = new Demanda();
         BeanUtils.copyProperties(demanda, demandaNova);
         demandaNova.setVersion(demanda.getVersion() + 1);
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
     }
 
 //    //Não Deleta todas as demandas do codigo

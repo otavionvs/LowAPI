@@ -3,8 +3,12 @@ package weg.com.Low.model.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.PropostaRepository;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,33 +29,15 @@ public class PropostaService {
     }
 
     public Proposta save(Proposta proposta) {
+        List<Usuario> usuarios = new ArrayList<>();
+        usuarios.add(proposta.getSolicitanteDemanda());
+        usuarios.add(proposta.getGerenteNegocio());
+        usuarios.add(proposta.getAnalista());
+        notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+                "Demanda: " + proposta.getTituloDemanda() + ", avançou um status! O status atual é: " + proposta.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuarios));
+
         return propostaRepository.save(proposta);
     }
-
-
-
-//    public Proposta save(Proposta proposta) {
-//        List<Usuario> usuarios = null;
-//        DemandaAnalista demandaAnalista = demandaAnalistaService.findById(proposta.getCodigoDemanda()).get();
-//        usuarios.add(demandaAnalista.getAnalista());
-//        usuarios.add(demandaAnalista.getGerenteNegocio());
-//        Demanda demanda = demandaService.findLastDemandaById(demandaAnalista.getCodigoDemanda()).get();
-//        usuarios.add(demanda.getSolicitanteDemanda());
-//
-//        notificacaoService.save(new Notificacao(
-//                null,
-//                demanda.getTituloDemanda(),
-//                        demanda.getCodigoDemanda(),
-//                TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-//                "Sua demanda progrediu de estado!",
-//                LocalDateTime.now(),
-//                LocalDate.now(),
-//                StatusNotificacao.ATIVADA,
-//                usuarios
-//        ));
-//
-//        return propostaRepository.save(proposta);
-//    }
 
     public void deleteById(Integer codigo) {
         propostaRepository.deleteById(codigo);

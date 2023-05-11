@@ -13,6 +13,7 @@ import weg.com.Low.dto.PropostaDTO;
 import weg.com.Low.dto.RecursoDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.Status;
+import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
 import weg.com.Low.util.PropostaUtil;
 
@@ -79,6 +80,8 @@ public class PropostaController {
 
         proposta.setVersion(demanda.getVersion() + 1);
 
+
+
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
     }
 
@@ -127,7 +130,7 @@ public class PropostaController {
         propostaNova.setVersion(propostaNova.getVersion() + 1);
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova));
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova, TipoNotificacao.EDITOU_DEMANDA));
     }
 
 
