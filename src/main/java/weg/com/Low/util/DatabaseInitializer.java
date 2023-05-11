@@ -3,21 +3,15 @@ package weg.com.Low.util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.javafaker.Faker;
 import org.hibernate.id.IntegralDataTypeHolder;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import weg.com.Low.dto.CentroCustoDTO;
 import weg.com.Low.dto.UsuarioDTO;
-import weg.com.Low.model.entity.CentroCusto;
-import weg.com.Low.model.entity.Demanda;
-import weg.com.Low.model.entity.Departamento;
-import weg.com.Low.model.entity.Usuario;
-import weg.com.Low.model.enums.NivelAcesso;
-import weg.com.Low.model.enums.Status;
-import weg.com.Low.repository.CentroCustoRepository;
-import weg.com.Low.repository.DemandaRepository;
-import weg.com.Low.repository.DepartamentoRepository;
-import weg.com.Low.repository.UsuarioRepository;
+import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.*;
+import weg.com.Low.repository.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -34,6 +28,8 @@ public class DatabaseInitializer implements CommandLineRunner {
     private DemandaRepository demandaRepository;
     @Autowired
     private CentroCustoRepository centroCustoRepository;
+    @Autowired
+    private DemandaClassificadaRepository demandaClassificadaRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -46,6 +42,9 @@ public class DatabaseInitializer implements CommandLineRunner {
             listaDemandas.add(gerarDemanda(usuario, i));
         }
         demandaRepository.saveAll(listaDemandas);
+        for(int i = 0; i < 10; i++){
+            demandaClassificadaRepository.save(gerarDemandaClassificada(listaDemandas.get(i)));
+        }
     }
 
     public CentroCusto gerarCentroCusto(){
@@ -56,9 +55,17 @@ public class DatabaseInitializer implements CommandLineRunner {
     }
 
 
-//    gerarDemandaClassificada(Demanda demanda){
-//
-//    }
+    public DemandaClassificada gerarDemandaClassificada(Demanda demanda){
+        DemandaClassificada demandaClassificada = new DemandaClassificada();
+        demandaClassificada.setTamanhoDemandaClassificada(TamanhoDemanda.Grande);
+        demandaClassificada.setBuSolicitanteDemandaClassificada(BussinessUnit.WAU);
+        demandaClassificada.setBusBeneficiadasDemandaClassificada(List.of(BussinessUnit.WAU));
+        demandaClassificada.setAnalista(demanda.getSolicitanteDemanda());
+        demandaClassificada.setSecaoDemandaClassificada(Secao.AAS);
+        BeanUtils.copyProperties(demanda, demandaClassificada);
+        demandaClassificada.setVersion(1);
+        return demandaClassificada;
+    }
 
     public Demanda gerarDemanda(Usuario usuario, Integer codigoDemanda){
         Demanda demanda = new Demanda();
