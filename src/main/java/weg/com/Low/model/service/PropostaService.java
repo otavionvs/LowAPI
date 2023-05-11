@@ -6,6 +6,7 @@ import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.PropostaRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,8 +33,9 @@ public class PropostaService {
         usuarios.add(proposta.getSolicitanteDemanda());
         usuarios.add(proposta.getGerenteNegocio());
         usuarios.add(proposta.getAnalista());
-        notificacaoService.save(new Notificacao(null, proposta.getTituloDemanda(), TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-                        "A Demanda avançou um status!", new Date(), false, usuarios));
+        notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+                "Demanda: " + proposta.getTituloDemanda() + ", avançou um status! O status atual é: " + proposta.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuarios));
+
         return propostaRepository.save(proposta);
     }
 

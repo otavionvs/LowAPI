@@ -12,7 +12,7 @@ public enum TipoNotificacao {
     CANCELOU_DEMANDA("cancelou demanda"),
     MARCOU_REUNIAO("marcou reuniao"),
     EDITOU_REUNIAO("editou reuniao"),
-    FINALIZOU_REUNIAO("reunião finalizada"),
+    FINALIZOU_REUNIAO("reuniao finalizada"),
     DESMARCOU_REUNIAO("desmarcou reuniao");
 
     String tipoNotificacao;

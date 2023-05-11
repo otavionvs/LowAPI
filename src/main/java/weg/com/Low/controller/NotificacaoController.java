@@ -11,7 +11,9 @@ import weg.com.Low.dto.NotificacaoDTO;
 import weg.com.Low.model.entity.Notificacao;
 import weg.com.Low.model.service.NotificacaoService;
 import weg.com.Low.model.service.UsuarioService;
+import weg.com.Low.security.TokenUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @CrossOrigin
@@ -25,6 +27,12 @@ public class NotificacaoController {
     @GetMapping("/{codigoUsuario}")
     public ResponseEntity<List<Notificacao>> findAllByUsuario(@PathVariable(value = "codigoUsuario") Integer codigoUsuario) {
         List<Notificacao> notificacoes = notificacaoService.findAllByUsuario(codigoUsuario);
+        return ResponseEntity.status(HttpStatus.OK).body(notificacoes);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Notificacao>> findAllByUsuarioRequest(HttpServletRequest request) {
+        List<Notificacao> notificacoes = notificacaoService.findAllByUsuario(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getCodigoUsuario());
         return ResponseEntity.status(HttpStatus.OK).body(notificacoes);
     }
 

@@ -9,6 +9,7 @@ import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.DemandaClassificadaRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,8 +33,9 @@ public class DemandaClassificadaService {
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.add(demanda.getSolicitanteDemanda());
         usuarios.add(demanda.getAnalista());
-        notificacaoService.save(new Notificacao(null, demanda.getTituloDemanda(), TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-                "A Demanda avançou um status!", new Date(), false, usuarios));
+        notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+                "Demanda: " + demanda.getTituloDemanda() + ", avançou um status! O status atual é: " + demanda.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuarios));
+
         return demandaClassificadaRepository.save(demanda);
     }
 
