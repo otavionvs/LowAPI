@@ -213,7 +213,6 @@ public class GeradorPDF {
         Paragraph parecerComissao = new Paragraph();
         parecerComissao.add(new Chunk("Parecer da Comissão: ", negritoFont));
         parecerComissao.add(new Chunk(parecer, normalFont));
-
         Paragraph decisao = new Paragraph();
         decisao.add(new Chunk("Decisão: ", negritoFont));
         decisao.add(new Chunk(ultimaDecisao, normalFont));

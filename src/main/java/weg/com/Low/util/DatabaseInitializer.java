@@ -1,20 +1,15 @@
 package weg.com.Low.util;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.javafaker.Faker;
-import org.hibernate.id.IntegralDataTypeHolder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import weg.com.Low.dto.CentroCustoDTO;
-import weg.com.Low.dto.UsuarioDTO;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.*;
 import weg.com.Low.repository.*;
-
-import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -30,21 +25,34 @@ public class DatabaseInitializer implements CommandLineRunner {
     private CentroCustoRepository centroCustoRepository;
     @Autowired
     private DemandaClassificadaRepository demandaClassificadaRepository;
+    @Autowired
+    private PropostaRepository propostaRepository;
 
     @Override
     public void run(String... args) throws Exception {
         // Insere alguns dados no banco de dados
         Departamento departamento = departamentoRepository.save(new Departamento(1, "Departamento"));
-        Usuario usuario = usuarioRepository.save(new Usuario(1,"nomeUsuario", "userUsuario", "emailUsuario", "$2a$10$o5zNvDXtP8UCBRN8fZcHc.6.2Kan67ucvrqxINLrI.9sLVSYzTH6a", departamento, NivelAcesso.GestorTI));
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        Usuario usuario = usuarioRepository.save(new Usuario(1,"nomeUsuario", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
 
         List<Demanda> listaDemandas = new ArrayList<>();
         for(int i = 0; i < 70; i++){
             listaDemandas.add(gerarDemanda(usuario, i));
         }
-        demandaRepository.saveAll(listaDemandas);
-        for(int i = 0; i < 10; i++){
-            demandaClassificadaRepository.save(gerarDemandaClassificada(listaDemandas.get(i)));
+        listaDemandas = demandaRepository.saveAll(listaDemandas);
+
+        List<DemandaClassificada> listaDemandasClassificadas = new ArrayList<>();
+        for(int i = 0; i < 20; i++){
+            listaDemandasClassificadas.add(demandaClassificadaRepository.save(gerarDemandaClassificada(listaDemandas.get(i))));
         }
+        listaDemandasClassificadas = demandaClassificadaRepository.saveAll(listaDemandasClassificadas);
+
+//        List<Proposta> listaPropostas = new ArrayList<>();
+//        for(int i = 0; i < 10; i++){
+//            listaPropostas.add(gerarProposta(listaDemandasClassificadas.get(i)));
+//        }
+//        propostaRepository.saveAll(listaPropostas);
     }
 
     public CentroCusto gerarCentroCusto(){
@@ -54,6 +62,20 @@ public class DatabaseInitializer implements CommandLineRunner {
         return  centroCusto;
     }
 
+    public Proposta gerarProposta(DemandaClassificada demanda){
+        Proposta proposta = new Proposta();
+        proposta.setPrazoProposta(Faker.instance().date().birthday());
+        proposta.setCodigoPPMProposta(12345);
+        proposta.setJiraProposta(Faker.instance().lorem().characters(30));
+        proposta.setInicioExDemandaProposta(Faker.instance().date().birthday());
+        proposta.setFimExDemandaProposta(Faker.instance().date().birthday());
+        proposta.setPaybackProposta(Faker.instance().number().randomDouble(2,1, 50000));
+        proposta.setEscopoDemandaProposta(Faker.instance().leagueOfLegends().summonerSpell());
+        BeanUtils.copyProperties(demanda, proposta);
+        proposta.setVersion(2);
+        proposta.setStatusDemanda(Status.ASSESSMENT);
+        return proposta;
+    }
 
     public DemandaClassificada gerarDemandaClassificada(Demanda demanda){
         DemandaClassificada demandaClassificada = new DemandaClassificada();
@@ -64,6 +86,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         demandaClassificada.setSecaoDemandaClassificada(Secao.AAS);
         BeanUtils.copyProperties(demanda, demandaClassificada);
         demandaClassificada.setVersion(1);
+        demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
         return demandaClassificada;
     }
 
