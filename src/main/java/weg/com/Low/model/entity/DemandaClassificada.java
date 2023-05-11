@@ -58,6 +58,7 @@ public class DemandaClassificada extends Demanda{
         secaoDemandaClassificada = demandaClassificada.secaoDemandaClassificada;
         this.setAnalista(demandaClassificada.getAnalista());
         this.setGerenteNegocio(demandaClassificada.getGerenteNegocio());
+        this.setSolicitanteDemanda(demandaClassificada.getSolicitanteDemanda());
         setCodigoDemanda(demandaClassificada.getCodigoDemanda());
     }
 }
