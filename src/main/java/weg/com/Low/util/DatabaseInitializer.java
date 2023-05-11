@@ -35,6 +35,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Usuario usuario = usuarioRepository.save(new Usuario(1,"nomeUsuario", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
+        Usuario usuario2 = usuarioRepository.save(new Usuario(2,"nomeUsuario", "gt2", "gt2@", encoder.encode("gt2"), departamento, NivelAcesso.GestorTI));
 
         List<Demanda> listaDemandas = new ArrayList<>();
         for(int i = 0; i < 70; i++){
@@ -42,11 +43,12 @@ public class DatabaseInitializer implements CommandLineRunner {
         }
         listaDemandas = demandaRepository.saveAll(listaDemandas);
 
-        List<DemandaClassificada> listaDemandasClassificadas = new ArrayList<>();
-        for(int i = 0; i < 20; i++){
-            listaDemandasClassificadas.add(demandaClassificadaRepository.save(gerarDemandaClassificada(listaDemandas.get(i))));
-        }
-        listaDemandasClassificadas = demandaClassificadaRepository.saveAll(listaDemandasClassificadas);
+//        List<DemandaClassificada> listaDemandasClassificadas = new ArrayList<>();
+//        for(int i = 0; i < 20; i++){
+//            listaDemandasClassificadas.add(demandaClassificadaRepository.save(gerarDemandaClassificada(listaDemandas.get(i))));
+//        }
+//
+//        demandaClassificadaRepository.saveAll(listaDemandasClassificadas);
 
 //        List<Proposta> listaPropostas = new ArrayList<>();
 //        for(int i = 0; i < 10; i++){
@@ -64,6 +66,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     public Proposta gerarProposta(DemandaClassificada demanda){
         Proposta proposta = new Proposta();
+        BeanUtils.copyProperties(demanda, proposta);
         proposta.setPrazoProposta(Faker.instance().date().birthday());
         proposta.setCodigoPPMProposta(12345);
         proposta.setJiraProposta(Faker.instance().lorem().characters(30));
@@ -71,8 +74,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         proposta.setFimExDemandaProposta(Faker.instance().date().birthday());
         proposta.setPaybackProposta(Faker.instance().number().randomDouble(2,1, 50000));
         proposta.setEscopoDemandaProposta(Faker.instance().leagueOfLegends().summonerSpell());
-        BeanUtils.copyProperties(demanda, proposta);
-        proposta.setVersion(2);
+        proposta.setVersion(demanda.getVersion() + 1);
         proposta.setStatusDemanda(Status.ASSESSMENT);
         return proposta;
     }
