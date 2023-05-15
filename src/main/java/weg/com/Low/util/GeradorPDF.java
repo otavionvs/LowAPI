@@ -13,6 +13,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Component
 public class GeradorPDF {
@@ -265,10 +266,12 @@ public class GeradorPDF {
         return document;
     }
 
-    private void addResponsaveis(Document document, String responsavel) throws DocumentException {
+    private void addResponsaveis(Document document, List<String> responsavel) throws DocumentException {
         Paragraph responsavelProposta = new Paragraph();
         responsavelProposta.add(new Chunk("Responsável Proposta: ", negritoFont));
-        responsavelProposta.add(new Chunk(responsavel, normalFont));
+        for(String resp: responsavel){
+            responsavelProposta.add(new Chunk(resp, normalFont));
+        }
         document.add(responsavelProposta);
     }
 

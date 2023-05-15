@@ -51,7 +51,7 @@ public class PropostaDTO {
     private String parecerComissaoProposta;
     private String recomendacaoProposta;
     @NotNull
-    private String responsavelProposta;
+    private List<String> responsavelProposta;
     @NotEmpty
     private List<RecursoDTO> recursosProposta;
     @NotNull
