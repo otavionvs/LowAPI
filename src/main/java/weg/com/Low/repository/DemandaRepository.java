@@ -23,6 +23,8 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     Long countAllByCodigoDemanda(Integer codigoDemanda);
     Integer countByVersionIs(Integer versao);
 
+    List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario solicitanteDemanda, Usuario analista);
+    List<Demanda> findByAnalista(Usuario usuario);
 
 
     void deleteFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);

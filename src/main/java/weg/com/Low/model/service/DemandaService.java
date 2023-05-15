@@ -30,6 +30,10 @@ public class DemandaService {
         return demandaRepository.findFirstByCodigoDemandaAndVersion(codigoDemanda, version);
     }
 
+    public List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario solicitanteDemanda) {
+        return demandaRepository.findBySolicitanteDemandaOrAnalista(solicitanteDemanda, solicitanteDemanda);
+    }
+
     public List<Demanda> findAll() {
         return demandaRepository.findAll();
     }

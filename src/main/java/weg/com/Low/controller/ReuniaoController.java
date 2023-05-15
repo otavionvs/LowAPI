@@ -165,7 +165,7 @@ public class ReuniaoController {
 
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REPROVAR)){
             novaDemanda.setStatusDemanda(Status.CANCELLED);
-        }
+           }
 
         novaDemanda.setUltimaDecisaoComissao(parecerComissaoDTO.getDecisaoProposta().toString());
         novaDemanda.setVersion(demanda.getVersion() + 1);
