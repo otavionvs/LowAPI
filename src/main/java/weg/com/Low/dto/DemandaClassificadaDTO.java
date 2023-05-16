@@ -21,7 +21,5 @@ public class DemandaClassificadaDTO {
     @NotNull
     private Integer codigoDemanda;
     @NotNull
-    private Usuario analista;
-    @NotNull
     private Secao secaoDemandaClassificada;
 }
