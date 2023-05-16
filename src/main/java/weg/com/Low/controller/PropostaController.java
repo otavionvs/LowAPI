@@ -43,11 +43,12 @@ public class PropostaController {
             @RequestParam("proposta") String propostaJson) {
         PropostaUtil propostaUtil = new PropostaUtil();
         Proposta proposta = propostaUtil.convertJsonToModel(propostaJson);
-        if(!arquivos[0].getOriginalFilename().equals("")){
+
+        if (!arquivos[0].getOriginalFilename().equals("")) {
             proposta.setArquivos(arquivos);
         }
 
-        if(!demandaService.existsById(proposta.getCodigoDemanda())){
+        if (!demandaService.existsById(proposta.getCodigoDemanda())) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não Encontrada!");
         }
         Demanda demanda = demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get();
@@ -55,26 +56,26 @@ public class PropostaController {
         //Seta as informações de demandaClassificada
         proposta.setAll((DemandaClassificada) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get());
 
-        for(Recurso recurso: proposta.getRecursosProposta()){
-            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
+        for (Recurso recurso : proposta.getRecursosProposta()) {
+            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Porcentagem centro de custo incompleta em " + recurso.getNomeRecurso());
             }
             recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
         }
 
-            if(proposta.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null &&
-                    proposta.getBeneficioPotencialDemanda().getValorBeneficio() != null){
-                proposta.setBeneficioPotencialDemanda(beneficioService.save(proposta.getBeneficioPotencialDemanda()));
-            }else {
-                proposta.setBeneficioPotencialDemanda(null);
-            }
+        if (proposta.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null &&
+                proposta.getBeneficioPotencialDemanda().getValorBeneficio() != null) {
+            proposta.setBeneficioPotencialDemanda(beneficioService.save(proposta.getBeneficioPotencialDemanda()));
+        } else {
+            proposta.setBeneficioPotencialDemanda(null);
+        }
 
-            if(proposta.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null &&
-                    proposta.getBeneficioRealDemanda().getValorBeneficio() != null){
-                proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
-            }else {
-                proposta.setBeneficioRealDemanda(null);
-            }
+        if (proposta.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null &&
+                proposta.getBeneficioRealDemanda().getValorBeneficio() != null) {
+            proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
+        } else {
+            proposta.setBeneficioRealDemanda(null);
+        }
 
         centroCustoService.saveAll(proposta.getCentroCustosDemanda());
 
@@ -89,7 +90,7 @@ public class PropostaController {
             @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("proposta") String propostaJson) {
         PropostaUtil propostaUtil = new PropostaUtil();
         Proposta propostaNova = propostaUtil.convertJsonToModel(propostaJson);
-        if(!arquivos[0].getOriginalFilename().equals("")){
+        if (!arquivos[0].getOriginalFilename().equals("")) {
             propostaNova.setArquivos(arquivos);
         }
 
@@ -99,26 +100,26 @@ public class PropostaController {
 
         centroCustoService.saveAll(propostaNova.getCentroCustosDemanda());
 
-        for(Recurso recurso: propostaNova.getRecursosProposta()){
-            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())){
+        for (Recurso recurso : propostaNova.getRecursosProposta()) {
+            if (!centroCustoService.verificaPorcentagemCentroCusto(recurso.getCentroCustoRecurso())) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Porcentagem centro de custo incompleta em " + recurso.getNomeRecurso());
             }
             recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
         }
 
-        if(propostaNova.getBeneficioPotencialDemanda().getCodigoBeneficio() == null &&
+        if (propostaNova.getBeneficioPotencialDemanda().getCodigoBeneficio() == null &&
                 propostaNova.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null &&
-                propostaNova.getBeneficioPotencialDemanda().getValorBeneficio() != null){
+                propostaNova.getBeneficioPotencialDemanda().getValorBeneficio() != null) {
             propostaNova.setBeneficioPotencialDemanda(beneficioService.save(propostaNova.getBeneficioPotencialDemanda()));
-        }else{
+        } else {
             propostaNova.setBeneficioPotencialDemanda(null);
         }
 
-        if(propostaNova.getBeneficioRealDemanda().getCodigoBeneficio() == null &&
+        if (propostaNova.getBeneficioRealDemanda().getCodigoBeneficio() == null &&
                 propostaNova.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null &&
-                propostaNova.getBeneficioRealDemanda().getValorBeneficio() != null){
+                propostaNova.getBeneficioRealDemanda().getValorBeneficio() != null) {
             propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
-        }else{
+        } else {
             propostaNova.setBeneficioRealDemanda(null);
         }
 
@@ -131,7 +132,6 @@ public class PropostaController {
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova, TipoNotificacao.EDITOU_DEMANDA));
     }
-
 
 
 //    @PostMapping
@@ -164,7 +164,6 @@ public class PropostaController {
 //
 //        return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta));
 //    }
-
 
 
 //    @DeleteMapping("/{codigo}")
