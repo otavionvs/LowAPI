@@ -30,20 +30,20 @@ public class ReuniaoService {
         usuarios.add(reuniao.getPropostasReuniao().get(0).getAnalista());
         switch (tipoNotificacao){
             case MARCOU_REUNIAO -> {
-                notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
-                        "Reunião Marcada!", LocalDateTime.now(), false, usuarios));
+                notificacaoService.save(new Notificacao(null, "Reunião Marcada!", tipoNotificacao,
+                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
             }
             case EDITOU_REUNIAO -> {
-                notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
-                        "Reunião Alterada!", LocalDateTime.now(), false, usuarios));
+                notificacaoService.save(new Notificacao(null, "Reunião Alterada!", tipoNotificacao,
+                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
             }
             case FINALIZOU_REUNIAO -> {
-                notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
-                        "Reunião Finalizada com sucesso!", LocalDateTime.now(), false, usuarios));
+                notificacaoService.save(new Notificacao(null, "Reunião Finalizada!", tipoNotificacao,
+                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
             }
             case DESMARCOU_REUNIAO -> {
-                notificacaoService.save(new Notificacao(null, "Reunião com a " + reuniao.getComissaoReuniao(), tipoNotificacao,
-                        "Reunião Desmarcada!", LocalDateTime.now(), false, usuarios));
+                notificacaoService.save(new Notificacao(null, "Reunião Desmarcada!", tipoNotificacao,
+                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
             }
         }
         return reuniaoRepository.save(reuniao);

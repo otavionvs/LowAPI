@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface NotificacaoRepository extends JpaRepository<Notificacao, Integer> {
-    @Query(value = "SELECT n.* FROM notificacao as n " +
+    @Query(value = "SELECT DISTINCT n.* FROM notificacao as n " +
             "join usuario_notificacoes as un on un.codigo_notificacao = n.codigo_notificacao " +
             "join usuario as u on u.codigo_usuario = un.codigo_usuario " +
             "where u.codigo_usuario = :usuario", nativeQuery = true)

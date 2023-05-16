@@ -216,7 +216,7 @@ public class DemandaController {
         }
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
-
+        demandaNova.setSolicitanteDemanda(demanda.getSolicitanteDemanda());
         demandaNova.setVersion(demanda.getVersion() + 1);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.EDITOU_DEMANDA));
