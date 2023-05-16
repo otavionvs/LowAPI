@@ -16,7 +16,7 @@ import java.util.Date;
 
 public class TokenUtils {
     private final String senhaForte = "c127a7b6adb013a5ff879ae71afa62afa4b4ceb72afaa54711dbcde67b6dc325";
-    private UsuarioService usuarioService;
+
     public String gerarToken(Authentication authentication) {
         UserJpa userJpa = (UserJpa) authentication.getPrincipal();
         return Jwts.builder()

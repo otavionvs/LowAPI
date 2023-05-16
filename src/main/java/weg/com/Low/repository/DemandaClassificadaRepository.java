@@ -12,5 +12,6 @@ import java.util.List;
 public interface DemandaClassificadaRepository extends JpaRepository<DemandaClassificada, Integer> {
 //    List<DemandaAnalista> findByAnalista(Usuario analista);
 //    DemandaAnalista findByDemandaDemandaAnalista(Demanda demanda);
-    List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario solicitanteDemanda, Usuario analista);
+    List<Demanda> findBySolicitanteDemanda(Usuario solicitanteDemanda);
+    List<Demanda> findByAnalista_CodigoUsuario(Integer codigoAnalista);
 }

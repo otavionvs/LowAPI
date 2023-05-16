@@ -25,9 +25,6 @@ public class DemandaClassificadaService {
         return demandaClassificadaRepository.findAll();
     }
 
-    public List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario analista) {
-        return demandaClassificadaRepository.findBySolicitanteDemandaOrAnalista(analista, analista);
-    }
 
     public DemandaClassificada save(DemandaClassificada demanda) {
         List<Usuario> usuarios = new ArrayList<>();

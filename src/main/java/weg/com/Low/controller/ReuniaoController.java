@@ -68,17 +68,17 @@ public class ReuniaoController {
 
     @GetMapping("/ata/{codigoReuniao}")
     public ResponseEntity<Object> downloadAta(
-            @PathVariable(value = "codigoReuniao") Integer codigoReuniao) {
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao, @RequestParam TipoAtaProposta tipoAta) {
         Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
         if (reuniao == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma reuniao encontrada!");
         }
         GeradorPDF geradorPDF = new GeradorPDF();
-        ByteArrayOutputStream baos = geradorPDF.gerarPDFAta(reuniao);
+        ByteArrayOutputStream baos = geradorPDF.gerarPDFAta(reuniao, tipoAta);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "documento.pdf");
+        headers.setContentDispositionFormData("attachment", reuniao.getComissaoReuniao().getComissao() + " - " + reuniao.getDataReuniao() + ".pdf");
         headers.setContentLength(baos.size());
 
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
@@ -135,13 +135,21 @@ public class ReuniaoController {
     @PutMapping("/parecer/{codigoProposta}")
     public ResponseEntity<Object> parecer(
             @PathVariable(value = "codigoProposta") Integer codigoProposta,
+            @RequestParam Integer codigoReuniao,
             @RequestBody @Valid ParecerComissaoDTO parecerComissaoDTO) {
+
+
         Proposta demanda = (Proposta) demandaService.findLastDemandaById(codigoProposta).get();
+        Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
+
+        Proposta novaDemanda = new Proposta();
+        BeanUtils.copyProperties(demanda, novaDemanda);
+
         if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR)){
-            demanda.setStatusDemanda(Status.TO_DO);
+            novaDemanda.setStatusDemanda(Status.TO_DO);
 
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR_COM_RECOMENDACAO)){
-            demanda.setStatusDemanda(Status.TO_DO);
+            novaDemanda.setStatusDemanda(Status.TO_DO);
 
             if(parecerComissaoDTO.getParecerComissaoProposta().length() == 0){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
@@ -149,20 +157,35 @@ public class ReuniaoController {
 
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)){
 
-            demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+            novaDemanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
 
             if(parecerComissaoDTO.getParecerComissaoProposta().length() == 0){
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
             }
 
         }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REPROVAR)){
-            demanda.setStatusDemanda(Status.CANCELLED);
-        }
+            novaDemanda.setStatusDemanda(Status.CANCELLED);
+           }
 
-        BeanUtils.copyProperties(parecerComissaoDTO, demanda);
-        demanda.setUltimaDecisaoComissao(parecerComissaoDTO.getDecisaoProposta().toString());
-        demanda.setVersion(demanda.getVersion() + 1);
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda, TipoNotificacao.MARCOU_REUNIAO));
+        novaDemanda.setUltimaDecisaoComissao(parecerComissaoDTO.getDecisaoProposta().toString());
+        novaDemanda.setVersion(demanda.getVersion() + 1);
+        BeanUtils.copyProperties(parecerComissaoDTO, novaDemanda);
+
+
+        Demanda demandaComParecer = demandaService.save(novaDemanda, TipoNotificacao.SEM_NOTIFICACAO);
+
+        //Atualizando a demanda na reunião
+        List<Proposta> listaPropostaReuniao = new ArrayList<>();
+        for(Demanda i: reuniao.getPropostasReuniao()){
+            if(i.getCodigoDemanda() == demandaComParecer.getCodigoDemanda()){
+                i = demandaComParecer;
+            }
+            listaPropostaReuniao.add((Proposta) i);
+        }
+        reuniao.setPropostasReuniao(listaPropostaReuniao);
+        reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaComParecer);
     }
 
 
@@ -174,6 +197,7 @@ public class ReuniaoController {
         }
         Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
         reuniao.setStatusReuniao(StatusReuniao.CONCLUIDO);
+        List<Proposta> listaPropostas = new ArrayList<>();
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
@@ -183,7 +207,9 @@ public class ReuniaoController {
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
                 propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
             }
+            listaPropostas.add(proposta);
         }
+        reuniao.setPropostasReuniao(listaPropostas);
 
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.FINALIZOU_REUNIAO));
     }

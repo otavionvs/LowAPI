@@ -6,7 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Reuniao;
+import weg.com.Low.model.enums.StatusReuniao;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -29,5 +32,8 @@ public interface ReuniaoRepository extends JpaRepository<Reuniao, Integer> {
     List<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
                          String ppmProposta, String analista, String solicitante, Pageable page);
 
+    List<Reuniao> findByDataReuniaoBetweenAndStatusReuniao(Date date, Date date2, StatusReuniao statusBuscado);
+
+    List<Reuniao> findByDataReuniaoBeforeAndStatusReuniao(Date date, StatusReuniao statusBuscado);
 
 }
