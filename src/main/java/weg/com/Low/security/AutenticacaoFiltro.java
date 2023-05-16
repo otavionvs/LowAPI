@@ -32,6 +32,7 @@ public class AutenticacaoFiltro extends OncePerRequestFilter {
             return;
         }
         String token = tokenUtils.buscarCookie(request);
+        response.addCookie(tokenUtils.renovarCookie(request));
         Boolean valido = tokenUtils.validarToken(token);
         if (valido) {
             String usuarioUsername = tokenUtils.getUsuarioUsername(token);
