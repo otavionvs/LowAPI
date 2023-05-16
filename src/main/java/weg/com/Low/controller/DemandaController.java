@@ -20,13 +20,12 @@ import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @CrossOrigin
 @AllArgsConstructor
@@ -108,7 +107,7 @@ public class DemandaController {
 
     //Retorna uma quantidade de demandas de cada status - para analista
     @GetMapping("/status")
-    public ResponseEntity<List<List<Demanda>>> search(
+    public ResponseEntity<Map<String, Object>> search(
             @PageableDefault(
                     page = 0,
                     size = 12,
@@ -119,18 +118,24 @@ public class DemandaController {
 
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
-
+        List<Integer> listQtd = new ArrayList<>();
         if(usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI){
             for (int i = 0; i < 10; i++) {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
+                listQtd.add(demandaService.countDemanda(Status.values()[i] + ""));
             }
         }else if(usuario.getNivelAcessoUsuario() == NivelAcesso.Solicitante || usuario.getNivelAcessoUsuario() == NivelAcesso.GerenteNegocio){
             for (int i = 0; i < 10; i++) {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() , page));
+                listQtd.add(demandaService.countByDepartamento(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() ));
             }
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
+        Map<String, Object> response = new HashMap<>();
+        response.put("demandas", listaDemandas);
+        response.put("qtdDemandas", listQtd);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     //Retorna uma lista com até dois status enviados
