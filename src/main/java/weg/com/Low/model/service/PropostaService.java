@@ -3,6 +3,7 @@ package weg.com.Low.model.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.PropostaRepository;
 
@@ -28,14 +29,15 @@ public class PropostaService {
         return propostaRepository.findById(integer);
     }
 
-    public Proposta save(Proposta proposta) {
+    public Proposta save(Proposta proposta, TipoNotificacao tipoNotificacao) {
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.add(proposta.getSolicitanteDemanda());
         usuarios.add(proposta.getGerenteNegocio());
         usuarios.add(proposta.getAnalista());
-        notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-                "Demanda: " + proposta.getTituloDemanda() + ", avançou um status! O status atual é: " + proposta.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuarios));
-
+        if(tipoNotificacao.equals(TipoNotificacao.AVANCOU_STATUS_DEMANDA)) {
+            notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+                    "Demanda: " + proposta.getTituloDemanda() + ", avançou um status! O status atual é: " + proposta.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuarios));
+        }
         return propostaRepository.save(proposta);
     }
 

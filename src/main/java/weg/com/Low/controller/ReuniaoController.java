@@ -117,7 +117,7 @@ public class ReuniaoController {
             propostaNova.setVersion(proposta.getVersion() + 1);
             //É criado uma nova proposta para atulizar a versão corretamente.
             //Necessário para a realização de um PUT
-            listaPropostas.add(propostaService.save(propostaNova));
+            listaPropostas.add(propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
         }
 
         BeanUtils.copyProperties(reuniaoDTO, reuniao);
@@ -205,8 +205,7 @@ public class ReuniaoController {
                 Proposta propostaNova = new Proposta();
                 BeanUtils.copyProperties(propostaAnterior, propostaNova);
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
-                proposta = propostaNova;
-                propostaService.save(propostaNova);
+                propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
             }
             listaPropostas.add(proposta);
         }
