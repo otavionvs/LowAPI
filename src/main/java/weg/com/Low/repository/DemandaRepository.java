@@ -23,6 +23,8 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     Long countAllByCodigoDemanda(Integer codigoDemanda);
     Integer countByVersionIs(Integer versao);
 
+    List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario solicitanteDemanda, Usuario analista);
+    List<Demanda> findByAnalista(Usuario usuario);
 
 
     void deleteFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
@@ -83,6 +85,16 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "WHERE d.status_demanda = :status", nativeQuery = true)
     List<Demanda> search(String status, Pageable page);
 
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM demanda d " +
+            "INNER JOIN (" +
+            "  SELECT codigo_demanda, MAX(version) AS max_version " +
+            "  FROM demanda " +
+            "  GROUP BY codigo_demanda " +
+            ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+            "WHERE d.status_demanda = :status", nativeQuery = true)
+    Integer countDemanda(String status);
+
     //Retorna a última versão de uma demanda de um determinado status,
     //porém somente as do departamento que for repassado abaixo
     //Utilizado no solicitante especialmente
@@ -96,6 +108,17 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "INNER JOIN usuario u ON d.solicitante_demanda = u.codigo_usuario " +
             "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento ", nativeQuery = true)
     List<Demanda> search(String status, Integer codigoDepartamento, Pageable page);
+
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM demanda d " +
+            "INNER JOIN (" +
+            "  SELECT codigo_demanda, MAX(version) AS max_version " +
+            "  FROM demanda " +
+            "  GROUP BY codigo_demanda " +
+            ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+            "INNER JOIN usuario u ON d.solicitante_demanda = u.codigo_usuario " +
+            "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento ", nativeQuery = true)
+    Integer countByDepartamento(String status, Integer codigoDepartamento);
 
     @Query(value = "select * from demanda d " +
             "INNER JOIN (" +

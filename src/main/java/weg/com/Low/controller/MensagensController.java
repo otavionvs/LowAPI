@@ -15,7 +15,9 @@ import weg.com.Low.dto.ReturnMensagens;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Mensagens;
 import weg.com.Low.model.entity.Usuario;
+import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.StatusMensagens;
+import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.MensagensService;
@@ -75,6 +77,21 @@ public class MensagensController {
         return dataMaisAtual;
     }
 
+
+    @PutMapping("/iniciarChat/{codigoDemanda}")
+    public Object startChat(@PathVariable(value = "codigoDemanda") Integer codigoDemanda, HttpServletRequest request) {
+        Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
+        Demanda novaDemanda = new Demanda();
+        BeanUtils.copyProperties(demanda, novaDemanda);
+        Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get();
+        if(usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI){
+            novaDemanda.setAnalista(usuario);
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você não tem permissão para ser analista de uma demanda!");
+        }
+        return ResponseEntity.ok(demandaService.save(novaDemanda, TipoNotificacao.SEM_NOTIFICACAO));
+    }
+
     @GetMapping("/demandasDiscutidas/{codigoUsuario}")
     public Object findAllByUsuario(@PathVariable(value = "codigoUsuario") Integer codigoUsuario) {
 
@@ -82,7 +99,13 @@ public class MensagensController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demandas não encontradas!");
         }
         Usuario usuario = usuarioService.findById(codigoUsuario).get();
-        List<Demanda> listaDemandas = demandaClassificadaService.findBySolicitanteDemandaOrAnalista(usuario);
+        System.out.println("Usuario: "+usuario.getNomeUsuario());
+        List<Demanda> listaDemandas = new ArrayList<>();
+        for(Demanda demanda: demandaService.findBySolicitanteDemandaOrAnalista(usuario)){
+            if(demanda.getAnalista() != null){
+                listaDemandas.add(demanda);
+            }
+        }
         List<ReturnMensagens> returnMensagens = new ArrayList<>();
 
         for (Demanda demanda: listaDemandas){
@@ -92,14 +115,14 @@ public class MensagensController {
             for(Mensagens mensagem: mensagens){
                 if(mensagem.getStatusMensagens().equals(StatusMensagens.ENVIADA)){
                     qtdNaoLidas++;
+                    usuario = mensagem.getUsuarioMensagens();
                 }
             }
-            returnMensagens.add(new ReturnMensagens(qtdNaoLidas, dataMaisAtual, demanda.getCodigoDemanda()));
+            returnMensagens.add(new ReturnMensagens(qtdNaoLidas, dataMaisAtual, demanda.getCodigoDemanda(), usuario));
         }
 
         Map<String, Object> response = new HashMap<>();
         response.put("demandas", listaDemandas);
-        System.out.println(response);
         response.put("infoCard", returnMensagens);
 
 
