@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.entity.Departamento;
 import weg.com.Low.model.entity.Notificacao;
 import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.enums.TipoNotificacao;
@@ -102,9 +103,9 @@ public class DemandaService {
 
     public Page<Demanda> search(
             String tituloDemanda, String solicitante, String codigoDemanda, String status, String departamento, String ordenar, Pageable page) {
-        //çflaskdjfçlkajsdf
         return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, departamento, ordenar, page);
     }
+
 
     public List<Demanda> search(String status, Pageable page) {
         return demandaRepository.search(status, page);

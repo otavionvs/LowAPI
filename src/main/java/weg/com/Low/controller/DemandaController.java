@@ -106,6 +106,20 @@ public class DemandaController {
         }
     }
 
+    @GetMapping("/departamento")
+    public ResponseEntity<List<Demanda>> departamento(
+            @PageableDefault(
+                    page = 0,
+                    size = 255) Pageable page, HttpServletRequest request){
+        List<Demanda> listaDemandas = new ArrayList<>();
+        TokenUtils tokenUtils = new TokenUtils();
+        Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
+        for (int i = 0; i < 10; i++) {
+            listaDemandas.addAll(demandaService.search(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() , page));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
+    }
+
     //Retorna uma quantidade de demandas de cada status - para analista
     @GetMapping("/status")
     public ResponseEntity<Map<String, Object>> search(
