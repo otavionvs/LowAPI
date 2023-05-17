@@ -36,6 +36,7 @@ public class DemandaController {
     private BeneficioService beneficioService;
     private UsuarioService usuarioService;
     private CentroCustoService centroCustoService;
+    private DemandaClassificadaService demandaClassificadaService;
 
     @GetMapping
     public ResponseEntity<List<Demanda>> findAll() {
@@ -252,6 +253,8 @@ public class DemandaController {
                 String user = tokenUtils.getUsuarioUsername(token);
                 Usuario usuario = usuarioService.findByUserUsuario(user).get();
                 demandaNova.setGerenteNegocio(usuario);
+                demandaNova.setDataAprovacao(new Date());
+                demandaNova.setScore(demandaClassificadaService.gerarScore(demandaNova));
 
                 demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
             } else {

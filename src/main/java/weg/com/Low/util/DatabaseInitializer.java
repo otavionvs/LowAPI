@@ -31,17 +31,17 @@ public class DatabaseInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // Insere alguns dados no banco de dados
-        Departamento departamento = departamentoRepository.save(new Departamento(1, "Departamento"));
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        Usuario usuario = usuarioRepository.save(new Usuario(1,"nomeUsuario", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
-        Usuario usuario2 = usuarioRepository.save(new Usuario(2,"nomeUsuario", "gt2", "gt2@", encoder.encode("gt2"), departamento, NivelAcesso.GestorTI));
-
-        List<Demanda> listaDemandas = new ArrayList<>();
-        for(int i = 0; i < 70; i++){
-            listaDemandas.add(gerarDemanda(usuario, i));
-        }
-        listaDemandas = demandaRepository.saveAll(listaDemandas);
+//        Departamento departamento = departamentoRepository.save(new Departamento(1, "Departamento"));
+//
+//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//        Usuario usuario = usuarioRepository.save(new Usuario(1,"nomeUsuario", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
+//        Usuario usuario2 = usuarioRepository.save(new Usuario(2,"nomeUsuario", "gt2", "gt2@", encoder.encode("gt2"), departamento, NivelAcesso.GestorTI));
+//
+//        List<Demanda> listaDemandas = new ArrayList<>();
+//        for(int i = 0; i < 70; i++){
+//            listaDemandas.add(gerarDemanda(usuario, i));
+//        }
+//        listaDemandas = demandaRepository.saveAll(listaDemandas);
 
 //        List<DemandaClassificada> listaDemandasClassificadas = new ArrayList<>();
 //        for(int i = 0; i < 20; i++){

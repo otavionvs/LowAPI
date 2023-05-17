@@ -6,6 +6,7 @@ import weg.com.Low.model.enums.Secao;
 import weg.com.Low.model.enums.TamanhoDemanda;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,12 @@ public class DemandaClassificada extends Demanda{
     @Enumerated(value = EnumType.STRING)
     @Column
     private Secao secaoDemandaClassificada;
+
+    @Column
+    private Double score;
+
+    @Column
+    private Date dataAprovacao;
 
 
     public void setAll(DemandaClassificada demandaClassificada){
