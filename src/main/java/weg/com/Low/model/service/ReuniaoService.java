@@ -36,8 +36,8 @@ public class ReuniaoService {
         usuarios.add(reuniao.getPropostasReuniao().get(0).getAnalista());
         switch (tipoNotificacao){
             case MARCOU_REUNIAO -> {
-                notificacaoService.save(new Notificacao(null, "Reunião Marcada!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
+//                notificacaoService.save(new Notificacao(null, "Reunião Marcada!", tipoNotificacao,
+//                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
             }
             case EDITOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Alterada!", tipoNotificacao,
