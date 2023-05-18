@@ -96,7 +96,11 @@ public class Demanda{
     }
 
     public void setArquivosList(List<Arquivo> arquivos){
-        this.arquivosDemanda = arquivos;
+        for (int i = 0; i< arquivos.size(); i++){
+            System.out.println(i);
+            System.out.println(arquivos.get(i).getNomeArquivo());;
+        };
+//            this.arquivosDemanda.addAll(arquivos);
     }
 
     public void setArquivosClassificada(List<Arquivo> arquivos){

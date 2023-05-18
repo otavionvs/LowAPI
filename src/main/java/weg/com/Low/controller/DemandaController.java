@@ -268,7 +268,11 @@ public class DemandaController {
                 Usuario usuario = usuarioService.findByUserUsuario(user).get();
                 demandaNova.setGerenteNegocio(usuario);
                 centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
+                demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
+                demandaNova.setBeneficioRealDemanda(beneficioService.save(demandaNova.getBeneficioRealDemanda()));
+                demandaNova.setBusBeneficiadasDemandaClassificada(demandaNova.getBusBeneficiadasDemandaClassificada());
                 demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+//                demandaNova.setArquivosList(demanda.getArquivosDemanda());
             } else {
                 demandaNova.setStatusDemanda(Status.CANCELLED);
             }
