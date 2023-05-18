@@ -110,7 +110,7 @@ public class DemandaController {
     public ResponseEntity<List<Demanda>> departamento(
             @PageableDefault(
                     page = 0,
-                    size = 255) Pageable page, HttpServletRequest request){
+                    size = 5) Pageable page, HttpServletRequest request){
         List<Demanda> listaDemandas = new ArrayList<>();
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
