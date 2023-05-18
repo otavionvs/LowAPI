@@ -12,6 +12,8 @@ public enum TipoNotificacao {
     CANCELOU_DEMANDA("cancelou demanda"),
     MARCOU_REUNIAO("marcou reuniao"),
     EDITOU_REUNIAO("editou reuniao"),
+    REUNIAO_PROXIMA("reuniao está proxima"),
+    REUNIAO_PENDETE("reuniao pendente"),
     FINALIZOU_REUNIAO("reuniao finalizada"),
     DESMARCOU_REUNIAO("desmarcou reuniao"),
     SEM_NOTIFICACAO("sem notificacao");
