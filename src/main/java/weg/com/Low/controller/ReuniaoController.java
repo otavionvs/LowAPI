@@ -235,6 +235,7 @@ public class ReuniaoController {
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid ReuniaoDTO reuniaoDTO) {
+        System.out.println("hey");
         Reuniao reuniao = new Reuniao();
         //Verificação para caso a Reunião não tenha Propostas
         if (reuniaoDTO.getPropostasReuniao().size() == 0) {
@@ -257,37 +258,41 @@ public class ReuniaoController {
         Reuniao reuniaoAntiga = reuniaoService.findById(codigo).get();
         ArrayList<Proposta> listaPropostas = new ArrayList<>();
 
-        boolean demandaEncontrada = false;
-        for (Demanda demanda : reuniaoAntiga.getPropostasReuniao()) {
-            for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
-                Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
-                Proposta propostaNova = new Proposta();
-                BeanUtils.copyProperties(proposta, propostaNova);
-                if (!(proposta.getStatusDemanda() == Status.DISCUSSION)) {
-                    propostaNova.setStatusDemanda(Status.DISCUSSION);
-                    propostaNova.setVersion(proposta.getVersion() + 1);
-                }
-                //Verificação de caso a reunião foi editada, porém tirou uma demanda.
-                //Esta demanda retirada deve voltar ao seu status anterior
+        for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
+            Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
+            Proposta propostaNova = new Proposta();
+            BeanUtils.copyProperties(proposta, propostaNova);
+            if (!(proposta.getStatusDemanda() == Status.DISCUSSION)) {
+                propostaNova.setStatusDemanda(Status.DISCUSSION);
+                propostaNova.setVersion(proposta.getVersion() + 1);
+            }
+            //Verificação de caso a reunião foi editada, porém tirou uma demanda.
+            //Esta demanda retirada deve voltar ao seu status anterior
 
-                if (proposta.getCodigoDemanda() == demanda.getCodigoDemanda()) {
+            //É criado uma nova proposta para atulizar a versão corretamente.
+            //Necessário para a realização de um PUT
+            listaPropostas.add(propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
+        }
+        System.out.println(listaPropostas);
+        for (Proposta proposta: reuniaoAntiga.getPropostasReuniao()){
+            boolean demandaEncontrada = false;
+            for(Proposta newProposta: listaPropostas){
+                System.out.println("Proposta: " +proposta.getCodigoDemanda());
+                System.out.println("newProposta: " +newProposta.getCodigoDemanda());
+                System.out.println("verifica: "+(proposta.getCodigoDemanda() == newProposta.getCodigoDemanda()));
+                if(proposta.getCodigoDemanda() == newProposta.getCodigoDemanda()){
                     demandaEncontrada = true;
-                    break;
                 }
-                //É criado uma nova proposta para atulizar a versão corretamente.
-                //Necessário para a realização de um PUT
-                listaPropostas.add(propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
             }
-            if (!demandaEncontrada) {
-                System.out.println("Demanda não encontrada! " + demanda.getCodigoDemanda());
-                Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(demanda.getCodigoDemanda(), demanda.getVersion() - 1).get();
-                Proposta propostaNovaInstancia = new Proposta();
-                BeanUtils.copyProperties(propostaAnterior, propostaNovaInstancia);
-                propostaNovaInstancia.setVersion(propostaAnterior.getVersion() + 2);
-                System.out.println(propostaNovaInstancia);
-                propostaService.save(propostaNovaInstancia, TipoNotificacao.SEM_NOTIFICACAO);
+            if(demandaEncontrada == false){
+                System.out.println("Demanda Não foi encontrada!");
+                Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
+                Proposta propostaNova = new Proposta();
+                BeanUtils.copyProperties(propostaAnterior, propostaNova);
+                propostaNova.setVersion(propostaAnterior.getVersion() + 2);
+                System.out.println("Proposta retornada a seu antigo status");
+                propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
             }
-
         }
 
 

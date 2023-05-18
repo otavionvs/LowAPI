@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.entity.Departamento;
 import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.enums.Status;
 
@@ -26,7 +27,6 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
 
     List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario solicitanteDemanda, Usuario analista);
     List<Demanda> findByAnalista(Usuario usuario);
-
 
     void deleteFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
 
