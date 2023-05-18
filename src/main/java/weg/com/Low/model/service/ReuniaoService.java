@@ -63,10 +63,6 @@ public class ReuniaoService {
         }
         return reuniaoRepository.save(reuniao);
     }
-//    @PostConstruct
-//    public void inicializar() {
-//        atualizarStatusProximo();
-//    }
 
     //43200000 equivale a meio dia
     @Scheduled(fixedDelay = 43200000)
