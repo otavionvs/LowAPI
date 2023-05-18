@@ -43,7 +43,7 @@ public class Demanda{
 //    @Column
 //    @ElementCollection
 //    @OneToMany(cascade = CascadeType.ALL)
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "centro_custo_demanda",
         joinColumns = {
