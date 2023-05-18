@@ -33,33 +33,32 @@ public class ReuniaoService {
     }
 
     public Reuniao save(Reuniao reuniao, TipoNotificacao tipoNotificacao) {
-        List<Usuario> usuarios = new ArrayList<>();
-        usuarios.add(reuniao.getPropostasReuniao().get(0).getAnalista());
+        Usuario usuario = reuniao.getPropostasReuniao().get(0).getAnalista();
         switch (tipoNotificacao){
             case MARCOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Marcada!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
+                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuario));
             }
             case EDITOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Alterada!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
+                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuario));
             }
             case FINALIZOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Finalizada!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
+                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuario));
             }
             case DESMARCOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Desmarcada!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuarios));
+                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuario));
             }
             case REUNIAO_PROXIMA -> {
                 notificacaoService.save(new Notificacao(null, "Reunião está Próxima!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao() + " está próxima!", LocalDateTime.now(), false, usuarios));
+                        "Reunião com a " + reuniao.getComissaoReuniao() + " está próxima!", LocalDateTime.now(), false, usuario));
             }
             case REUNIAO_PENDETE -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Pendente!", tipoNotificacao,
                         "Reunião com a " + reuniao.getComissaoReuniao() + " está pendente e precisa ser realizada ou remarcada!",
-                        LocalDateTime.now(), false, usuarios));
+                        LocalDateTime.now(), false, usuario));
             }
         }
         return reuniaoRepository.save(reuniao);

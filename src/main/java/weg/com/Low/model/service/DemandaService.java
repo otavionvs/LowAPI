@@ -1,8 +1,10 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Notificacao;
@@ -12,7 +14,7 @@ import weg.com.Low.repository.DemandaRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +23,8 @@ import java.util.Optional;
 public class DemandaService {
     private DemandaRepository demandaRepository;
     private NotificacaoService notificacaoService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
 
     public Optional<Demanda> findFirstByCodigoDemandaAndVersionBefore(Integer codigoDemanda, Integer version) {
@@ -40,38 +44,40 @@ public class DemandaService {
     }
 
     public Demanda save(Demanda demanda, TipoNotificacao tipoNotificacao) {
+        //Adiciona os usuarios que devem receber a notificação referente a ação
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.add(demanda.getSolicitanteDemanda());
-        switch (tipoNotificacao) {
-            case CRIOU_DEMANDA -> {
-                notificacaoService.save(new Notificacao(null, "Demanda Criada!", tipoNotificacao,
-                        "Demanda: " + demanda.getTituloDemanda() + ", criada com sucesso! Logo entrará" +
-                                " em processo de aprovação, fique atento a futuras mudanças.",
-                        LocalDateTime.now(), false, usuarios));
-            }
-            case EDITOU_DEMANDA -> {
-                if (demanda.getAnalista() != null) {
+        if (demanda.getAnalista() != null) {
+            usuarios.add(demanda.getAnalista());
+        }
+        if (demanda.getGerenteNegocio() != null) {
+            usuarios.add(demanda.getGerenteNegocio());
+        }
+        for (Usuario usuario : usuarios) {
+            switch (tipoNotificacao) {
+                case CRIOU_DEMANDA -> {
+                    notificacaoService.save(new Notificacao(null, "Demanda Criada!", tipoNotificacao,
+                            "Demanda: " + demanda.getTituloDemanda() + ", criada com sucesso! Logo entrará" +
+                                    " em processo de aprovação, fique atento a futuras mudanças.",
+                            LocalDateTime.now(), false, usuario));
+                }
+                case EDITOU_DEMANDA -> {
+                    notificacaoService.save(new Notificacao(null, "Demanda Editada!", tipoNotificacao,
+                            "Demanda: " + demanda.getTituloDemanda() + ", foi editada!", LocalDateTime.now(), false, usuario));
+                }
+                case AVANCOU_STATUS_DEMANDA -> {
                     usuarios.add(demanda.getAnalista());
+                    notificacaoService.save(new Notificacao(null, "Status Avançado!", tipoNotificacao,
+                            "Demanda: " + demanda.getTituloDemanda() + ", avançou um status! O status atual é: " +
+                                    demanda.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuario));
                 }
-                notificacaoService.save(new Notificacao(null, "Demanda Editada!", tipoNotificacao,
-                        "Demanda: " + demanda.getTituloDemanda() +", foi editada!", LocalDateTime.now(), false, usuarios));
-            }
-            case AVANCOU_STATUS_DEMANDA -> {
-                if (demanda.getGerenteNegocio() != null) {
-                    usuarios.add(demanda.getGerenteNegocio());
+                case CANCELOU_DEMANDA -> {
+                    notificacaoService.save(new Notificacao(null, "Demanda Cancelada!", tipoNotificacao,
+                            "Demanda: " + demanda.getTituloDemanda() + ", foi cancelada!", LocalDateTime.now(), false, usuario));
                 }
-                usuarios.add(demanda.getAnalista());
-                notificacaoService.save(new Notificacao(null, "Status Avançado!", tipoNotificacao,
-                        "Demanda: " + demanda.getTituloDemanda() + ", avançou um status! O status atual é: " + demanda.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuarios));
-            }
-            case CANCELOU_DEMANDA -> {
-                if (demanda.getAnalista() != null) {
-                    usuarios.add(demanda.getAnalista());
-                }
-                notificacaoService.save(new Notificacao(null, "Demanda Cancelada!", tipoNotificacao,
-                        "Demanda: " + demanda.getTituloDemanda() + ", foi cancelada!", LocalDateTime.now(), false, usuarios));
             }
         }
+        messagingTemplate.convertAndSend("/usuario", new Notificacao());
         return demandaRepository.save(demanda);
     }
 

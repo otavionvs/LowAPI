@@ -3,7 +3,6 @@ package weg.com.Low.model.service;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.DemandaClassificada;
 import weg.com.Low.model.entity.Notificacao;
 import weg.com.Low.model.entity.Usuario;
@@ -11,13 +10,9 @@ import weg.com.Low.model.enums.TamanhoDemanda;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.DemandaClassificadaRepository;
 
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -32,12 +27,12 @@ public class DemandaClassificadaService {
 
 
     public DemandaClassificada save(DemandaClassificada demanda) {
-        List<Usuario> usuarios = new ArrayList<>();
-        usuarios.add(demanda.getSolicitanteDemanda());
-        usuarios.add(demanda.getAnalista());
-        notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-                "Demanda: " + demanda.getTituloDemanda() + ", avançou um status! O status atual é: " + demanda.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuarios));
-
+        //Adiciona os usuarios que devem receber a notificação referente a ação
+        List<Usuario> usuarios = new ArrayList<>(Arrays.asList(demanda.getSolicitanteDemanda(), demanda.getAnalista()));
+        for(Usuario usuario: usuarios) {
+            notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+                    "Demanda: " + demanda.getTituloDemanda() + ", avançou um status! O status atual é: " + demanda.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuario));
+        }
         return demandaClassificadaRepository.save(demanda);
     }
 
