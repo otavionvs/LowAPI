@@ -29,8 +29,8 @@ public class NotificacaoService {
         return notificacaoRepository.save(entity);
     }
 
-    public List<Notificacao> findAllByUsuario(Integer usuario){
-        return notificacaoRepository.findAllByUsuario(usuario);
+    public List<Notificacao> findByUsuario(Usuario usuario){
+        return notificacaoRepository.findByUsuarioNotificacao(usuario);
     }
 
     public Optional<Notificacao> findById(Integer integer) {

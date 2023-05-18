@@ -52,12 +52,12 @@ public class MensagensController {
         for (Mensagens mensagem : mensagens) {
             //Se o usuário que viu a mensagem for diferente que o usuário que enviou, então ela é marcada como vista
             if ((mensagem.getUsuarioMensagens() != usuario) && (mensagem.getStatusMensagens() != StatusMensagens.VISTA)) {
-                    mensagem.setStatusMensagens(StatusMensagens.VISTA);
-                    statusAtualizado = true;
-                    mensagensService.save(mensagem);
+                mensagem.setStatusMensagens(StatusMensagens.VISTA);
+                statusAtualizado = true;
+                mensagensService.save(mensagem);
             }
         }
-        if(statusAtualizado){
+        if (statusAtualizado) {
             messagingTemplate.convertAndSend("/demanda/" + codigo + "/chat", mensagens);
         }
 
@@ -84,9 +84,9 @@ public class MensagensController {
         Demanda novaDemanda = new Demanda();
         BeanUtils.copyProperties(demanda, novaDemanda);
         Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get();
-        if(usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI){
+        if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
             novaDemanda.setAnalista(usuario);
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Você não tem permissão para ser analista de uma demanda!");
         }
         return ResponseEntity.ok(demandaService.save(novaDemanda, TipoNotificacao.SEM_NOTIFICACAO));
@@ -99,21 +99,21 @@ public class MensagensController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demandas não encontradas!");
         }
         Usuario usuario = usuarioService.findById(codigoUsuario).get();
-        System.out.println("Usuario: "+usuario.getNomeUsuario());
+        System.out.println("Usuario: " + usuario.getNomeUsuario());
         List<Demanda> listaDemandas = new ArrayList<>();
-        for(Demanda demanda: demandaService.findBySolicitanteDemandaOrAnalista(usuario)){
-            if(demanda.getAnalista() != null){
+        for (Demanda demanda : demandaService.findBySolicitanteDemandaOrAnalista(usuario)) {
+            if (demanda.getAnalista() != null) {
                 listaDemandas.add(demanda);
             }
         }
         List<ReturnMensagens> returnMensagens = new ArrayList<>();
 
-        for (Demanda demanda: listaDemandas){
+        for (Demanda demanda : listaDemandas) {
             List<Mensagens> mensagens = mensagensService.findAllByDemanda(demanda);
             Date dataMaisAtual = encontrarDataMaisAtual(mensagens);
             Integer qtdNaoLidas = 0;
-            for(Mensagens mensagem: mensagens){
-                if(mensagem.getStatusMensagens().equals(StatusMensagens.ENVIADA)){
+            for (Mensagens mensagem : mensagens) {
+                if (mensagem.getStatusMensagens().equals(StatusMensagens.ENVIADA)) {
                     qtdNaoLidas++;
                     usuario = mensagem.getUsuarioMensagens();
                 }

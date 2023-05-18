@@ -27,13 +27,11 @@ public class AutenticacaoConfig {
 
     private JpaService jpaService;
 
-
     // Configura as autorizações de acesso
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(jpaService)
                 .passwordEncoder(new BCryptPasswordEncoder());
-//                .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 
     // Configura o Cors
@@ -60,7 +58,6 @@ public class AutenticacaoConfig {
                 // /* - um parâmetro depois da rota,  /** - dois os mais parâmetros
                 .antMatchers( "/low/login/**",
                         "/low/logout",
-                        "/logout",
                         "/low/usuario",
                         "/low/departamento",
                         "/swagger-ui/**",
@@ -82,8 +79,7 @@ public class AutenticacaoConfig {
                 .anyRequest().authenticated()
                 .and().csrf().disable()
                 .cors().configurationSource(corsConfigurationSource())
-                .and().formLogin().permitAll()
-                .and().logout().permitAll()
+                .and().logout().deleteCookies("jwt").permitAll()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(new AutenticacaoFiltro(new TokenUtils(), jpaService), UsernamePasswordAuthenticationFilter.class);
 

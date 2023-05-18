@@ -8,10 +8,7 @@ import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.PropostaRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -30,13 +27,13 @@ public class PropostaService {
     }
 
     public Proposta save(Proposta proposta, TipoNotificacao tipoNotificacao) {
-        List<Usuario> usuarios = new ArrayList<>();
-        usuarios.add(proposta.getSolicitanteDemanda());
-        usuarios.add(proposta.getGerenteNegocio());
-        usuarios.add(proposta.getAnalista());
-        if(tipoNotificacao.equals(TipoNotificacao.AVANCOU_STATUS_DEMANDA)) {
-            notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
-                    "Demanda: " + proposta.getTituloDemanda() + ", avançou um status! O status atual é: " + proposta.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuarios));
+        //Adiciona os usuarios que devem receber a notificação referente a ação
+        List<Usuario> usuarios = new ArrayList<>(Arrays.asList(proposta.getSolicitanteDemanda(), proposta.getGerenteNegocio(), proposta.getAnalista()));
+        for(Usuario usuario: usuarios) {
+            if (tipoNotificacao.equals(TipoNotificacao.AVANCOU_STATUS_DEMANDA)) {
+                notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
+                        "Demanda: " + proposta.getTituloDemanda() + ", avançou um status! O status atual é: " + proposta.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuario));
+            }
         }
         return propostaRepository.save(proposta);
     }

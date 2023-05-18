@@ -52,38 +52,17 @@ public class DemandaClassificadaController {
         //Alguns atributos precisam ser setados manualmente
         demandaClassificada.setStatusDemanda(Status.BACKLOG_APROVACAO);
         demandaClassificada.setVersion(demandaClassificada.getVersion() + 1);
+        demandaClassificada.setAnalista(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
 
         //O sout n deve ser tirado
         System.out.println(demandaClassificada.getCentroCustosDemanda());
 
         //Alguns precisam ser salvos novamente no banco
         demandaClassificada.setArquivosClassificada(demanda.getArquivosDemanda());
-        demandaClassificada.setAnalista(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
+
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaClassificadaService.save(demandaClassificada));
     }
 
-//    //verificar o status da demanda
-//    @PutMapping("/{codigo}")
-//    public ResponseEntity<Object> update(
-//            @PathVariable(value = "codigo") Integer codigo,
-//            @RequestBody @Valid DemandaClassificadaDTO demandaClassificadaDTO) {
-//        if (!demandaClassificadaService.existsById(codigo)) {
-//            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demandaClassificada não existe!");
-//        }
-//        DemandaClassificada demandaClassificada = demandaClassificadaService.findById(codigo).get();
-//        BeanUtils.copyProperties(demandaClassificadaDTO, demandaClassificada);
-//        return ResponseEntity.status(HttpStatus.OK).body(demandaClassificadaService.save(demandaClassificada));
-//    }
-
-//    //verificar o status da demanda
-//    @DeleteMapping("/{codigo}")
-//    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-//        if (!demandaClassificadaService.existsById(codigo)) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("demandaClassificada não encontrada!");
-//        }
-//        demandaClassificadaService.deleteById(codigo);
-//        return ResponseEntity.status(HttpStatus.OK).body("demandaClassificada Deletada!");
-//    }
 
 }

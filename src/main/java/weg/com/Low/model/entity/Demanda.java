@@ -39,8 +39,6 @@ public class Demanda{
     private Date dataCriacaoDemanda = new Date();
     @Column(columnDefinition = "longtext")
     private String motivoReprovacaoDemanda;
-    @Column(length = 6)
-    private Integer score;
 
 //    @Column
 //    @ElementCollection

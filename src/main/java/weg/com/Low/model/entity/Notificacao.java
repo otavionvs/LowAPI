@@ -33,10 +33,14 @@ public class Notificacao {
     private LocalDateTime dataNotificacao = LocalDateTime.now();
     @Column
     private Boolean lido = false;
-    @ManyToMany
-    @JoinTable(name = "usuario_notificacoes", joinColumns =
-    @JoinColumn(name = "codigo_notificacao", nullable = false),
-            inverseJoinColumns = @JoinColumn(name = "codigo_usuario", nullable = false))
-    private List<Usuario> usuariosNotificacao;
+    //    @ManyToMany
+//    @JoinTable(name = "usuario_notificacoes", joinColumns =
+//    @JoinColumn(name = "codigo_notificacao", nullable = false),
+//            inverseJoinColumns = @JoinColumn(name = "codigo_usuario", nullable = false))
+//    private List<Usuario> usuariosNotificacao;
+    @OneToOne
+    @JoinColumn(name = "usuario_codigo")
+    private Usuario usuarioNotificacao;
+
 
 }

@@ -1,6 +1,7 @@
 package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,23 +25,29 @@ public class NotificacaoController {
     private NotificacaoService notificacaoService;
     private UsuarioService usuarioService;
 
-    @GetMapping("/{codigoUsuario}")
-    public ResponseEntity<List<Notificacao>> findAllByUsuario(@PathVariable(value = "codigoUsuario") Integer codigoUsuario) {
-        List<Notificacao> notificacoes = notificacaoService.findAllByUsuario(codigoUsuario);
-        return ResponseEntity.status(HttpStatus.OK).body(notificacoes);
-    }
-
     @GetMapping
     public ResponseEntity<List<Notificacao>> findAllByUsuarioRequest(HttpServletRequest request) {
-        List<Notificacao> notificacoes = notificacaoService.findAllByUsuario(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getCodigoUsuario());
+        List<Notificacao> notificacoes = notificacaoService.findByUsuario(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
+        for(Notificacao notificacao: notificacoes){
+            if(notificacao.getLido() == false){
+                notificacao.setLido(true);
+                notificacaoService.save(notificacao);
+            }
+        }
         return ResponseEntity.status(HttpStatus.OK).body(notificacoes);
     }
 
-//    @MessageMapping("/{codigo}")
-//    @SendTo("/notificar/{codigo}")
-//    public Notificacao save(NotificacaoDTO notificacaoDTO) {
-//        Notificacao notificacao = new Notificacao();
-//        BeanUtils.copyProperties(notificacaoDTO, notificacao);
-//        return notificacaoService.save(notificacao);
-//    }
+    @MessageMapping("/ws")
+    @SendTo("/usuario")
+    public ResponseEntity<List<Notificacao>> findAllByUsuario(HttpServletRequest request) {
+        List<Notificacao> notificacoes = notificacaoService.findByUsuario(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
+        for(Notificacao notificacao: notificacoes){
+            if(notificacao.getLido() == false){
+                notificacao.setLido(true);
+                notificacaoService.save(notificacao);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(notificacoes);
+    }
+
 }

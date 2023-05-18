@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/low/login")
+@RequestMapping("/low")
 public class AutenticacaoController {
 
     private TokenUtils tokenUtils = new TokenUtils();
@@ -29,7 +29,7 @@ public class AutenticacaoController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @GetMapping("/verify-token")
+    @GetMapping("/login/verify-token")
     public ResponseEntity<Object> autenticacao(HttpServletRequest request) {
         Boolean valido = false;
         UserDetails usuario = null;
@@ -46,8 +46,19 @@ public class AutenticacaoController {
         return ResponseEntity.status(HttpStatus.OK).body(usuario);
     }
 
+    @GetMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        // Lógica de logout, como invalidar a sessão e remover o cookie de autenticação
+        request.getSession().invalidate();
+        Cookie cookie = new Cookie("jwt", null);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        // Redirecionar para a página de login ou retornar uma resposta personalizada
+        return ResponseEntity.ok("Logout realizado com sucesso");
+    }
 
-    @PostMapping("/auth")
+    @PostMapping("/login/auth")
     public ResponseEntity<Object> autenticacao(
             @RequestBody @Valid UsuarioLoginDTO usuarioDTO,
             HttpServletResponse response) {
