@@ -93,6 +93,10 @@ public class Demanda{
         }
     }
 
+    public void setArquivosList(List<Arquivo> arquivos){
+        this.arquivosDemanda = arquivos;
+    }
+
     public void setArquivosClassificada(List<Arquivo> arquivos){
         arquivosDemanda = new ArrayList<>();
         try {

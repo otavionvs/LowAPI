@@ -61,7 +61,7 @@ public class ReuniaoController {
             @RequestParam("solicitante") String solicitante,
             @PageableDefault(
                     page = 0,
-                    size = 10) Pageable page){
+                    size = 10) Pageable page) {
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.search(nomeComissao, dataReuniao, statusReuniao,
                 ppmProposta, analista, solicitante, page));
     }
@@ -88,20 +88,20 @@ public class ReuniaoController {
     public ResponseEntity<Object> save(@RequestBody @Valid ReuniaoDTO reuniaoDTO) {
         Reuniao reuniao = new Reuniao();
         //Verificação para caso a Reunião não tenha Propostas
-        if(reuniaoDTO.getPropostasReuniao().size() == 0){
+        if (reuniaoDTO.getPropostasReuniao().size() == 0) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Adicione Propostas na sua Reunião");
         }
         //Verificar se existe a comissão enviada e setar no objeto principal
         boolean comissaoNotFound = true;
-        for(Comissao comissao: Comissao.values()){
-            if(comissao.toString().equals(reuniaoDTO.getComissaoReuniao())) {
+        for (Comissao comissao : Comissao.values()) {
+            if (comissao.toString().equals(reuniaoDTO.getComissaoReuniao())) {
                 comissaoNotFound = false;
                 reuniao.setComissaoReuniao(comissao);
                 break;
             }
         }
 
-        if(comissaoNotFound){
+        if (comissaoNotFound) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comissão não Encontrada! Comissões: [CPGCI, CGPN, CPVM, CWBS, CTI, DTI, CPGPR]");
         }
         //Instancia Propostas com o código
@@ -124,9 +124,9 @@ public class ReuniaoController {
         reuniao.setPropostasReuniao(listaPropostas);
         Long tempo = reuniao.getDataReuniao().getTime() - new Date().getTime();
         //aproximadamente duas semanas
-        if(tempo > 0 && tempo < 1300000000){
+        if (tempo > 0 && tempo < 1300000000) {
             reuniao.setStatusReuniao(StatusReuniao.PROXIMO);
-        }else{
+        } else {
             reuniao.setStatusReuniao(StatusReuniao.AGUARDANDO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO));
@@ -145,27 +145,27 @@ public class ReuniaoController {
         Proposta novaDemanda = new Proposta();
         BeanUtils.copyProperties(demanda, novaDemanda);
 
-        if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR)){
+        if (parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR)) {
             novaDemanda.setStatusDemanda(Status.TO_DO);
 
-        }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR_COM_RECOMENDACAO)){
+        } else if (parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR_COM_RECOMENDACAO)) {
             novaDemanda.setStatusDemanda(Status.TO_DO);
 
-            if(parecerComissaoDTO.getParecerComissaoProposta().length() == 0){
+            if (parecerComissaoDTO.getParecerComissaoProposta().length() == 0) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
             }
 
-        }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)){
+        } else if (parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)) {
 
             novaDemanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
 
-            if(parecerComissaoDTO.getParecerComissaoProposta().length() == 0){
+            if (parecerComissaoDTO.getParecerComissaoProposta().length() == 0) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
             }
 
-        }else if(parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REPROVAR)){
+        } else if (parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REPROVAR)) {
             novaDemanda.setStatusDemanda(Status.CANCELLED);
-           }
+        }
 
         novaDemanda.setUltimaDecisaoComissao(parecerComissaoDTO.getDecisaoProposta().toString());
         novaDemanda.setVersion(demanda.getVersion() + 1);
@@ -176,8 +176,8 @@ public class ReuniaoController {
 
         //Atualizando a demanda na reunião
         List<Proposta> listaPropostaReuniao = new ArrayList<>();
-        for(Demanda i: reuniao.getPropostasReuniao()){
-            if(i.getCodigoDemanda() == demandaComParecer.getCodigoDemanda()){
+        for (Demanda i : reuniao.getPropostasReuniao()) {
+            if (i.getCodigoDemanda() == demandaComParecer.getCodigoDemanda()) {
                 i = demandaComParecer;
             }
             listaPropostaReuniao.add((Proposta) i);
@@ -235,24 +235,76 @@ public class ReuniaoController {
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid ReuniaoDTO reuniaoDTO) {
-        if (!reuniaoService.existsById(codigo)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta reunião não existe!");
+        System.out.println("hey");
+        Reuniao reuniao = new Reuniao();
+        //Verificação para caso a Reunião não tenha Propostas
+        if (reuniaoDTO.getPropostasReuniao().size() == 0) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Adicione Propostas na sua Reunião");
+        }
+        //Verificar se existe a comissão enviada e setar no objeto principal
+        boolean comissaoNotFound = true;
+        for (Comissao comissao : Comissao.values()) {
+            if (comissao.toString().equals(reuniaoDTO.getComissaoReuniao())) {
+                comissaoNotFound = false;
+                reuniao.setComissaoReuniao(comissao);
+                break;
+            }
         }
 
-        Reuniao reuniao = reuniaoService.findById(codigo).get();
-        BeanUtils.copyProperties(reuniaoDTO, reuniao);
-        if (!reuniaoDTO.getStatusReuniao().equals(StatusReuniao.CANCELADO) &&
-        !reuniaoDTO.getStatusReuniao().equals(StatusReuniao.CONCLUIDO)) {
-            Long tempo = reuniao.getDataReuniao().getTime() - new Date().getTime();
-            if (tempo > 0 && tempo < 1300000000) {
-                reuniao.setStatusReuniao(StatusReuniao.PROXIMO);
-            } else if (tempo < 0) {
-                reuniao.setStatusReuniao(StatusReuniao.PENDENTE);
-            } else {
-                reuniao.setStatusReuniao(StatusReuniao.AGUARDANDO);
+        if (comissaoNotFound) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Comissão não Encontrada! Comissões: [CPGCI, CGPN, CPVM, CWBS, CTI, DTI, CPGPR]");
+        }
+        //Instancia Propostas com o código
+        Reuniao reuniaoAntiga = reuniaoService.findById(codigo).get();
+        ArrayList<Proposta> listaPropostas = new ArrayList<>();
+
+        for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
+            Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
+            Proposta propostaNova = new Proposta();
+            BeanUtils.copyProperties(proposta, propostaNova);
+            if (!(proposta.getStatusDemanda() == Status.DISCUSSION)) {
+                propostaNova.setStatusDemanda(Status.DISCUSSION);
+                propostaNova.setVersion(proposta.getVersion() + 1);
             }
-        }else{
-            reuniao.setStatusReuniao(reuniaoDTO.getStatusReuniao());
+            //Verificação de caso a reunião foi editada, porém tirou uma demanda.
+            //Esta demanda retirada deve voltar ao seu status anterior
+
+            //É criado uma nova proposta para atulizar a versão corretamente.
+            //Necessário para a realização de um PUT
+            listaPropostas.add(propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
+        }
+        System.out.println(listaPropostas);
+        for (Proposta proposta: reuniaoAntiga.getPropostasReuniao()){
+            boolean demandaEncontrada = false;
+            for(Proposta newProposta: listaPropostas){
+                System.out.println("Proposta: " +proposta.getCodigoDemanda());
+                System.out.println("newProposta: " +newProposta.getCodigoDemanda());
+                System.out.println("verifica: "+(proposta.getCodigoDemanda() == newProposta.getCodigoDemanda()));
+                if(proposta.getCodigoDemanda() == newProposta.getCodigoDemanda()){
+                    demandaEncontrada = true;
+                }
+            }
+            if(demandaEncontrada == false){
+                System.out.println("Demanda Não foi encontrada!");
+                Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
+                Proposta propostaNova = new Proposta();
+                BeanUtils.copyProperties(propostaAnterior, propostaNova);
+                propostaNova.setVersion(propostaAnterior.getVersion() + 2);
+                System.out.println("Proposta retornada a seu antigo status");
+                propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
+            }
+        }
+
+
+        BeanUtils.copyProperties(reuniaoDTO, reuniao);
+        reuniao.setPropostasReuniao(listaPropostas);
+        reuniao.setCodigoReuniao(codigo);
+        Long tempo = reuniao.getDataReuniao().getTime() - new Date().getTime();
+        //aproximadamente duas semanas
+        if (tempo > 0 && tempo < 1300000000) {
+            reuniao.setStatusReuniao(StatusReuniao.PROXIMO);
+        } else {
+            reuniao.setStatusReuniao(StatusReuniao.AGUARDANDO);
         }
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO));
     }

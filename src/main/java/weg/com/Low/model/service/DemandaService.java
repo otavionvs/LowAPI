@@ -2,6 +2,7 @@ package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -98,17 +99,18 @@ public class DemandaService {
         demandaRepository.deleteFirstByCodigoDemandaOrderByVersionDesc(codigo);
     }
 
-    public List<Demanda> search(
+    public Page<Demanda> search(
             String tituloDemanda, String solicitante, String codigoDemanda, String status,
             String tamanho, String analista, String departamento, String ordenar, Pageable page) {
         return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda,
                 status, tamanho, analista, departamento, ordenar, page);
     }
 
-    public List<Demanda> search(
+    public Page<Demanda> search(
             String tituloDemanda, String solicitante, String codigoDemanda, String status, String departamento, String ordenar, Pageable page) {
         return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, departamento, ordenar, page);
     }
+
 
     public List<Demanda> search(String status, Pageable page) {
         return demandaRepository.search(status, page);

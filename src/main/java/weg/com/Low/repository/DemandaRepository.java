@@ -1,10 +1,12 @@
 package weg.com.Low.repository;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import weg.com.Low.model.entity.Demanda;
+import weg.com.Low.model.entity.Departamento;
 import weg.com.Low.model.entity.Usuario;
 import weg.com.Low.model.enums.Status;
 
@@ -25,7 +27,6 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
 
     List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario solicitanteDemanda, Usuario analista);
     List<Demanda> findByAnalista(Usuario usuario);
-
 
     void deleteFirstByCodigoDemandaOrderByVersionDesc(Integer codigo);
 
@@ -49,8 +50,25 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
             "case when :ordenar = '3' then demanda.score end desc," +
             "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
-            "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
-    List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
+            "case when :ordenar = '5' then demanda.titulo_demanda end desc ",
+            countQuery = "SELECT COUNT(*) FROM demanda " +
+                    "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
+                    "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +
+                    "INNER JOIN (SELECT codigo_demanda, MAX(version) AS versao_recente FROM demanda " +
+                    "GROUP BY codigo_demanda) AS max_d " +
+                    "ON demanda.codigo_demanda = max_d.codigo_demanda AND demanda.version = max_d.versao_recente " +
+                    "WHERE LOWER(demanda.titulo_demanda) LIKE %:tituloDemanda% " +
+                    "AND LOWER(demanda.codigo_demanda) LIKE %:codigoDemanda% " +
+                    "AND LOWER(u.nome_usuario) LIKE %:solicitante% " +
+                    "AND LOWER(demanda.status_demanda) LIKE %:status% " +
+                    "AND LOWER(de.nome_departamento) LIKE %:departamento% " +
+                    "order by " +
+                    "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
+                    "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
+                    "case when :ordenar = '3' then demanda.score end desc," +
+                    "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
+                    "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
+    Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
                          String tamanho, String analista, String departamento, String ordenar, Pageable page);
 
     //Para o caso da demanda não ter demanda classificada
@@ -70,8 +88,25 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
             "case when :ordenar = '3' then demanda.score end desc," +
             "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
-            "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
-    List<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
+            "case when :ordenar = '5' then demanda.titulo_demanda end desc ",
+            countQuery = "SELECT COUNT(*) FROM demanda " +
+                    "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
+                    "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +
+                    "INNER JOIN (SELECT codigo_demanda, MAX(version) AS versao_recente FROM demanda " +
+                    "GROUP BY codigo_demanda) AS max_d " +
+                    "ON demanda.codigo_demanda = max_d.codigo_demanda AND demanda.version = max_d.versao_recente " +
+                    "WHERE LOWER(demanda.titulo_demanda) LIKE %:tituloDemanda% " +
+                    "AND LOWER(demanda.codigo_demanda) LIKE %:codigoDemanda% " +
+                    "AND LOWER(u.nome_usuario) LIKE %:solicitante% " +
+                    "AND LOWER(demanda.status_demanda) LIKE %:status% " +
+                    "AND LOWER(de.nome_departamento) LIKE %:departamento% " +
+                    "order by " +
+                    "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
+                    "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
+                    "case when :ordenar = '3' then demanda.score end desc," +
+                    "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
+                    "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
+    Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
                          String status, String departamento, String ordenar, Pageable page);
 
     //Retorna a última versão de uma demanda de um status

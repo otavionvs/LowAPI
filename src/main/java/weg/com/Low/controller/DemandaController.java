@@ -2,6 +2,7 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -83,7 +84,7 @@ public class DemandaController {
     //o fron-end deve mandar sempre o departamento correspondente ao usuário pré-definido, caso for analista, deve
     //deixar a opção aberta no filtro especializado.
     @GetMapping("/filtro")
-    public ResponseEntity<List<Demanda>> search(
+    public ResponseEntity<Page<Demanda>> search(
             @RequestParam("tituloDemanda") String tituloDemanda,
             @RequestParam("solicitante") String solicitante,
             @RequestParam("codigoDemanda") String codigoDemanda,
@@ -95,7 +96,7 @@ public class DemandaController {
             @PageableDefault(
                     page = 0,
                     size = 24) Pageable page){
-
+        System.out.println("OPA");
         //requisições com tamanho e analista, exigem demanda analista(Backlog_Aprovação)
         if(tamanho.equals("") && analista.equals("")){
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
@@ -104,6 +105,20 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
                     status, tamanho, analista, departamento, ordenar, page));
         }
+    }
+
+    @GetMapping("/departamento")
+    public ResponseEntity<List<Demanda>> departamento(
+            @PageableDefault(
+                    page = 0,
+                    size = 255) Pageable page, HttpServletRequest request){
+        List<Demanda> listaDemandas = new ArrayList<>();
+        TokenUtils tokenUtils = new TokenUtils();
+        Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
+        for (int i = 0; i < 10; i++) {
+            listaDemandas.addAll(demandaService.search(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() , page));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
 
     //Retorna uma quantidade de demandas de cada status - para analista
@@ -238,7 +253,7 @@ public class DemandaController {
         if (!demandaService.existsById(codigo)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
-        DemandaClassificada demanda = (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
+        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
         //Necessario para realizar um put
@@ -255,6 +270,8 @@ public class DemandaController {
                 demandaNova.setGerenteNegocio(usuario);
                 demandaNova.setDataAprovacao(new Date());
                 demandaNova.setScore(demandaClassificadaService.gerarScore(demandaNova));
+
+                centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
 
                 demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
             } else {
