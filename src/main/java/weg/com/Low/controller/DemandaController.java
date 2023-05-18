@@ -111,7 +111,7 @@ public class DemandaController {
     public ResponseEntity<List<Demanda>> departamento(
             @PageableDefault(
                     page = 0,
-                    size = 255) Pageable page, HttpServletRequest request){
+                    size = 5) Pageable page, HttpServletRequest request){
         List<Demanda> listaDemandas = new ArrayList<>();
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
@@ -272,8 +272,11 @@ public class DemandaController {
                 demandaNova.setScore(demandaClassificadaService.gerarScore(demandaNova));
 
                 centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
-
+                demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
+                demandaNova.setBeneficioRealDemanda(beneficioService.save(demandaNova.getBeneficioRealDemanda()));
+                demandaNova.setBusBeneficiadasDemandaClassificada(demandaNova.getBusBeneficiadasDemandaClassificada());
                 demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+//                demandaNova.setArquivosList(demanda.getArquivosDemanda());
             } else {
                 demandaNova.setStatusDemanda(Status.CANCELLED);
             }
