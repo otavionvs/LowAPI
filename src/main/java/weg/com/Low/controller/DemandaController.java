@@ -34,7 +34,6 @@ import java.util.*;
 @RequestMapping("/low/demanda")
 public class DemandaController {
     private DemandaService demandaService;
-    private BeneficioService beneficioService;
     private UsuarioService usuarioService;
     private CentroCustoService centroCustoService;
     private DemandaClassificadaService demandaClassificadaService;
@@ -73,7 +72,7 @@ public class DemandaController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", demanda.getTituloDemanda()+".pdf");
+        headers.setContentDispositionFormData("attachment", demanda.getTituloDemanda() + ".pdf");
         headers.setContentLength(baos.size());
 
         return new ResponseEntity<>(baos.toByteArray(), headers, HttpStatus.OK);
@@ -95,13 +94,13 @@ public class DemandaController {
             @RequestParam("ordenar") String ordenar,
             @PageableDefault(
                     page = 0,
-                    size = 24) Pageable page){
+                    size = 24) Pageable page) {
         System.out.println("OPA");
         //requisições com tamanho e analista, exigem demanda analista(Backlog_Aprovação)
-        if(tamanho.equals("") && analista.equals("")){
+        if (tamanho.equals("") && analista.equals("")) {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
                     status, departamento, ordenar, page));
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
                     status, tamanho, analista, departamento, ordenar, page));
         }
@@ -111,12 +110,12 @@ public class DemandaController {
     public ResponseEntity<List<Demanda>> departamento(
             @PageableDefault(
                     page = 0,
-                    size = 5) Pageable page, HttpServletRequest request){
+                    size = 5) Pageable page, HttpServletRequest request) {
         List<Demanda> listaDemandas = new ArrayList<>();
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         for (int i = 0; i < 10; i++) {
-            listaDemandas.addAll(demandaService.search(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() , page));
+            listaDemandas.addAll(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), page));
         }
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
@@ -127,23 +126,23 @@ public class DemandaController {
             @PageableDefault(
                     page = 0,
                     size = 12,
-            sort = "status_demanda",
-            direction = Sort.Direction.ASC) Pageable page, HttpServletRequest request) {
+                    sort = "status_demanda",
+                    direction = Sort.Direction.ASC) Pageable page, HttpServletRequest request) {
         List<List<Demanda>> listaDemandas = new ArrayList<>();
         //envia o nome de cada status, usando o metodo search
 
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         List<Integer> listQtd = new ArrayList<>();
-        if(usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI){
+        if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
             for (int i = 0; i < 10; i++) {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
                 listQtd.add(demandaService.countDemanda(Status.values()[i] + ""));
             }
-        }else if(usuario.getNivelAcessoUsuario() == NivelAcesso.Solicitante || usuario.getNivelAcessoUsuario() == NivelAcesso.GerenteNegocio){
+        } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Solicitante || usuario.getNivelAcessoUsuario() == NivelAcesso.GerenteNegocio) {
             for (int i = 0; i < 10; i++) {
-                listaDemandas.add(demandaService.search(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() , page));
-                listQtd.add(demandaService.countByDepartamento(Status.values()[i] + "",usuario.getDepartamentoUsuario().getCodigoDepartamento() ));
+                listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), page));
+                listQtd.add(demandaService.countByDepartamento(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento()));
             }
         }
 
@@ -161,8 +160,8 @@ public class DemandaController {
             @RequestParam("status2") String status2,
             @PageableDefault(
                     page = 0,
-            size = 255) Pageable page){
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(status1,status2,page));
+                    size = 255) Pageable page) {
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(status1, status2, page));
     }
 
     //Exige de outro formato para enviar as informações (body - form data)
@@ -174,28 +173,31 @@ public class DemandaController {
         //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
-        if(!arquivos[0].getOriginalFilename().equals("")){
+        if (!arquivos[0].getOriginalFilename().equals("")) {
             demanda.setArquivos(arquivos);
         }
 
-        if (!centroCustoService.verificaPorcentagemCentroCusto(demanda.getCentroCustosDemanda())){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Falta completar as porcentagem de centro de custos");
+        if (!centroCustoService.verificaPorcentagemCentroCusto(demanda.getCentroCustosDemanda())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Falta completar as porcentagem de centro de custos");
         }
 
-        centroCustoService.saveAll(demanda.getCentroCustosDemanda());
-
-        if(demanda.getBeneficioPotencialDemanda().getValorBeneficio() != null &&
-        demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null){
-        demanda.setBeneficioPotencialDemanda(beneficioService.save(demanda.getBeneficioPotencialDemanda()));
-        }else{
+        if (demanda.getBeneficioPotencialDemanda().getValorBeneficio() == null &&
+                demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() == null) {
             demanda.setBeneficioPotencialDemanda(null);
         }
-        if(demanda.getBeneficioRealDemanda().getValorBeneficio() !=null &&
-        demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null){
-        demanda.setBeneficioRealDemanda(beneficioService.save(demanda.getBeneficioRealDemanda()));
-        }else{
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
+//        }else{
+//
+//        }
+
+        if (demanda.getBeneficioRealDemanda().getValorBeneficio() == null &&
+                demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() == null) {
             demanda.setBeneficioRealDemanda(null);
         }
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Real");
+//        }else{
+//
+//        }
 
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
@@ -212,7 +214,7 @@ public class DemandaController {
             @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demandaNova = demandaUtil.convertJsonToModel(demandaJson);
-        if(!arquivos[0].getOriginalFilename().equals("")){
+        if (!arquivos[0].getOriginalFilename().equals("")) {
             demandaNova.setArquivos(arquivos);
         }
 
@@ -220,21 +222,16 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não existe!");
         }
 
-        centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
-
-        if(demandaNova.getBeneficioPotencialDemanda().getValorBeneficio() != null &&
-                demandaNova.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null){
-            demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
-        }else{
-            demandaNova.setBeneficioPotencialDemanda(null);
+        if (demandaNova.getBeneficioPotencialDemanda().getValorBeneficio() == null &&
+                demandaNova.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
         }
 
-        if(demandaNova.getBeneficioRealDemanda().getValorBeneficio() !=null &&
-                demandaNova.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null){
-            demandaNova.setBeneficioRealDemanda(beneficioService.save(demandaNova.getBeneficioRealDemanda()));
-        }else{
-            demandaNova.setBeneficioRealDemanda(null);
+        if (demandaNova.getBeneficioRealDemanda().getValorBeneficio() == null &&
+                demandaNova.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Real");
         }
+
 
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
         demandaNova.setSolicitanteDemanda(demanda.getSolicitanteDemanda());
@@ -260,6 +257,10 @@ public class DemandaController {
         DemandaClassificada demandaNova = new DemandaClassificada();
         BeanUtils.copyProperties(demanda, demandaNova);
         demandaNova.setVersion(demanda.getVersion() + 1);
+        //O sout n deve ser tirado
+        System.out.println(demandaNova.getCentroCustosDemanda());
+        System.out.println(demanda.getBusBeneficiadasDemandaClassificada());
+        System.out.println(demanda.getArquivosDemanda());
 
         if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
             if (decisao == 1) {
@@ -300,7 +301,7 @@ public class DemandaController {
                 demandaNova.setStatusDemanda(Status.CANCELLED);
             }
 
-        }else {
+        } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta demanda não pertence ao status solicitado!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova,
@@ -324,18 +325,18 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
     }
 
-//    //Não Deleta todas as demandas do codigo
-    @DeleteMapping("/{codigo}")
-    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-        Optional demandaOptional = demandaService.findLastDemandaById(codigo);
-        if (demandaOptional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
-        }
-        Demanda demanda = (Demanda) demandaOptional.get();
-        beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
-//        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
-
-        demandaService.deleteById(codigo);
-        return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
-    }
+//    //    //Não Deleta todas as demandas do codigo
+//    @DeleteMapping("/{codigo}")
+//    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
+//        Optional demandaOptional = demandaService.findLastDemandaById(codigo);
+//        if (demandaOptional.isEmpty()) {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
+//        }
+//        Demanda demanda = (Demanda) demandaOptional.get();
+////        beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
+////        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
+//
+//        demandaService.deleteById(codigo);
+//        return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
+//    }
 }
