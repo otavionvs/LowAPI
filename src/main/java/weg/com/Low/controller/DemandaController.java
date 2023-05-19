@@ -253,7 +253,7 @@ public class DemandaController {
         if (!demandaService.existsById(codigo)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
-        Demanda demanda = demandaService.findLastDemandaById(codigo).get();
+        DemandaClassificada demanda= (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
         //Necessario para realizar um put
@@ -271,11 +271,12 @@ public class DemandaController {
                 demandaNova.setDataAprovacao(new Date());
                 demandaNova.setScore(demandaClassificadaService.gerarScore(demandaNova));
 
-                centroCustoService.saveAll(demandaNova.getCentroCustosDemanda());
-                demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demandaNova.getBeneficioPotencialDemanda()));
-                demandaNova.setBeneficioRealDemanda(beneficioService.save(demandaNova.getBeneficioRealDemanda()));
-                demandaNova.setBusBeneficiadasDemandaClassificada(demandaNova.getBusBeneficiadasDemandaClassificada());
+                centroCustoService.saveAll(demanda.getCentroCustosDemanda());
+                demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demanda.getBeneficioPotencialDemanda()));
+                demandaNova.setBeneficioRealDemanda(beneficioService.save(demanda.getBeneficioRealDemanda()));
+                demandaNova.setBusBeneficiadasDemandaClassificada(demanda.getBusBeneficiadasDemandaClassificada());
                 demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+                System.out.println(demandaNova);
 //                demandaNova.setArquivosList(demanda.getArquivosDemanda());
             } else {
                 demandaNova.setStatusDemanda(Status.CANCELLED);

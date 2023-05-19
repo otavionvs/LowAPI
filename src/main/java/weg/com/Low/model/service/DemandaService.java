@@ -67,7 +67,6 @@ public class DemandaService {
                             "Demanda: " + demanda.getTituloDemanda() + ", foi editada!", LocalDateTime.now(), false, usuario));
                 }
                 case AVANCOU_STATUS_DEMANDA -> {
-                    usuarios.add(demanda.getAnalista());
                     notificacaoService.save(new Notificacao(null, "Status Avançado!", tipoNotificacao,
                             "Demanda: " + demanda.getTituloDemanda() + ", avançou um status! O status atual é: " +
                                     demanda.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuario));
