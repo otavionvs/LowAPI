@@ -28,11 +28,24 @@ public class PropostaService {
     public Proposta save(Proposta proposta, TipoNotificacao tipoNotificacao) {
         //Adiciona os usuarios que devem receber a notificação referente a ação
         List<Usuario> usuarios = new ArrayList<>();
-//        Arrays.asList(proposta.getSolicitanteDemanda(), proposta.getGerenteNegocio(), proposta.getAnalista());
         usuarios.add(proposta.getSolicitanteDemanda());
-        usuarios.add(proposta.getAnalista());
-        usuarios.add(proposta.getGerenteNegocio());
-        for(Usuario usuario: usuarios) {
+//        if (proposta.getSolicitanteDemanda().getCodigoUsuario() != proposta.getAnalista().getCodigoUsuario()) {
+//            usuarios.add(proposta.getAnalista());
+//        }
+//        if (proposta.getGerenteNegocio().getCodigoUsuario() != proposta.getSolicitanteDemanda().getCodigoUsuario() &&
+//                proposta.getGerenteNegocio().getCodigoUsuario() != proposta.getAnalista().getCodigoUsuario()) {
+//            usuarios.add(proposta.getGerenteNegocio());
+//        }
+
+        if (!usuarios.contains(proposta.getAnalista())) {
+            usuarios.add(proposta.getAnalista());
+        }
+
+        if (!usuarios.contains(proposta.getGerenteNegocio())) {
+            usuarios.add(proposta.getGerenteNegocio());
+        }
+
+        for (Usuario usuario : usuarios) {
             if (tipoNotificacao.equals(TipoNotificacao.AVANCOU_STATUS_DEMANDA)) {
                 notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
                         "Demanda: " + proposta.getTituloDemanda() + ", avançou um status! O status atual é: " + proposta.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuario));
