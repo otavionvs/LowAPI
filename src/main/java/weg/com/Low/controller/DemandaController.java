@@ -184,20 +184,24 @@ public class DemandaController {
         if (demanda.getBeneficioPotencialDemanda().getValorBeneficio() == null &&
                 demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() == null) {
             demanda.setBeneficioPotencialDemanda(null);
+        } else if (demanda.getBeneficioPotencialDemanda().getValorBeneficio() == null ||
+                demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
+        } else if (demanda.getBeneficioPotencialDemanda().getValorBeneficio().equals("") &&
+                demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
+            demanda.setBeneficioPotencialDemanda(null);
+        } else if (demanda.getBeneficioPotencialDemanda().getValorBeneficio().equals("") ||
+                demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
         }
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
-//        }else{
-//
-//        }
 
         if (demanda.getBeneficioRealDemanda().getValorBeneficio() == null &&
                 demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() == null) {
             demanda.setBeneficioRealDemanda(null);
+        } else if (demanda.getBeneficioRealDemanda().getValorBeneficio() == null ||
+                demanda.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Real");
         }
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Real");
-//        }else{
-//
-//        }
 
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
