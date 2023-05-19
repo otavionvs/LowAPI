@@ -33,17 +33,25 @@ public class AutenticacaoController {
     public ResponseEntity<Object> autenticacao(HttpServletRequest request) {
         Boolean valido = false;
         UserDetails usuario = null;
-        try{
+        try {
             String token = tokenUtils.buscarCookie(request);
             valido = tokenUtils.validarToken(token);
-            if(valido){
+            if (valido) {
                 String usuarioUsername = tokenUtils.getUsuarioUsername(token);
                 usuario = jpaService.loadUserByUsername(usuarioUsername);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(valido);
         }
         return ResponseEntity.status(HttpStatus.OK).body(usuario);
+    }
+
+    @GetMapping("/login/return-user-logged")
+    public ResponseEntity<Object> returnUser(HttpServletRequest request) {
+        String token = tokenUtils.buscarCookie(request);
+        String usuarioUsername = tokenUtils.getUsuarioUsername(token);
+        UserJpa usuario = (UserJpa) jpaService.loadUserByUsername(usuarioUsername);
+        return ResponseEntity.status(HttpStatus.OK).body(usuario.getUsuario());
     }
 
     @GetMapping("/logout")
@@ -65,7 +73,7 @@ public class AutenticacaoController {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(
-                        usuarioDTO.getUsuarioUsuario(),usuarioDTO.getSenhaUsuario());
+                        usuarioDTO.getUsuarioUsuario(), usuarioDTO.getSenhaUsuario());
 
         Authentication authentication =
                 authenticationManager.authenticate(authenticationToken);

@@ -273,8 +273,6 @@ public class DemandaController {
                 demandaNova.setScore(demandaClassificadaService.gerarScore(demandaNova));
 
                 centroCustoService.saveAll(demanda.getCentroCustosDemanda());
-                demandaNova.setBeneficioPotencialDemanda(beneficioService.save(demanda.getBeneficioPotencialDemanda()));
-                demandaNova.setBeneficioRealDemanda(beneficioService.save(demanda.getBeneficioRealDemanda()));
                 demandaNova.setBusBeneficiadasDemandaClassificada(demanda.getBusBeneficiadasDemandaClassificada());
                 demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
                 System.out.println(demandaNova);
