@@ -31,7 +31,7 @@ public class PropostaController {
     private RecursoService recursoService;
     private CentroCustoService centroCustoService;
     private DemandaService demandaService;
-    private BeneficioService beneficioService;
+//    private BeneficioService beneficioService;
 
     //Gets são feitos em DemandaController
 
@@ -63,18 +63,14 @@ public class PropostaController {
             recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
         }
 
-        if (proposta.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null &&
-                proposta.getBeneficioPotencialDemanda().getValorBeneficio() != null) {
-            proposta.setBeneficioPotencialDemanda(beneficioService.save(proposta.getBeneficioPotencialDemanda()));
-        } else {
-            proposta.setBeneficioPotencialDemanda(null);
+        if (proposta.getBeneficioPotencialDemanda().getValorBeneficio() == null &&
+                proposta.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
         }
 
-        if (proposta.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null &&
-                proposta.getBeneficioRealDemanda().getValorBeneficio() != null) {
-            proposta.setBeneficioRealDemanda(beneficioService.save(proposta.getBeneficioRealDemanda()));
-        } else {
-            proposta.setBeneficioRealDemanda(null);
+        if (proposta.getBeneficioRealDemanda().getValorBeneficio() == null &&
+                proposta.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Real");
         }
 
         centroCustoService.saveAll(proposta.getCentroCustosDemanda());
@@ -107,20 +103,14 @@ public class PropostaController {
             recurso.setCentroCustoRecurso(centroCustoService.saveAll(recurso.getCentroCustoRecurso()));
         }
 
-        if (propostaNova.getBeneficioPotencialDemanda().getCodigoBeneficio() == null &&
-                propostaNova.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() != null &&
-                propostaNova.getBeneficioPotencialDemanda().getValorBeneficio() != null) {
-            propostaNova.setBeneficioPotencialDemanda(beneficioService.save(propostaNova.getBeneficioPotencialDemanda()));
-        } else {
-            propostaNova.setBeneficioPotencialDemanda(null);
+        if (propostaNova.getBeneficioPotencialDemanda().getValorBeneficio() == null &&
+                propostaNova.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
         }
 
-        if (propostaNova.getBeneficioRealDemanda().getCodigoBeneficio() == null &&
-                propostaNova.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() != null &&
-                propostaNova.getBeneficioRealDemanda().getValorBeneficio() != null) {
-            propostaNova.setBeneficioRealDemanda(beneficioService.save(propostaNova.getBeneficioRealDemanda()));
-        } else {
-            propostaNova.setBeneficioRealDemanda(null);
+        if (propostaNova.getBeneficioRealDemanda().getValorBeneficio() == null &&
+                propostaNova.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Real");
         }
 
         Proposta proposta = (Proposta) demandaService.findLastDemandaById(propostaNova.getCodigoDemanda()).get();

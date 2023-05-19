@@ -43,7 +43,7 @@ public class Demanda{
 //    @Column
 //    @ElementCollection
 //    @OneToMany(cascade = CascadeType.ALL)
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "centro_custo_demanda",
         joinColumns = {
@@ -52,10 +52,11 @@ public class Demanda{
         },
         inverseJoinColumns = @JoinColumn(name = "codigo_centro_custo"))
     private List<CentroCusto> centroCustosDemanda;
-    @OneToOne
+
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "beneficio_potencial_demanda")
     private Beneficio beneficioPotencialDemanda;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "beneficio_real_demanda")
     private Beneficio beneficioRealDemanda;
     @OneToOne

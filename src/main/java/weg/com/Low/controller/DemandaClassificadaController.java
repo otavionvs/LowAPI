@@ -45,6 +45,7 @@ public class DemandaClassificadaController {
         if(demanda.getStatusDemanda() != Status.BACKLOG_CLASSIFICACAO){
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Demanda já foi classificada!");
         }
+
         DemandaClassificada demandaClassificada = new DemandaClassificada();
         BeanUtils.copyProperties(demandaClassificadaDTO, demandaClassificada);
         BeanUtils.copyProperties(demanda, demandaClassificada);
