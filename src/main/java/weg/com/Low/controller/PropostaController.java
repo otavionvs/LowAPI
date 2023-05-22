@@ -64,13 +64,15 @@ public class PropostaController {
         }
 
         if (proposta.getBeneficioPotencialDemanda().getValorBeneficio() == null &&
-                proposta.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
+                proposta.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() == null) {
+            proposta.setBeneficioPotencialDemanda(null);
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
         }
 
         if (proposta.getBeneficioRealDemanda().getValorBeneficio() == null &&
-                proposta.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Real");
+                proposta.getBeneficioRealDemanda().getMemoriaDeCalculoBeneficio() == null) {
+            proposta.setBeneficioRealDemanda(null);
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Real");
         }
 
         centroCustoService.saveAll(proposta.getCentroCustosDemanda());
