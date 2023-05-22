@@ -264,7 +264,9 @@ public class DemandaController {
         //O sout n deve ser tirado
         System.out.println(demandaNova.getCentroCustosDemanda());
         System.out.println(demanda.getBusBeneficiadasDemandaClassificada());
-        System.out.println(demanda.getArquivosDemanda());
+
+        //Precisam ser criado novamente - para não ter duplicidade
+        demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());
 
         if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
             if (decisao == 1) {
