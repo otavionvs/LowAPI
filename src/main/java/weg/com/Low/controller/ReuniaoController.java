@@ -115,6 +115,7 @@ public class ReuniaoController {
 
             propostaNova.setStatusDemanda(Status.DISCUSSION);
             propostaNova.setVersion(proposta.getVersion() + 1);
+            propostaNova.setRecursosProposta(proposta.getRecursosProposta());
             //É criado uma nova proposta para atulizar a versão corretamente.
             //Necessário para a realização de um PUT
             listaPropostas.add(propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
