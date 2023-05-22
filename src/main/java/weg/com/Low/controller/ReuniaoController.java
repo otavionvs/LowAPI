@@ -11,11 +11,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.*;
+import weg.com.Low.model.entity.Arquivo;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Proposta;
 import weg.com.Low.model.entity.Reuniao;
 import weg.com.Low.model.enums.*;
+import weg.com.Low.model.service.ArquivoService;
 import weg.com.Low.model.service.DemandaService;
 import weg.com.Low.model.service.PropostaService;
 import weg.com.Low.model.service.ReuniaoService;
@@ -23,6 +26,7 @@ import weg.com.Low.util.GeradorPDF;
 
 import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +40,7 @@ public class ReuniaoController {
     private ReuniaoService reuniaoService;
     private DemandaService demandaService;
     private PropostaService propostaService;
+    private ArquivoService arquivoService;
 
     @GetMapping
     public ResponseEntity<List<Reuniao>> findAll() {
@@ -211,6 +216,28 @@ public class ReuniaoController {
             listaPropostas.add(proposta);
         }
         reuniao.setPropostasReuniao(listaPropostas);
+
+        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.FINALIZOU_REUNIAO));
+    }
+
+
+    @PutMapping("/parecer-dg/{codigoReuniao}")
+    public ResponseEntity<Object> addInfoDG(
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao,
+            @RequestParam("arquivo") MultipartFile arquivo,
+            @RequestParam("numAtaDG") String numAtaDG) throws IOException {
+
+        if(!reuniaoService.existsById(codigoReuniao)){
+            return ResponseEntity.status(404).body("Demanda não encontrada");
+        }
+
+        Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
+
+        reuniao.setArquivoReuniao(arquivoService.save(new Arquivo(null,
+                arquivo.getOriginalFilename(),
+                arquivo.getContentType(),
+                arquivo.getBytes())));
+        reuniao.setNumAtaDG(numAtaDG);
 
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.FINALIZOU_REUNIAO));
     }
