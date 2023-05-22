@@ -28,7 +28,12 @@ public class DemandaClassificadaService {
 
     public DemandaClassificada save(DemandaClassificada demanda) {
         //Adiciona os usuarios que devem receber a notificação referente a ação
-        List<Usuario> usuarios = new ArrayList<>(Arrays.asList(demanda.getSolicitanteDemanda(), demanda.getAnalista()));
+        List<Usuario> usuarios = new ArrayList<>();
+        usuarios.add(demanda.getSolicitanteDemanda());
+        if (!usuarios.contains(demanda.getAnalista())) {
+            usuarios.add(demanda.getAnalista());
+        }
+
         for(Usuario usuario: usuarios) {
             notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
                     "Demanda: " + demanda.getTituloDemanda() + ", avançou um status! O status atual é: " + demanda.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuario));

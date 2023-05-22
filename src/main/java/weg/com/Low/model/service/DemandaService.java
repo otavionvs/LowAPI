@@ -49,10 +49,14 @@ public class DemandaService {
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.add(demanda.getSolicitanteDemanda());
         if (demanda.getAnalista() != null) {
-            usuarios.add(demanda.getAnalista());
+            if (!usuarios.contains(demanda.getAnalista())) {
+                usuarios.add(demanda.getAnalista());
+            }
         }
         if (demanda.getGerenteNegocio() != null) {
-            usuarios.add(demanda.getGerenteNegocio());
+            if (!usuarios.contains(demanda.getGerenteNegocio())) {
+                usuarios.add(demanda.getGerenteNegocio());
+            }
         }
         for (Usuario usuario : usuarios) {
             switch (tipoNotificacao) {
