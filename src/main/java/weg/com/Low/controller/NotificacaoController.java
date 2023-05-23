@@ -27,7 +27,8 @@ public class NotificacaoController {
 
     @GetMapping
     public ResponseEntity<List<Notificacao>> findAllByUsuarioRequest(HttpServletRequest request) {
-        List<Notificacao> notificacoes = notificacaoService.findByUsuario(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
+        List<Notificacao> notificacoes = notificacaoService.findByUsuario
+                (usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
         for(Notificacao notificacao: notificacoes){
             if(notificacao.getLido() == false){
                 notificacao.setLido(true);
@@ -40,7 +41,8 @@ public class NotificacaoController {
     @MessageMapping("/ws")
     @SendTo("/usuario")
     public ResponseEntity<List<Notificacao>> findAllByUsuario(HttpServletRequest request) {
-        List<Notificacao> notificacoes = notificacaoService.findByUsuario(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
+        List<Notificacao> notificacoes = notificacaoService.findByUsuario
+                (usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
         for(Notificacao notificacao: notificacoes){
             if(notificacao.getLido() == false){
                 notificacao.setLido(true);
@@ -48,6 +50,19 @@ public class NotificacaoController {
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(notificacoes);
+    }
+
+    @GetMapping("/quantidade")
+    public ResponseEntity<Integer> findAllByUsuarioCountRequest(HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(notificacaoService.countByUsuarioNotificacaoAndLidoFalse
+                (usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get()));
+    }
+
+    @MessageMapping("/ws/quantidade")
+    @SendTo("/usuario/quantidade")
+    public ResponseEntity<Integer> findAllByUsuarioCount(HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(notificacaoService.countByUsuarioNotificacaoAndLidoFalse
+                (usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get()));
     }
 
 }

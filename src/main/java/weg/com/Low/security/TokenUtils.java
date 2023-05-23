@@ -19,9 +19,13 @@ public class TokenUtils {
 
     public String gerarToken(Authentication authentication) {
         UserJpa userJpa = (UserJpa) authentication.getPrincipal();
+        return retornarToken(userJpa.getUsuario().getUserUsuario());
+    }
+
+    private String retornarToken(String user) {
         return Jwts.builder()
                 .setIssuer("Low API")
-                .setSubject(userJpa.getUsuario().getUserUsuario())
+                .setSubject(user)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + 1800000000))
                 .signWith(SignatureAlgorithm.HS256, senhaForte)
@@ -47,7 +51,8 @@ public class TokenUtils {
 
     public Cookie renovarCookie(HttpServletRequest request){
         Cookie cookie = WebUtils.getCookie(request, "jwt");
-        Cookie novoCookie = new Cookie(cookie.getName(), cookie.getValue());
+        //Tanto o token quanto o cookie são renovados
+        Cookie novoCookie = new Cookie(cookie.getName(), retornarToken(getUsuarioUsername(cookie.getValue())));
         novoCookie.setPath("/");
         novoCookie.setMaxAge(1800);
         return novoCookie;
