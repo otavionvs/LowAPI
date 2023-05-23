@@ -188,12 +188,6 @@ public class DemandaController {
         } else if (demanda.getBeneficioPotencialDemanda().getValorBeneficio() == null ||
                 demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio() == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
-        } else if (demanda.getBeneficioPotencialDemanda().getValorBeneficio().equals("") &&
-                demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
-            demanda.setBeneficioPotencialDemanda(null);
-        } else if (demanda.getBeneficioPotencialDemanda().getValorBeneficio().equals("") ||
-                demanda.getBeneficioPotencialDemanda().getMemoriaDeCalculoBeneficio().equals("")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Potencial");
         }
 
         if (demanda.getBeneficioRealDemanda().getValorBeneficio() == null &&

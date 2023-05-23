@@ -1,6 +1,8 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import weg.com.Low.dto.NotificacaoDTO;
 import weg.com.Low.model.entity.Notificacao;
@@ -16,6 +18,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class NotificacaoService {
     private NotificacaoRepository notificacaoRepository;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
 //    public void sendNotification(String tituloDemanda, String Descricao){
 //        LocalDateTime now = LocalDateTime.now();
@@ -25,12 +29,17 @@ public class NotificacaoService {
 //    }
 
     public Notificacao save(Notificacao entity) {
-
+        messagingTemplate.convertAndSend("/usuario", new Notificacao());
+        messagingTemplate.convertAndSend("/usuario/quantidade", 0);
         return notificacaoRepository.save(entity);
     }
 
     public List<Notificacao> findByUsuario(Usuario usuario){
         return notificacaoRepository.findByUsuarioNotificacao(usuario);
+    }
+
+    public int countByUsuarioNotificacaoAndLidoFalse(Usuario usuario) {
+        return notificacaoRepository.countByUsuarioNotificacaoAndLidoFalse(usuario);
     }
 
     public Optional<Notificacao> findById(Integer integer) {

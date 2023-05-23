@@ -1,11 +1,9 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Notificacao;
@@ -24,8 +22,6 @@ import java.util.Optional;
 public class DemandaService {
     private DemandaRepository demandaRepository;
     private NotificacaoService notificacaoService;
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
 
 
     public Optional<Demanda> findFirstByCodigoDemandaAndVersionBefore(Integer codigoDemanda, Integer version) {
@@ -81,7 +77,6 @@ public class DemandaService {
                 }
             }
         }
-        messagingTemplate.convertAndSend("/usuario", new Notificacao());
         return demandaRepository.save(demanda);
     }
 

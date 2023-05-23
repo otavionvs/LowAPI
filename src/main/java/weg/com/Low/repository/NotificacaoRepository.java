@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface NotificacaoRepository extends JpaRepository<Notificacao, Integer> {
     List<Notificacao> findByUsuarioNotificacao(Usuario usuario);
+    int countByUsuarioNotificacaoAndLidoFalse(Usuario usuario);
 }
