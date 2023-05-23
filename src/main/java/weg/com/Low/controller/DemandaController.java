@@ -23,6 +23,7 @@ import weg.com.Low.util.GeradorPDF;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
@@ -200,7 +201,11 @@ public class DemandaController {
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
         demanda.setVersion(0);
-        demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
+        if(demanda.getCodigoDemanda() == null) {
+            demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
+        }else {
+            demandaService.deletarResquicios(demanda.getCodigoDemanda());
+        }
 
         demanda.setSolicitanteDemanda(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
 

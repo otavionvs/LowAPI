@@ -5,12 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import org.springframework.stereotype.Service;
-import weg.com.Low.model.entity.Demanda;
-import weg.com.Low.model.entity.Notificacao;
-import weg.com.Low.model.entity.Usuario;
+import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.TipoNotificacao;
+import weg.com.Low.repository.BeneficioRepository;
+import weg.com.Low.repository.CentroCustoRepository;
 import weg.com.Low.repository.DemandaRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -22,6 +23,8 @@ import java.util.Optional;
 public class DemandaService {
     private DemandaRepository demandaRepository;
     private NotificacaoService notificacaoService;
+    private BeneficioRepository beneficioRepository;
+    private CentroCustoRepository centroCustoRepository;
 
 
     public Optional<Demanda> findFirstByCodigoDemandaAndVersionBefore(Integer codigoDemanda, Integer version) {
@@ -137,4 +140,18 @@ public class DemandaService {
     public Integer countByVersion() {
         return demandaRepository.countByVersionIs(0);
     }
+
+    @Transactional
+    public void deletarResquicios(Integer codigo) {
+        Demanda demanda = findLastDemandaById(codigo).get();
+        List<Beneficio> beneficios = List.of(demanda.getBeneficioPotencialDemanda(), demanda.getBeneficioRealDemanda());
+        List<CentroCusto> centroCustos = demanda.getCentroCustosDemanda();
+        demanda.setBeneficioRealDemanda(null);
+        demanda.setBeneficioPotencialDemanda(null);
+        demanda.setCentroCustosDemanda(null);
+        save(demanda, TipoNotificacao.SEM_NOTIFICACAO);
+        beneficioRepository.deleteAll(beneficios);
+        centroCustoRepository.deleteAll(centroCustos);
+    }
+
 }

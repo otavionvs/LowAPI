@@ -24,13 +24,13 @@ public class Demanda{
     private Integer version;
     @Column(nullable = false, length = 100)
     private String tituloDemanda;
-    @Column(nullable = false, columnDefinition = "longtext")
+    @Column(columnDefinition = "longtext")
     private String situacaoAtualDemanda;
-    @Column(nullable = false, columnDefinition = "longtext")
+    @Column(columnDefinition = "longtext")
     private String objetivoDemanda;
-    @Column(nullable = false)
+    @Column()
     private String frequenciaDeUsoDemanda;
-    @Column(nullable = false)
+    @Column()
     @Enumerated(value = EnumType.STRING)
     private Status statusDemanda;
     @Column(columnDefinition = "longtext")

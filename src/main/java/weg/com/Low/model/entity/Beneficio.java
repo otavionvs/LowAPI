@@ -13,9 +13,9 @@ public class Beneficio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Integer codigoBeneficio;
-    @Column(nullable = false, columnDefinition = "longtext")
+    @Column(columnDefinition = "longtext")
     private String memoriaDeCalculoBeneficio;
-    @Column(nullable = false)
+    @Column
     private Double valorBeneficio;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
