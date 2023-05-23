@@ -1,6 +1,7 @@
 package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
@@ -13,10 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.*;
-import weg.com.Low.model.entity.Arquivo;
-import weg.com.Low.model.entity.Demanda;
-import weg.com.Low.model.entity.Proposta;
-import weg.com.Low.model.entity.Reuniao;
+import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.*;
 import weg.com.Low.model.service.ArquivoService;
 import weg.com.Low.model.service.DemandaService;
@@ -92,6 +90,8 @@ public class ReuniaoController {
     @PostMapping
     public ResponseEntity<Object> save(@RequestBody @Valid ReuniaoDTO reuniaoDTO) {
         Reuniao reuniao = new Reuniao();
+
+        ModelMapper modelMapper = new ModelMapper();
         //Verificação para caso a Reunião não tenha Propostas
         if (reuniaoDTO.getPropostasReuniao().size() == 0) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("Adicione Propostas na sua Reunião");
@@ -113,20 +113,14 @@ public class ReuniaoController {
         ArrayList<Proposta> listaPropostas = new ArrayList<>();
         for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
             Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
-
-            Proposta propostaNova = new Proposta();
-            BeanUtils.copyProperties(proposta, propostaNova);
-
-
+            Proposta propostaNova = modelMapper.map(proposta, Proposta.class);
             propostaNova.setStatusDemanda(Status.DISCUSSION);
             propostaNova.setVersion(proposta.getVersion() + 1);
-            propostaNova.setRecursosProposta(proposta.getRecursosProposta());
             //É criado uma nova proposta para atulizar a versão corretamente.
             //Necessário para a realização de um PUT
             listaPropostas.add(propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
         }
-
-        BeanUtils.copyProperties(reuniaoDTO, reuniao);
+        reuniao = modelMapper.map(reuniaoDTO, Reuniao.class);
         reuniao.setPropostasReuniao(listaPropostas);
         Long tempo = reuniao.getDataReuniao().getTime() - new Date().getTime();
         //aproximadamente duas semanas
@@ -148,8 +142,8 @@ public class ReuniaoController {
         Proposta demanda = (Proposta) demandaService.findLastDemandaById(codigoProposta).get();
         Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
 
-        Proposta novaDemanda = new Proposta();
-        BeanUtils.copyProperties(demanda, novaDemanda);
+        ModelMapper modelMapper = new ModelMapper();
+        Proposta novaDemanda = modelMapper.map(demanda, Proposta.class);
 
         if (parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR)) {
             novaDemanda.setStatusDemanda(Status.TO_DO);
@@ -201,6 +195,7 @@ public class ReuniaoController {
         if (!reuniaoService.existsById(codigoReuniao)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta reunião não existe!");
         }
+        ModelMapper modelMapper = new ModelMapper();
         Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
         reuniao.setStatusReuniao(StatusReuniao.CONCLUIDO);
         List<Proposta> listaPropostas = new ArrayList<>();
@@ -208,8 +203,7 @@ public class ReuniaoController {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
                 Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
-                Proposta propostaNova = new Proposta();
-                BeanUtils.copyProperties(propostaAnterior, propostaNova);
+                Proposta propostaNova = modelMapper.map(propostaAnterior, Proposta.class);
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
                 propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
             }
@@ -263,7 +257,7 @@ public class ReuniaoController {
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
             @RequestBody @Valid ReuniaoDTO reuniaoDTO) {
-        System.out.println("hey");
+        ModelMapper modelMapper = new ModelMapper();
         Reuniao reuniao = new Reuniao();
         //Verificação para caso a Reunião não tenha Propostas
         if (reuniaoDTO.getPropostasReuniao().size() == 0) {
@@ -288,8 +282,7 @@ public class ReuniaoController {
 
         for (int i = 0; i < reuniaoDTO.getPropostasReuniao().size(); i++) {
             Proposta proposta = (Proposta) demandaService.findLastDemandaById(reuniaoDTO.getPropostasReuniao().get(i).getCodigoDemanda()).get();
-            Proposta propostaNova = new Proposta();
-            BeanUtils.copyProperties(proposta, propostaNova);
+            Proposta propostaNova = modelMapper.map(proposta, Proposta.class);
             if (!(proposta.getStatusDemanda() == Status.DISCUSSION)) {
                 propostaNova.setStatusDemanda(Status.DISCUSSION);
                 propostaNova.setVersion(proposta.getVersion() + 1);
@@ -301,7 +294,6 @@ public class ReuniaoController {
             //Necessário para a realização de um PUT
             listaPropostas.add(propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
         }
-        System.out.println(listaPropostas);
         for (Proposta proposta: reuniaoAntiga.getPropostasReuniao()){
             boolean demandaEncontrada = false;
             for(Proposta newProposta: listaPropostas){
@@ -315,16 +307,14 @@ public class ReuniaoController {
             if(demandaEncontrada == false){
                 System.out.println("Demanda Não foi encontrada!");
                 Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
-                Proposta propostaNova = new Proposta();
-                BeanUtils.copyProperties(propostaAnterior, propostaNova);
+                Proposta propostaNova = modelMapper.map(propostaAnterior, Proposta.class);
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
                 System.out.println("Proposta retornada a seu antigo status");
                 propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
             }
         }
 
-
-        BeanUtils.copyProperties(reuniaoDTO, reuniao);
+        reuniao = modelMapper.map(reuniaoDTO, Reuniao.class);
         reuniao.setPropostasReuniao(listaPropostas);
         reuniao.setCodigoReuniao(codigo);
         Long tempo = reuniao.getDataReuniao().getTime() - new Date().getTime();
