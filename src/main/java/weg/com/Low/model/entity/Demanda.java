@@ -22,7 +22,7 @@ public class Demanda{
     @Id
     @Column(name = "version")
     private Integer version;
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String tituloDemanda;
     @Column(columnDefinition = "longtext")
     private String situacaoAtualDemanda;

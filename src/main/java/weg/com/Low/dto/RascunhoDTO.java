@@ -8,7 +8,6 @@ import java.util.List;
 
 @Getter
 public class RascunhoDTO {
-    @NotBlank
     private String tituloDemanda;
     private String situacaoAtualDemanda;
     private String objetivoDemanda;

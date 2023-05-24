@@ -1,10 +1,12 @@
 package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import weg.com.Low.dto.RascunhoDTO;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Rascunho;
 import weg.com.Low.model.enums.Status;
@@ -27,15 +29,10 @@ public class RascunhoController {
 
     @PostMapping
     public ResponseEntity<Object> save(
-            @RequestParam("arquivos") MultipartFile[] arquivos,
-            @RequestParam("rascunho") String rascunhoJson,
+            @RequestBody RascunhoDTO rascunhoDTO,
             HttpServletRequest request) {
-        //Transforma o formato (json) para o modelo de objeto
-        RascunhoUtil rascunhoUtil = new RascunhoUtil();
-        Demanda rascunho = rascunhoUtil.convertJsonToModel(rascunhoJson);
-        if (!arquivos[0].getOriginalFilename().equals("")) {
-            rascunho.setArquivos(arquivos);
-        }
+        Demanda rascunho = new Demanda();
+        BeanUtils.copyProperties(rascunhoDTO, rascunho);
 
         rascunho.setStatusDemanda(Status.DRAFT);
 
@@ -50,6 +47,8 @@ public class RascunhoController {
     @PutMapping("/update")
     public ResponseEntity<Object> update(
             @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("rascunho") String rascunhoJson) {
+        System.out.println("Entrou");
+        System.out.println(rascunhoJson);
         //Transforma o formato (json) para o modelo de objeto
         RascunhoUtil rascunhoUtil = new RascunhoUtil();
         Demanda rascunhoNovo = rascunhoUtil.convertJsonToModel(rascunhoJson);

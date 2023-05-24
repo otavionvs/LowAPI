@@ -21,9 +21,7 @@ import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.ByteArrayOutputStream;
