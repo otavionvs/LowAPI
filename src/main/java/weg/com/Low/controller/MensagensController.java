@@ -38,6 +38,48 @@ public class MensagensController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
+
+    public List<Demanda> filterLastVersion(List<Demanda> demandaList){
+        Map<Integer, Demanda> mapaDemandas = new HashMap<>();
+
+        // Percorrer a lista de demandas
+        for (Demanda demanda : demandaList) {
+            int codigoDemanda = demanda.getCodigoDemanda();
+
+            // Verificar se já existe uma demanda para o código atual
+            if (mapaDemandas.containsKey(codigoDemanda)) {
+                // Se a versão da demanda atual for maior, substitui no map
+                if (demanda.getVersion() > mapaDemandas.get(codigoDemanda).getVersion()) {
+                    mapaDemandas.put(codigoDemanda, demanda);
+                }
+            } else {
+                // Se não existir, adicionar ao map
+                mapaDemandas.put(codigoDemanda, demanda);
+            }
+        }
+
+        // Retornar apenas as demandas de maior versão
+        return new ArrayList<>(mapaDemandas.values());
+
+    }
+    @GetMapping("/qtd-total-n-lidas/{codigoUsuario}")
+    public ResponseEntity<?> findQtdDemandasNaoLidas(@PathVariable(value = "codigo") Integer codigoUsuario) {
+        Usuario usuario = usuarioService.findById(codigoUsuario).get();
+        List<Demanda> demandas = demandaService.findBySolicitanteDemandaOrAnalista(usuario);
+        List<Demanda> listaDemandasVersaoMaior = filterLastVersion(demandas);
+        Integer quantidadeMensagensNaoLidas = 0;
+        for(Demanda demanda: listaDemandasVersaoMaior){
+            List<Mensagens> mensagens = mensagensService.findAllByDemanda(demanda);
+            for (Mensagens mensagem : mensagens) {
+                if(mensagem.getStatusMensagens() == StatusMensagens.NAO_VISTA && mensagem.getUsuarioMensagens().getCodigoUsuario() != usuario.getCodigoUsuario()){
+                    quantidadeMensagensNaoLidas++;
+                }
+            }
+        }
+
+        return ResponseEntity.ok(quantidadeMensagensNaoLidas);
+    }
+
     @GetMapping("/{codigo}")
     public ResponseEntity<?> findAllByDemanda(@PathVariable(value = "codigo") Integer codigo, HttpServletRequest request) {
         if (!demandaService.existsById(codigo)) {
@@ -78,6 +120,11 @@ public class MensagensController {
     }
 
 
+    /**
+    * Inicia um novo Chat
+    * Adiciona um analista na demanda para iniciar este chat
+    *
+    */
     @PutMapping("/iniciarChat/{codigoDemanda}")
     public Object startChat(@PathVariable(value = "codigoDemanda") Integer codigoDemanda, HttpServletRequest request) {
         Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
@@ -92,6 +139,15 @@ public class MensagensController {
         return ResponseEntity.ok(demandaService.save(novaDemanda, TipoNotificacao.SEM_NOTIFICACAO));
     }
 
+    /**
+     *
+     * @param codigoUsuario
+     * @return Map<String, Object>
+     *
+     * Este método pesquisa as demandas em que o código do usuário faz parte, verifica as mensagens que não estão
+     * vistas, e retorna em um map com as demandas, e a quantidade de mensagens não lidas em ordem
+     *
+     */
     @GetMapping("/demandasDiscutidas/{codigoUsuario}")
     public Object findAllByUsuario(@PathVariable(value = "codigoUsuario") Integer codigoUsuario) {
 
@@ -138,12 +194,20 @@ public class MensagensController {
 //        mensagens.setStatusMensagens(StatusMensagens.ENVIADA);
 //        return mensagensService.save(mensagens);
 //    }
+
+
     @MessageMapping("/demanda/{codigo}")
     @SendTo("/demanda/{codigo}/chat")
     public Mensagens save(@Payload MensagensDTO mensagensDTO) {
-        System.out.println(mensagensDTO.getMultipartFile().get("file"));
+        System.out.println("Enviou uma mensagem");
         Mensagens mensagens = new Mensagens();
-        mensagensDTO.getDemandaMensagens().setVersion(demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get().getVersion());
+        Demanda demanda  = demandaService.findLastDemandaById(mensagensDTO.getDemandaMensagens().getCodigoDemanda()).get();
+        if(demanda.getAnalista().getCodigoUsuario() != mensagensDTO.getUsuarioMensagens().getCodigoUsuario()){
+            messagingTemplate.convertAndSend("/noticicacoes-messages/" + demanda.getAnalista().getCodigoUsuario() + "/chat", mensagens);
+        }else if(demanda.getSolicitanteDemanda().getCodigoUsuario() != mensagensDTO.getUsuarioMensagens().getCodigoUsuario()){
+            messagingTemplate.convertAndSend("/noticicacoes-messages/" + demanda.getSolicitanteDemanda().getCodigoUsuario() + "/chat", mensagens);
+        }
+        mensagensDTO.getDemandaMensagens().setVersion(demanda.getVersion());
         BeanUtils.copyProperties(mensagensDTO, mensagens);
         mensagens.setStatusMensagens(StatusMensagens.ENVIADA);
         return mensagensService.save(mensagens);
