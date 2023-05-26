@@ -59,10 +59,13 @@ public class RascunhoController {
         if (!demandaService.existsById(rascunhoNovo.getCodigoDemanda())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Este Rascunho não existe!");
         }
-
         Demanda rascunho = demandaService.findLastDemandaById(rascunhoNovo.getCodigoDemanda()).get();
+        if(rascunho.getBeneficioPotencialDemanda() != null){
         rascunhoNovo.getBeneficioPotencialDemanda().setCodigoBeneficio(rascunho.getBeneficioPotencialDemanda().getCodigoBeneficio());
+        }
+        if(rascunho.getBeneficioRealDemanda() != null){
         rascunhoNovo.getBeneficioRealDemanda().setCodigoBeneficio(rascunho.getBeneficioRealDemanda().getCodigoBeneficio());
+        }
         rascunhoNovo.setSolicitanteDemanda(rascunho.getSolicitanteDemanda());
         rascunhoNovo.setVersion(0);
 

@@ -169,6 +169,7 @@ public class DemandaController {
             @RequestParam("arquivos") MultipartFile[] arquivos,
             @RequestParam("demanda") String demandaJson,
             HttpServletRequest request) {
+        System.out.println(demandaJson);
         //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
