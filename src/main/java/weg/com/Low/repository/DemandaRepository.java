@@ -117,8 +117,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  FROM demanda " +
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
-            "WHERE d.status_demanda = :status", nativeQuery = true)
-    List<Demanda> search(String status, Pageable page);
+            "WHERE d.status_demanda = :status " +
+            "AND (d.analista_codigo = :analista OR d.status_demanda = 'BACKLOG_CLASSIFICACAO')", nativeQuery = true)
+    List<Demanda> search(Integer analista, String status, Pageable page);
 
     @Query(value = "SELECT COUNT(*) " +
             "FROM demanda d " +
@@ -127,8 +128,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  FROM demanda " +
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
-            "WHERE d.status_demanda = :status", nativeQuery = true)
-    Integer countDemanda(String status);
+            "WHERE d.status_demanda = :status " +
+            "AND (d.analista_codigo = :analista OR d.status_demanda = 'BACKLOG_CLASSIFICACAO')", nativeQuery = true)
+    Integer countDemanda(String status, Integer analista);
 
     //Retorna a última versão de uma demanda de um determinado status,
     //porém somente as do departamento que for repassado abaixo

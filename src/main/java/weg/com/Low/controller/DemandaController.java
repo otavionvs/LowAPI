@@ -135,8 +135,8 @@ public class DemandaController {
         List<Integer> listQtd = new ArrayList<>();
         if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
             for (int i = 0; i < 10; i++) {
-                listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
-                listQtd.add(demandaService.countDemanda(Status.values()[i] + ""));
+                listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
+                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
             }
         } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Solicitante || usuario.getNivelAcessoUsuario() == NivelAcesso.GerenteNegocio) {
             for (int i = 0; i < 10; i++) {

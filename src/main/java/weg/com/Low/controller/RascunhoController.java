@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.RascunhoDTO;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Rascunho;
+import weg.com.Low.model.enums.Moeda;
 import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.DemandaService;
@@ -60,6 +61,14 @@ public class RascunhoController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Este Rascunho não existe!");
         }
         Demanda rascunho = demandaService.findLastDemandaById(rascunhoNovo.getCodigoDemanda()).get();
+
+        if(rascunhoNovo.getBeneficioRealDemanda().getMoedaBeneficio() == null){
+        rascunhoNovo.getBeneficioRealDemanda().setMoedaBeneficio(Moeda.Real);
+        }
+        if(rascunhoNovo.getBeneficioPotencialDemanda().getMoedaBeneficio() == null) {
+        rascunhoNovo.getBeneficioPotencialDemanda().setMoedaBeneficio(Moeda.Real);
+        }
+
         if(rascunho.getBeneficioPotencialDemanda() != null){
         rascunhoNovo.getBeneficioPotencialDemanda().setCodigoBeneficio(rascunho.getBeneficioPotencialDemanda().getCodigoBeneficio());
         }

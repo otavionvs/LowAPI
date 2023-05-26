@@ -17,7 +17,7 @@ public class Beneficio {
     private String memoriaDeCalculoBeneficio;
     @Column
     private Double valorBeneficio;
-    @Column(nullable = false)
+    @Column
     @Enumerated(value = EnumType.STRING)
     private Moeda moedaBeneficio;
 }
