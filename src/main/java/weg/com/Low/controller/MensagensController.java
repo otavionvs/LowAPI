@@ -63,7 +63,7 @@ public class MensagensController {
 
     }
     @GetMapping("/qtd-total-n-lidas/{codigoUsuario}")
-    public ResponseEntity<?> findQtdDemandasNaoLidas(@PathVariable(value = "codigo") Integer codigoUsuario) {
+    public ResponseEntity<?> findQtdDemandasNaoLidas(@PathVariable(value = "codigoUsuario") Integer codigoUsuario) {
         Usuario usuario = usuarioService.findById(codigoUsuario).get();
         List<Demanda> demandas = demandaService.findBySolicitanteDemandaOrAnalista(usuario);
         List<Demanda> listaDemandasVersaoMaior = filterLastVersion(demandas);
