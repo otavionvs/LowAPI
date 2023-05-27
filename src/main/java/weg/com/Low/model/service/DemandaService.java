@@ -43,6 +43,7 @@ public class DemandaService {
         return demandaRepository.findAll();
     }
 
+    @Transactional
     public Demanda save(Demanda demanda, TipoNotificacao tipoNotificacao) {
         //Adiciona os usuarios que devem receber a notificação referente a ação
         List<Usuario> usuarios = new ArrayList<>();
