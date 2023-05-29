@@ -1,6 +1,7 @@
 package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -256,15 +257,14 @@ public class DemandaController {
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
         //Necessario para realizar um put
-        DemandaClassificada demandaNova = new DemandaClassificada();
-        BeanUtils.copyProperties(demanda, demandaNova);
+
+        ModelMapper modelMapper = new ModelMapper();
+
+        DemandaClassificada demandaNova = modelMapper.map(demanda, DemandaClassificada.class);
         demandaNova.setVersion(demanda.getVersion() + 1);
         //O sout n deve ser tirado
-        System.out.println(demandaNova.getCentroCustosDemanda());
-        System.out.println(demanda.getBusBeneficiadasDemandaClassificada());
-
         //Precisam ser criado novamente - para não ter duplicidade
-        demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());
+//        demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());/
 
         if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
             if (decisao == 1) {
@@ -275,12 +275,7 @@ public class DemandaController {
                 demandaNova.setGerenteNegocio(usuario);
                 demandaNova.setDataAprovacao(new Date());
                 demandaNova.setScore(demandaClassificadaService.gerarScore(demandaNova));
-
-                centroCustoService.saveAll(demanda.getCentroCustosDemanda());
-                demandaNova.setBusBeneficiadasDemandaClassificada(demanda.getBusBeneficiadasDemandaClassificada());
                 demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
-                System.out.println(demandaNova);
-//                demandaNova.setArquivosList(demanda.getArquivosDemanda());
             } else {
                 demandaNova.setStatusDemanda(Status.CANCELLED);
             }

@@ -23,6 +23,6 @@ public class ReuniaoDTO {
 
     private Ata ataReuniao;
     private StatusReuniao statusReuniao;
-
+    private String numAtaDG;
     private Integer codigoReuniao;
 }

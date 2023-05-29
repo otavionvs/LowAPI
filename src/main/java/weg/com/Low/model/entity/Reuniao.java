@@ -1,10 +1,12 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.model.enums.Comissao;
 import weg.com.Low.model.enums.StatusReuniao;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @Entity
@@ -27,6 +29,9 @@ public class Reuniao {
     @JoinColumn(name = "ata_publicada")
     private Ata ataPublicadaReuniao;
 
+    @Column
+    private String numAtaDG;
+
     @Column(columnDefinition = "longtext")
     private String motivoCancelamentoReuniao;
     @OneToOne
@@ -38,6 +43,10 @@ public class Reuniao {
             inverseJoinColumns = {@JoinColumn(name = "codigo_proposta", referencedColumnName = "codigo_demanda", nullable = false),
             @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)})
     private List<Proposta> propostasReuniao;
+
+    @OneToOne()
+    @JoinColumn(name = "id_reuniao")
+    private Arquivo arquivoReuniao;
 
 
 }
