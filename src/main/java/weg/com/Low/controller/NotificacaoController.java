@@ -57,12 +57,12 @@ public class NotificacaoController {
         return ResponseEntity.status(HttpStatus.OK).body(notificacaoService.countByUsuarioNotificacaoAndLidoFalse
                 (usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get()));
     }
-
-    @MessageMapping("/ws/quantidade")
-    @SendTo("/usuario/quantidade")
-    public ResponseEntity<Integer> findAllByUsuarioCount(HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.OK).body(notificacaoService.countByUsuarioNotificacaoAndLidoFalse
-                (usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get()));
-    }
+//
+//    @MessageMapping("/ws/quantidade")
+//    @SendTo("/usuario/quantidade")
+//    public ResponseEntity<Integer> findAllByUsuarioCount(HttpServletRequest request) {
+//        return ResponseEntity.status(HttpStatus.OK).body(notificacaoService.countByUsuarioNotificacaoAndLidoFalse
+//                (usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get()));
+//    }
 
 }
