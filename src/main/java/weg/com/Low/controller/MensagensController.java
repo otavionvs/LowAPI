@@ -154,7 +154,7 @@ public class MensagensController {
     @GetMapping("/demandasDiscutidas/{codigoUsuario}")
     public Object findAllByUsuario(@PathVariable(value = "codigoUsuario") Integer codigoUsuario) {
 
-        if (!demandaService.existsById(codigoUsuario)) {
+        if (!usuarioService.existsById(codigoUsuario)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demandas não encontradas!");
         }
         Usuario usuario = usuarioService.findById(codigoUsuario).get();
