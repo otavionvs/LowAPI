@@ -61,6 +61,10 @@ public class RascunhoController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Este Rascunho não existe!");
         }
         Demanda rascunho = demandaService.findLastDemandaById(rascunhoNovo.getCodigoDemanda()).get();
+        System.out.println(rascunho.getStatusDemanda());
+        if(rascunho.getStatusDemanda() != Status.DRAFT){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este item não é um rascunho!");
+        }
 
         if(rascunhoNovo.getBeneficioRealDemanda().getMoedaBeneficio() == null){
         rascunhoNovo.getBeneficioRealDemanda().setMoedaBeneficio(Moeda.Real);
@@ -76,9 +80,19 @@ public class RascunhoController {
         rascunhoNovo.getBeneficioRealDemanda().setCodigoBeneficio(rascunho.getBeneficioRealDemanda().getCodigoBeneficio());
         }
         rascunhoNovo.setSolicitanteDemanda(rascunho.getSolicitanteDemanda());
+        rascunhoNovo.setStatusDemanda(Status.DRAFT);
         rascunhoNovo.setVersion(0);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(rascunhoNovo, TipoNotificacao.SEM_NOTIFICACAO));
     }
 
+    @DeleteMapping("/{codigo}")
+    public ResponseEntity<String> deleteById(@PathVariable(value = "codigo") Integer codigo) {
+        if (!demandaService.existsById(codigo)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Este Rascunho não existe!");
+        }
+        demandaService.deletarResquicios(codigo);
+        demandaService.deleteById(codigo);
+        return ResponseEntity.status(HttpStatus.OK).body("Rascunho Deletado com Sucesso!");
+    }
 }

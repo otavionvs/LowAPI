@@ -52,6 +52,17 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaOptional.get());
     }
 
+    @GetMapping("/usuario")
+    public ResponseEntity<List<Demanda>> findByUsuario(
+            @PageableDefault(
+                    page = 0,
+                    size = 24) Pageable page,
+            HttpServletRequest httpServletRequest
+    ) {
+        Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(httpServletRequest)).get();
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(usuario.getCodigoUsuario(), page));
+    }
+
     @GetMapping("versoes/{codigo}")
     public ResponseEntity<Object> findByIdAll(@PathVariable(value = "codigo") Integer codigo) {
         List<Demanda> demandas = demandaService.findByCodigoDemanda(codigo);
@@ -135,12 +146,12 @@ public class DemandaController {
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         List<Integer> listQtd = new ArrayList<>();
         if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 13; i++) {
                 listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
                 listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
             }
         } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Solicitante || usuario.getNivelAcessoUsuario() == NivelAcesso.GerenteNegocio) {
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 13; i++) {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), page));
                 listQtd.add(demandaService.countByDepartamento(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento()));
             }
@@ -201,6 +212,7 @@ public class DemandaController {
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
         demanda.setVersion(0);
+        //Caso seja adicionado de alguma outra forma
         if(demanda.getCodigoDemanda() == null) {
             demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
         }else {

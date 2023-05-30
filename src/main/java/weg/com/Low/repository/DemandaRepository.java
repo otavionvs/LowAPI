@@ -45,6 +45,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(demanda.tamanho_demanda_classificada) like %:tamanho% " +
             "AND LOWER(a.nome_usuario) like %:analista% " +
             "AND LOWER(de.nome_departamento) like %:departamento% " +
+            "AND demanda.status_demanda != 'DRAFT' " +
             "order by " +
             "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
             "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -62,6 +63,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "AND LOWER(u.nome_usuario) LIKE %:solicitante% " +
                     "AND LOWER(demanda.status_demanda) LIKE %:status% " +
                     "AND LOWER(de.nome_departamento) LIKE %:departamento% " +
+                    "AND demanda.status_demanda != 'DRAFT' " +
                     "order by " +
                     "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
                     "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -83,6 +85,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(u.nome_usuario) like %:solicitante% " +
             "AND LOWER(demanda.status_demanda) like %:status% " +
             "AND LOWER(de.nome_departamento) like %:departamento% " +
+            "AND demanda.status_demanda != 'DRAFT' " +
             "order by " +
             "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
             "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -100,6 +103,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "AND LOWER(u.nome_usuario) LIKE %:solicitante% " +
                     "AND LOWER(demanda.status_demanda) LIKE %:status% " +
                     "AND LOWER(de.nome_departamento) LIKE %:departamento% " +
+                    "AND demanda.status_demanda != 'DRAFT' " +
                     "order by " +
                     "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
                     "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -132,6 +136,17 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND (d.analista_codigo = :analista OR d.status_demanda = 'BACKLOG_CLASSIFICACAO')", nativeQuery = true)
     Integer countDemanda(String status, Integer analista);
 
+    //Retorna a última versão de uma demanda de um status
+    @Query(value = "SELECT d.* " +
+            "FROM demanda d " +
+            "INNER JOIN (" +
+            "  SELECT codigo_demanda, MAX(version) AS max_version " +
+            "  FROM demanda " +
+            "  GROUP BY codigo_demanda " +
+            ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+            "WHERE d.solicitante_demanda = :usuario ", nativeQuery = true)
+    List<Demanda> search(Integer usuario, Pageable page);
+
     //Retorna a última versão de uma demanda de um determinado status,
     //porém somente as do departamento que for repassado abaixo
     //Utilizado no solicitante especialmente
@@ -143,7 +158,8 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
             "INNER JOIN usuario u ON d.solicitante_demanda = u.codigo_usuario " +
-            "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento ", nativeQuery = true)
+            "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento " +
+            "AND d.status_demanda != 'DRAFT'", nativeQuery = true)
     List<Demanda> search(String status, Integer codigoDepartamento, Pageable page);
 
     @Query(value = "SELECT COUNT(*) " +
@@ -154,7 +170,8 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
             "INNER JOIN usuario u ON d.solicitante_demanda = u.codigo_usuario " +
-            "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento ", nativeQuery = true)
+            "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento " +
+            "AND d.status_demanda != 'DRAFT'", nativeQuery = true)
     Integer countByDepartamento(String status, Integer codigoDepartamento);
 
     @Query(value = "select * from demanda d " +

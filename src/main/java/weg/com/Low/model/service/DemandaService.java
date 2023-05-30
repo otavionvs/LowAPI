@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.TipoNotificacao;
@@ -120,6 +121,10 @@ public class DemandaService {
 
     public List<Demanda> search(String status1, String status2, Pageable page) {
         return demandaRepository.search(status1, status2, page);
+    }
+
+    public List<Demanda> search(Integer usuario, Pageable page) {
+        return demandaRepository.search(usuario, page);
     }
 
     public Integer countDemanda(String status, Integer codigoUsuario) {
