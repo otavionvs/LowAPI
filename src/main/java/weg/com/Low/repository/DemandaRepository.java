@@ -113,7 +113,32 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
                          String status, String departamento, String ordenar, Pageable page);
 
-    //Retorna a última versão de uma demanda de um status
+    //Retorna a última versão de uma demanda de um status (nível gestor)
+    @Query(value = "SELECT d.* " +
+            "FROM demanda d " +
+            "INNER JOIN (" +
+            "  SELECT codigo_demanda, MAX(version) AS max_version " +
+            "  FROM demanda " +
+            "  GROUP BY codigo_demanda " +
+            ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+            "WHERE d.status_demanda = :status " +
+            "AND (d.status_demanda <> 'DRAFT' OR (d.status_demanda = 'DRAFT' AND d.solicitante_demanda = :usuario))", nativeQuery = true)
+    List<Demanda> search(String status, Integer usuario, Pageable page);
+
+
+    //Retorna a quantidade de demandas da última versão de uma demanda de um status (nível gestor)
+    @Query(value = "SELECT COUNT(*) " +
+            "FROM demanda d " +
+            "INNER JOIN (" +
+            "  SELECT codigo_demanda, MAX(version) AS max_version " +
+            "  FROM demanda " +
+            "  GROUP BY codigo_demanda " +
+            ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+            "WHERE d.status_demanda = :status " +
+            "AND (d.status_demanda <> 'DRAFT' OR (d.status_demanda = 'DRAFT' AND d.solicitante_demanda = :usuario))", nativeQuery = true)
+    Integer countDemanda(Integer usuario, String status);
+
+    //Retorna a última versão de uma demanda de um status (nível analista)
     @Query(value = "SELECT d.* " +
             "FROM demanda d " +
             "INNER JOIN (" +
@@ -123,10 +148,11 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
             "WHERE d.status_demanda = :status " +
             "AND ((d.analista_codigo = :usuario) OR " +
-            "((d.status_demanda = 'BACKLOG_CLASSIFICACAO' AND d.solicitante_demanda != :usuario) OR " +
+            "((d.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
             "(d.status_demanda != 'BACKLOG_CLASSIFICACAO' AND d.solicitante_demanda = :usuario)))", nativeQuery = true)
     List<Demanda> search(Integer usuario, String status, Pageable page);
 
+    //Retorna a quantidade de demandas da última versão de uma demanda de um status (nível analista)
     @Query(value = "SELECT COUNT(*) " +
             "FROM demanda d " +
             "INNER JOIN (" +
@@ -136,9 +162,10 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
             "WHERE d.status_demanda = :status " +
             "AND ((d.analista_codigo = :usuario) OR " +
-            "((d.status_demanda = 'BACKLOG_CLASSIFICACAO' AND d.solicitante_demanda != :usuario) OR " +
+            "((d.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
             "(d.status_demanda != 'BACKLOG_CLASSIFICACAO' AND d.solicitante_demanda = :usuario)))", nativeQuery = true)
     Integer countDemanda(String status, Integer usuario);
+
 
     //Retorna a última versão de uma demanda de um status
     @Query(value = "SELECT d.* " +
@@ -163,7 +190,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
             "INNER JOIN usuario u ON d.solicitante_demanda = u.codigo_usuario " +
             "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento " +
-            "OR (d.status_demanda = 'DRAFT' AND d.solicitante_demanda = :codigoUsuario)", nativeQuery = true)
+            "AND (d.status_demanda <> 'DRAFT' OR (d.status_demanda = 'DRAFT' AND d.solicitante_demanda = :codigoUsuario))", nativeQuery = true)
     List<Demanda> search(String status, Integer codigoDepartamento, Integer codigoUsuario, Pageable page);
 
     @Query(value = "SELECT COUNT(*) " +

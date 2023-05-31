@@ -125,7 +125,7 @@ public class DemandaController {
         List<Demanda> listaDemandas = new ArrayList<>();
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 13; i++) {
             listaDemandas.addAll(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), usuario.getCodigoUsuario(), page));
         }
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
@@ -145,15 +145,15 @@ public class DemandaController {
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         List<Integer> listQtd = new ArrayList<>();
-        if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
+        if (usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
+            for (int i = 0; i < 13; i++) {
+                listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getCodigoUsuario(), page));
+                listQtd.add(demandaService.countDemanda(usuario.getCodigoUsuario(), Status.values()[i] + ""));
+            }
+        } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista) {
             for (int i = 0; i < 13; i++) {
                 listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
-                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
-            }
-        } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Solicitante || usuario.getNivelAcessoUsuario() == NivelAcesso.GerenteNegocio) {
-            for (int i = 0; i < 13; i++) {
-//                listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), page));
-                listQtd.add(demandaService.countByDepartamento(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento()));
+                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento()));
             }
         }
 
