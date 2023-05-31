@@ -135,8 +135,8 @@ public class DemandaService {
         return demandaRepository.countByDepartamento(status, codigoDepartamento);
     }
 
-    public List<Demanda> search(String status, Integer codigoDepartamento, Pageable page) {
-        return demandaRepository.search(status, codigoDepartamento, page);
+    public List<Demanda> search(String status, Integer codigoDepartamento, Integer codigoUsuario, Pageable page) {
+        return demandaRepository.search(status, codigoDepartamento, codigoUsuario, page);
     }
 
     public Long countAllByCodigoDemanda(Integer codigoDemanda) {

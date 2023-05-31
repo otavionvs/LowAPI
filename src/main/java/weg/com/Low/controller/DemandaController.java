@@ -126,7 +126,7 @@ public class DemandaController {
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         for (int i = 0; i < 10; i++) {
-            listaDemandas.addAll(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), page));
+            listaDemandas.addAll(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), usuario.getCodigoUsuario(), page));
         }
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
@@ -152,7 +152,7 @@ public class DemandaController {
             }
         } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Solicitante || usuario.getNivelAcessoUsuario() == NivelAcesso.GerenteNegocio) {
             for (int i = 0; i < 13; i++) {
-                listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), page));
+//                listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), page));
                 listQtd.add(demandaService.countByDepartamento(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento()));
             }
         }

@@ -122,8 +122,10 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
             "WHERE d.status_demanda = :status " +
-            "AND (d.analista_codigo = :analista OR d.status_demanda = 'BACKLOG_CLASSIFICACAO')", nativeQuery = true)
-    List<Demanda> search(Integer analista, String status, Pageable page);
+            "AND ((d.analista_codigo = :usuario) OR " +
+            "((d.status_demanda = 'BACKLOG_CLASSIFICACAO' AND d.solicitante_demanda != :usuario) OR " +
+            "(d.status_demanda != 'BACKLOG_CLASSIFICACAO' AND d.solicitante_demanda = :usuario)))", nativeQuery = true)
+    List<Demanda> search(Integer usuario, String status, Pageable page);
 
     @Query(value = "SELECT COUNT(*) " +
             "FROM demanda d " +
@@ -133,8 +135,10 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
             "WHERE d.status_demanda = :status " +
-            "AND (d.analista_codigo = :analista OR d.status_demanda = 'BACKLOG_CLASSIFICACAO')", nativeQuery = true)
-    Integer countDemanda(String status, Integer analista);
+            "AND ((d.analista_codigo = :usuario) OR " +
+            "((d.status_demanda = 'BACKLOG_CLASSIFICACAO' AND d.solicitante_demanda != :usuario) OR " +
+            "(d.status_demanda != 'BACKLOG_CLASSIFICACAO' AND d.solicitante_demanda = :usuario)))", nativeQuery = true)
+    Integer countDemanda(String status, Integer usuario);
 
     //Retorna a última versão de uma demanda de um status
     @Query(value = "SELECT d.* " +
@@ -159,8 +163,8 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
             "INNER JOIN usuario u ON d.solicitante_demanda = u.codigo_usuario " +
             "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento " +
-            "AND d.status_demanda != 'DRAFT'", nativeQuery = true)
-    List<Demanda> search(String status, Integer codigoDepartamento, Pageable page);
+            "OR (d.status_demanda = 'DRAFT' AND d.solicitante_demanda = :codigoUsuario)", nativeQuery = true)
+    List<Demanda> search(String status, Integer codigoDepartamento, Integer codigoUsuario, Pageable page);
 
     @Query(value = "SELECT COUNT(*) " +
             "FROM demanda d " +
