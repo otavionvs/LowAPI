@@ -202,7 +202,7 @@ public class ReuniaoController {
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
-                Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
+                Demanda propostaAnterior =  demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
                 Proposta propostaNova = modelMapper.map(propostaAnterior, Proposta.class);
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
                 propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
