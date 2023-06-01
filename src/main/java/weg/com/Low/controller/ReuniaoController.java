@@ -62,11 +62,12 @@ public class ReuniaoController {
             @RequestParam("ppmProposta") String ppmProposta,
             @RequestParam("analista") String analista,
             @RequestParam("solicitante") String solicitante,
+            @RequestParam("ordenar") String ordenar,
             @PageableDefault(
                     page = 0,
                     size = 10) Pageable page) {
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.search(nomeComissao, dataReuniao, statusReuniao,
-                ppmProposta, analista, solicitante, page));
+                ppmProposta, analista, solicitante, ordenar, page));
     }
 
     @GetMapping("/ata/{codigoReuniao}")
@@ -202,7 +203,7 @@ public class ReuniaoController {
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
-                Demanda propostaAnterior =  demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
+                Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
                 Proposta propostaNova = modelMapper.map(propostaAnterior, Proposta.class);
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
                 propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);

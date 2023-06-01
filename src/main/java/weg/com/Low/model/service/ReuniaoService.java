@@ -99,8 +99,8 @@ public class ReuniaoService {
     }
 
     public List<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
-            String ppmProposta, String analista, String solicitante, Pageable page) {
+            String ppmProposta, String analista, String solicitante, String ordenar,  Pageable page) {
         return reuniaoRepository.search(nomeComissao.toLowerCase(), dataReuniao, statusReuniao, ppmProposta,
-                analista.toLowerCase(), solicitante.toLowerCase(), page);
+                analista.toLowerCase(), solicitante.toLowerCase(), ordenar, page);
     }
 }
