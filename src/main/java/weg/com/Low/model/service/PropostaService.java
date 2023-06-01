@@ -6,6 +6,7 @@ import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.PropostaRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -25,17 +26,11 @@ public class PropostaService {
         return propostaRepository.findById(integer);
     }
 
+    @Transactional
     public Proposta save(Proposta proposta, TipoNotificacao tipoNotificacao) {
         //Adiciona os usuarios que devem receber a notificação referente a ação
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.add(proposta.getSolicitanteDemanda());
-//        if (proposta.getSolicitanteDemanda().getCodigoUsuario() != proposta.getAnalista().getCodigoUsuario()) {
-//            usuarios.add(proposta.getAnalista());
-//        }
-//        if (proposta.getGerenteNegocio().getCodigoUsuario() != proposta.getSolicitanteDemanda().getCodigoUsuario() &&
-//                proposta.getGerenteNegocio().getCodigoUsuario() != proposta.getAnalista().getCodigoUsuario()) {
-//            usuarios.add(proposta.getGerenteNegocio());
-//        }
 
         if (!usuarios.contains(proposta.getAnalista())) {
             usuarios.add(proposta.getAnalista());

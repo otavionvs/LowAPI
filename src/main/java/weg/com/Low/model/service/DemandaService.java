@@ -4,13 +4,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
-import weg.com.Low.model.entity.Demanda;
-import weg.com.Low.model.entity.Notificacao;
-import weg.com.Low.model.entity.Usuario;
+import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.TipoNotificacao;
+import weg.com.Low.repository.BeneficioRepository;
+import weg.com.Low.repository.CentroCustoRepository;
 import weg.com.Low.repository.DemandaRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -22,6 +24,8 @@ import java.util.Optional;
 public class DemandaService {
     private DemandaRepository demandaRepository;
     private NotificacaoService notificacaoService;
+    private BeneficioRepository beneficioRepository;
+    private CentroCustoRepository centroCustoRepository;
 
 
     public Optional<Demanda> findFirstByCodigoDemandaAndVersionBefore(Integer codigoDemanda, Integer version) {
@@ -40,6 +44,7 @@ public class DemandaService {
         return demandaRepository.findAll();
     }
 
+    @Transactional
     public Demanda save(Demanda demanda, TipoNotificacao tipoNotificacao) {
         //Adiciona os usuarios que devem receber a notificação referente a ação
         List<Usuario> usuarios = new ArrayList<>();
@@ -105,29 +110,42 @@ public class DemandaService {
     }
 
     public Page<Demanda> search(
-            String tituloDemanda, String solicitante, String codigoDemanda, String status, String departamento, String ordenar, Pageable page) {
-        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, departamento, ordenar, page);
+            String tituloDemanda, String solicitante, String codigoDemanda, String status, String departamento, String ordenar, Integer usuario, Pageable page) {
+        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(),
+                codigoDemanda, status, departamento, ordenar, usuario, page);
     }
 
 
-    public List<Demanda> search(String status, Pageable page) {
-        return demandaRepository.search(status, page);
+    public List<Demanda> search(Integer codigoUsuario, String status, Pageable page) {
+        return demandaRepository.search(codigoUsuario, status, page);
+    }
+
+    public List<Demanda> search(String status, Integer usuario, Pageable page) {
+        return demandaRepository.search(status, usuario, page);
     }
 
     public List<Demanda> search(String status1, String status2, Pageable page) {
         return demandaRepository.search(status1, status2, page);
     }
 
-    public Integer countDemanda(String status) {
-        return demandaRepository.countDemanda(status);
+    public List<Demanda> search(Integer usuario, Pageable page) {
+        return demandaRepository.search(usuario, page);
+    }
+
+    public Integer countDemanda(String status, Integer codigoUsuario) {
+        return demandaRepository.countDemanda(status, codigoUsuario);
+    }
+
+    public Integer countDemanda(Integer usuario, String status) {
+        return demandaRepository.countDemanda(usuario, status);
     }
 
     public Integer countByDepartamento(String status, Integer codigoDepartamento) {
         return demandaRepository.countByDepartamento(status, codigoDepartamento);
     }
 
-    public List<Demanda> search(String status, Integer codigoDepartamento, Pageable page) {
-        return demandaRepository.search(status, codigoDepartamento, page);
+    public List<Demanda> search(String status, Integer codigoDepartamento, Integer codigoUsuario, Pageable page) {
+        return demandaRepository.search(status, codigoDepartamento, codigoUsuario, page);
     }
 
     public Long countAllByCodigoDemanda(Integer codigoDemanda) {
@@ -137,4 +155,24 @@ public class DemandaService {
     public Integer countByVersion() {
         return demandaRepository.countByVersionIs(0);
     }
+
+    @Transactional
+    public void deletarResquicios(Integer codigo) {
+        Demanda demanda = findLastDemandaById(codigo).get();
+        List<Beneficio> beneficios =  new ArrayList<>();
+        if(demanda.getBeneficioRealDemanda() != null){
+            beneficios.add(demanda.getBeneficioRealDemanda());
+        }
+        if(demanda.getBeneficioPotencialDemanda() != null){
+            beneficios.add(demanda.getBeneficioPotencialDemanda());
+        }
+        List<CentroCusto> centroCustos = demanda.getCentroCustosDemanda();
+        demanda.setBeneficioRealDemanda(null);
+        demanda.setBeneficioPotencialDemanda(null);
+        demanda.setCentroCustosDemanda(null);
+        save(demanda, TipoNotificacao.SEM_NOTIFICACAO);
+        beneficioRepository.deleteAll(beneficios);
+        centroCustoRepository.deleteAll(centroCustos);
+    }
+
 }

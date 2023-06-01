@@ -25,7 +25,7 @@ public class DemandaClassificadaService {
         return demandaClassificadaRepository.findAll();
     }
 
-
+    @Transactional
     public DemandaClassificada save(DemandaClassificada demanda) {
         //Adiciona os usuarios que devem receber a notificação referente a ação
         List<Usuario> usuarios = new ArrayList<>();
@@ -34,7 +34,7 @@ public class DemandaClassificadaService {
             usuarios.add(demanda.getAnalista());
         }
 
-        for(Usuario usuario: usuarios) {
+        for (Usuario usuario : usuarios) {
             notificacaoService.save(new Notificacao(null, "Status Avançado!", TipoNotificacao.AVANCOU_STATUS_DEMANDA,
                     "Demanda: " + demanda.getTituloDemanda() + ", avançou um status! O status atual é: " + demanda.getStatusDemanda().getStatus(), LocalDateTime.now(), false, usuario));
         }

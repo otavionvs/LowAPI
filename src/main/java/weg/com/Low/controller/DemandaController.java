@@ -22,7 +22,6 @@ import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -51,6 +50,17 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nenhuma demanda encontrada!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(demandaOptional.get());
+    }
+
+    @GetMapping("/usuario")
+    public ResponseEntity<List<Demanda>> findByUsuario(
+            @PageableDefault(
+                    page = 0,
+                    size = 24) Pageable page,
+            HttpServletRequest httpServletRequest
+    ) {
+        Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(httpServletRequest)).get();
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(usuario.getCodigoUsuario(), page));
     }
 
     @GetMapping("versoes/{codigo}")
@@ -95,12 +105,13 @@ public class DemandaController {
             @RequestParam("ordenar") String ordenar,
             @PageableDefault(
                     page = 0,
-                    size = 24) Pageable page) {
-        System.out.println("OPA");
-        //requisições com tamanho e analista, exigem demanda analista(Backlog_Aprovação)
+                    size = 24) Pageable page,
+            HttpServletRequest request) {
+        Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get();
+        //requisições com tamanho e analista, exigem demandaClassificação(Backlog_Aprovação)
         if (tamanho.equals("") && analista.equals("")) {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, departamento, ordenar, page));
+                    status, departamento, ordenar, usuario.getCodigoUsuario(), page));
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
                     status, tamanho, analista, departamento, ordenar, page));
@@ -115,8 +126,8 @@ public class DemandaController {
         List<Demanda> listaDemandas = new ArrayList<>();
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
-        for (int i = 0; i < 10; i++) {
-            listaDemandas.addAll(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), page));
+        for (int i = 0; i < 13; i++) {
+            listaDemandas.addAll(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), usuario.getCodigoUsuario(), page));
         }
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
@@ -135,15 +146,16 @@ public class DemandaController {
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         List<Integer> listQtd = new ArrayList<>();
-        if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista || usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
-            for (int i = 0; i < 10; i++) {
-                listaDemandas.add(demandaService.search(Status.values()[i] + "", page));
-                listQtd.add(demandaService.countDemanda(Status.values()[i] + ""));
+        if (usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
+            for (int i = 0; i < 13; i++) {
+                listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getCodigoUsuario(), page));
+                listQtd.add(demandaService.countDemanda(usuario.getCodigoUsuario(), Status.values()[i] + ""));
             }
-        } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Solicitante || usuario.getNivelAcessoUsuario() == NivelAcesso.GerenteNegocio) {
-            for (int i = 0; i < 10; i++) {
-                listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento(), page));
-                listQtd.add(demandaService.countByDepartamento(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento()));
+        } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista) {
+            for (int i = 0; i < 13; i++) {
+                listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
+                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
+
             }
         }
 
@@ -171,6 +183,7 @@ public class DemandaController {
             @RequestParam("arquivos") MultipartFile[] arquivos,
             @RequestParam("demanda") String demandaJson,
             HttpServletRequest request) {
+        System.out.println(demandaJson);
         //Transforma o formato (json) para o modelo de objeto
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demanda = demandaUtil.convertJsonToModel(demandaJson);
@@ -201,7 +214,12 @@ public class DemandaController {
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
         demanda.setVersion(0);
-        demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
+        //Caso seja adicionado de alguma outra forma
+        if(demanda.getCodigoDemanda() == null) {
+            demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
+        }else {
+            demandaService.deletarResquicios(demanda.getCodigoDemanda());
+        }
 
         demanda.setSolicitanteDemanda(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
 
