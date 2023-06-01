@@ -105,12 +105,13 @@ public class DemandaController {
             @RequestParam("ordenar") String ordenar,
             @PageableDefault(
                     page = 0,
-                    size = 24) Pageable page) {
-        System.out.println("OPA");
-        //requisições com tamanho e analista, exigem demanda analista(Backlog_Aprovação)
+                    size = 24) Pageable page,
+            HttpServletRequest request) {
+        Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get();
+        //requisições com tamanho e analista, exigem demandaClassificação(Backlog_Aprovação)
         if (tamanho.equals("") && analista.equals("")) {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, departamento, ordenar, page));
+                    status, departamento, ordenar, usuario.getCodigoUsuario(), page));
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
                     status, tamanho, analista, departamento, ordenar, page));
@@ -153,7 +154,8 @@ public class DemandaController {
         } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista) {
             for (int i = 0; i < 13; i++) {
                 listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
-                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getDepartamentoUsuario().getCodigoDepartamento()));
+                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
+
             }
         }
 

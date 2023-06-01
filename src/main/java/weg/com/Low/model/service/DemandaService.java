@@ -110,8 +110,9 @@ public class DemandaService {
     }
 
     public Page<Demanda> search(
-            String tituloDemanda, String solicitante, String codigoDemanda, String status, String departamento, String ordenar, Pageable page) {
-        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda, status, departamento, ordenar, page);
+            String tituloDemanda, String solicitante, String codigoDemanda, String status, String departamento, String ordenar, Integer usuario, Pageable page) {
+        return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(),
+                codigoDemanda, status, departamento, ordenar, usuario, page);
     }
 
 
