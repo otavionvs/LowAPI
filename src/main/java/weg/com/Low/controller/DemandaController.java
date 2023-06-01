@@ -1,5 +1,6 @@
 package weg.com.Low.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
@@ -312,8 +313,8 @@ public class DemandaController {
         demanda.setMotivoReprovacaoDemanda(motivoReprovacao);
         demanda.setStatusDemanda(Status.CANCELLED);
         //Necessário para a realização de um PUT
-        Demanda demandaNova = new Demanda();
-        BeanUtils.copyProperties(demanda, demandaNova);
+        ModelMapper modelMapper = new ModelMapper();
+        Demanda demandaNova = modelMapper.map(demanda, Demanda.class);
         demandaNova.setVersion(demanda.getVersion() + 1);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
     }

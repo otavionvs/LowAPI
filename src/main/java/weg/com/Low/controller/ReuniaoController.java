@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
@@ -55,7 +56,7 @@ public class ReuniaoController {
     }
 
     @GetMapping("/filtro")
-    public ResponseEntity<List<Reuniao>> search(
+    public ResponseEntity<Page<Reuniao>> search(
             @RequestParam("nomeComissao") String nomeComissao,
             @RequestParam("dataReuniao") String dataReuniao,
             @RequestParam("statusReuniao") String statusReuniao,

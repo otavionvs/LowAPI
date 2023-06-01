@@ -1,6 +1,7 @@
 package weg.com.Low.model.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -98,8 +99,8 @@ public class ReuniaoService {
         reuniaoRepository.deleteById(codigo);
     }
 
-    public List<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
-            String ppmProposta, String analista, String solicitante, String ordenar,  Pageable page) {
+    public Page<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
+                                String ppmProposta, String analista, String solicitante, String ordenar, Pageable page) {
         return reuniaoRepository.search(nomeComissao.toLowerCase(), dataReuniao, statusReuniao, ppmProposta,
                 analista.toLowerCase(), solicitante.toLowerCase(), ordenar, page);
     }
