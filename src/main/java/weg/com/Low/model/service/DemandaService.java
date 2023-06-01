@@ -158,7 +158,13 @@ public class DemandaService {
     @Transactional
     public void deletarResquicios(Integer codigo) {
         Demanda demanda = findLastDemandaById(codigo).get();
-        List<Beneficio> beneficios = List.of(demanda.getBeneficioPotencialDemanda(), demanda.getBeneficioRealDemanda());
+        List<Beneficio> beneficios =  new ArrayList<>();
+        if(demanda.getBeneficioRealDemanda() != null){
+            beneficios.add(demanda.getBeneficioRealDemanda());
+        }
+        if(demanda.getBeneficioPotencialDemanda() != null){
+            beneficios.add(demanda.getBeneficioPotencialDemanda());
+        }
         List<CentroCusto> centroCustos = demanda.getCentroCustosDemanda();
         demanda.setBeneficioRealDemanda(null);
         demanda.setBeneficioPotencialDemanda(null);
