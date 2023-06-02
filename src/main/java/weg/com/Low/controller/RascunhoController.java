@@ -87,7 +87,7 @@ public class RascunhoController {
     }
 
     @DeleteMapping("/{codigo}")
-    public ResponseEntity<String> deleteById(@PathVariable(value = "codigo") Integer codigo) {
+    public ResponseEntity<?> deleteById(@PathVariable(value = "codigo") Integer codigo) {
         if (!demandaService.existsById(codigo)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Este Rascunho não existe!");
         }

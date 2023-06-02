@@ -115,7 +115,7 @@ public class DemandaController {
                     status, departamento, ordenar, usuario.getCodigoUsuario(), page));
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, tamanho, analista, departamento, ordenar, page));
+                    status, tamanho, analista, departamento, usuario.getCodigoUsuario(), ordenar, page));
         }
     }
 

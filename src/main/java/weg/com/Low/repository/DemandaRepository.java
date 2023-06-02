@@ -80,7 +80,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
                     "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
-                         String tamanho, String analista, String departamento, String ordenar, Pageable page);
+                         String tamanho, String analista, String departamento, Integer usuario, String ordenar, Pageable page);
 
     //Para o caso da demanda não ter demanda classificada
     @Query(value = "select * from demanda " +
@@ -126,7 +126,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
                     "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
-                         String status, String departamento, String ordenar, Integer usuario, Pageable page);
+                         String status, String departamento, Integer usuario, String ordenar, Pageable page);
 
     //Retorna as demandas (correspondem a última versão daquela demanda) de um status (nível gestor)
     @Query(value = "SELECT d.* " +
