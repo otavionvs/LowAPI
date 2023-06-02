@@ -16,21 +16,37 @@ import java.util.List;
 public interface ReuniaoRepository extends JpaRepository<Reuniao, Integer> {
 
     @Query(value = "select * from reuniao " +
-            "INNER JOIN comissao c ON reuniao.codigo_comissao = c.codigo_comissao " +
             "INNER JOIN proposta_reuniao pr ON reuniao.codigo_reuniao = pr.codigo_reuniao " +
-            "INNER JOIN proposta p ON pr.codigo_proposta = p.codigo_proposta " +
-            "INNER JOIN demanda_analista da ON p.codigo_demanda_analista = da.codigo_demanda_analista " +
-            "INNER JOIN demanda d ON da.demanda_codigo = d.codigo_demanda " +
-            "INNER JOIN usuario a ON da.analista_codigo = a.codigo_usuario " +
+            "INNER JOIN demanda d ON pr.codigo_proposta = d.codigo_demanda " +
+            "INNER JOIN usuario a ON d.analista_codigo = a.codigo_usuario " +
             "INNER JOIN usuario s ON d.solicitante_demanda = s.codigo_usuario " +
-            "WHERE LOWER(c.nome_comissao) like %:nomeComissao% " +
+            "WHERE LOWER(reuniao.comissao_reuniao) like %:nomeComissao% " +
             "AND LOWER(reuniao.data_reuniao) like %:dataReuniao% " +
             "AND LOWER(reuniao.status_reuniao) like %:statusReuniao% " +
-            "AND LOWER(p.ppm_proposta) like %:ppmProposta% " +
+            "AND LOWER(d.codigoppmproposta) like %:ppmProposta% " +
             "AND LOWER(a.nome_usuario) like %:analista% " +
-            "AND LOWER(s.nome_usuario) like %:solicitante%", nativeQuery = true)
-    List<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
-                         String ppmProposta, String analista, String solicitante, Pageable page);
+            "AND LOWER(s.nome_usuario) like %:solicitante% "+
+            "order by " +
+            "case when :ordenar = '1' then reuniao.data_reuniao end asc," +
+            "case when :ordenar = '2' then reuniao.data_reuniao end desc",
+            countQuery =
+                    "select COUNT(*) from reuniao " +
+                            "INNER JOIN proposta_reuniao pr ON reuniao.codigo_reuniao = pr.codigo_reuniao " +
+                            "INNER JOIN demanda d ON pr.codigo_proposta = d.codigo_demanda " +
+                            "INNER JOIN usuario a ON d.analista_codigo = a.codigo_usuario " +
+                            "INNER JOIN usuario s ON d.solicitante_demanda = s.codigo_usuario " +
+                            "WHERE LOWER(reuniao.comissao_reuniao) like %:nomeComissao% " +
+                            "AND LOWER(reuniao.data_reuniao) like %:dataReuniao% " +
+                            "AND LOWER(reuniao.status_reuniao) like %:statusReuniao% " +
+                            "AND LOWER(d.codigoppmproposta) like %:ppmProposta% " +
+                            "AND LOWER(a.nome_usuario) like %:analista% " +
+                            "AND LOWER(s.nome_usuario) like %:solicitante% "+
+                            "order by " +
+                            "case when :ordenar = '1' then reuniao.data_reuniao end asc," +
+                            "case when :ordenar = '2' then reuniao.data_reuniao end desc"
+            , nativeQuery = true)
+    Page<Reuniao> search(String nomeComissao, String dataReuniao, String statusReuniao,
+                         String ppmProposta, String analista, String solicitante, String ordenar, Pageable page);
 
     List<Reuniao> findByDataReuniaoBetweenAndStatusReuniao(Date date, Date date2, StatusReuniao statusBuscado);
 
