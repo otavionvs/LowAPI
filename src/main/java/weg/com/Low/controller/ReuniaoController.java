@@ -205,9 +205,12 @@ public class ReuniaoController {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
                 Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
-                Proposta propostaNova = modelMapper.map(propostaAnterior, Proposta.class);
+                Proposta propostaNova = new Proposta();
+                BeanUtils.copyProperties(propostaAnterior, propostaNova);
+                propostaNova.setCentroCustosDemanda(propostaAnterior.getCentroCustosDemanda());
+                propostaNova.setArquivosClassificada(propostaAnterior.getArquivosDemanda());
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
-                propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
+                demandaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
             }
             listaPropostas.add(proposta);
         }
