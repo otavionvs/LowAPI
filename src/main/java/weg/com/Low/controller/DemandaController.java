@@ -214,7 +214,7 @@ public class DemandaController {
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
         demanda.setVersion(0);
-        //Caso seja adicionado de alguma outra forma
+        //Caso demanda seja adicionada de alguma outra forma
         if(demanda.getCodigoDemanda() == null) {
             demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
         }else {
