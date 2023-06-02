@@ -156,7 +156,6 @@ public class DemandaController {
             for (int i = 0; i < 13; i++) {
                 listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
                 listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
-
             }
         }
 
@@ -215,7 +214,7 @@ public class DemandaController {
         demanda.setStatusDemanda(Status.BACKLOG_CLASSIFICACAO);
 
         demanda.setVersion(0);
-        //Caso seja adicionado de alguma outra forma
+        //Caso demanda seja adicionada de alguma outra forma
         if(demanda.getCodigoDemanda() == null) {
             demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
         }else {
