@@ -64,13 +64,13 @@ public class AutenticacaoConfig {
                         "/swagger-ui.html",
                         "/v3/api-docs/**").permitAll()
                 //Rotas e nível de usuário que pode acessa-las
-                .antMatchers(HttpMethod.GET, "/demanda/*", "/demanda/pdf/*", "/demanda/filtro/**", "/demanda/status")
-                .hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
+//                .antMatchers(HttpMethod.GET, "/demanda/*", "/demanda/pdf/*", "/demanda/filtro/**", "/demanda/status")
+//                .hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
                 .antMatchers(HttpMethod.GET, "/demanda/versoes/*", "/demanda/filtro/status/**", "/reuniao/*", "/reuniao/filtro/**", "/reuniao/ata/*")
                 .hasAnyAuthority("Analista", "GestorTI")
-                .antMatchers(HttpMethod.POST, "/demanda/*").hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
+//                .antMatchers(HttpMethod.POST, "/demanda/*").hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
                 .antMatchers(HttpMethod.POST, "/demandaClassificada", "/proposta/**", "/reuniao").hasAnyAuthority("Analista", "GestorTI")
-                .antMatchers(HttpMethod.PUT, "/demanda/update/**", "/demanda/cancell/*").hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
+//                .antMatchers(HttpMethod.PUT, "/demanda/update/**", "/demanda/cancell/*").hasAnyAuthority("Solicitante", "Analista", "GerenteNegocio", "GestorTI")
                 .antMatchers(HttpMethod.PUT, "/demanda/update/status/**").hasAnyAuthority("Analista", "GerenteNegocio", "GestorTI")
                 .antMatchers(HttpMethod.PUT, "/reuniao/parecer/*", "/reuniao/finalizar/*", "/reuniao/cancelar/*", "/reuniao/update/*")
                 .hasAnyAuthority("Analista", "GestorTI")

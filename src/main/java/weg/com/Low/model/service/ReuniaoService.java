@@ -13,6 +13,7 @@ import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.repository.ReuniaoRepository;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,14 +29,14 @@ public class ReuniaoService {
     private NotificacaoService notificacaoService;
     private EmailService emailService;
 
-
     public List<Reuniao> findAll() {
         return reuniaoRepository.findAll();
     }
 
+    @Transactional
     public Reuniao save(Reuniao reuniao, TipoNotificacao tipoNotificacao) {
         Usuario usuario = reuniao.getPropostasReuniao().get(0).getAnalista();
-        switch (tipoNotificacao){
+        switch (tipoNotificacao) {
             case MARCOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Marcada!", tipoNotificacao,
                         "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuario));

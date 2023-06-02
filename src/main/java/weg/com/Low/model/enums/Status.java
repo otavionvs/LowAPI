@@ -6,19 +6,19 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum Status {
-    BACKLOG_CLASSIFICACAO("BackLog - Classificação"), //0
-    BACKLOG_APROVACAO("BackLog - Aprovação"), //1
-    BACKLOG_PROPOSTA("BackLog - Proposta"), //2
-    ASSESSMENT("Assessment"), //3
-    BUSINESS_CASE("Business Case"), //4
-    DISCUSSION("Discussion"),
-    TO_DO("To Do"), //5
-    DESIGN_AND_BUILD("Design and Build"), //6
-    SUPPORT("Support"),//7
-    CANCELLED("Cancelled"),//8
-    DONE("Done"),//9
-    DRAFT("Draft"),//10
-    RETURNED("Returned");
+    DRAFT("Draft"), //0
+    BACKLOG_CLASSIFICACAO("BackLog - Classificação"), //1
+    BACKLOG_APROVACAO("BackLog - Aprovação"), //2
+    BACKLOG_PROPOSTA("BackLog - Proposta"), //3
+    ASSESSMENT("Assessment"), //4
+    BUSINESS_CASE("Business Case"), //5
+    DISCUSSION("Discussion"), //6
+    TO_DO("To Do"), //7
+    DESIGN_AND_BUILD("Design and Build"), //8
+    SUPPORT("Support"), //9
+    CANCELLED("Cancelled"), //10
+    DONE("Done"), //11
+    RETURNED("Returned"); //12
 
     String status;
 }
