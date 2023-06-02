@@ -155,7 +155,6 @@ public class DemandaController {
             for (int i = 0; i < 13; i++) {
                 listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
                 listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
-
             }
         }
 

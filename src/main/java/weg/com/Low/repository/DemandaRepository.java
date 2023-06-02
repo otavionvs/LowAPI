@@ -207,6 +207,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "WHERE d.status_demanda = :status AND u.departamento_codigo = :codigoDepartamento " +
             "AND (d.status_demanda <> 'DRAFT' OR (d.status_demanda = 'DRAFT' AND d.solicitante_demanda = :codigoUsuario))", nativeQuery = true)
     List<Demanda> search(String status, Integer codigoDepartamento, Integer codigoUsuario, Pageable page);
+
     //contagem da query anterior
     @Query(value = "SELECT COUNT(*) " +
             "FROM demanda d " +
