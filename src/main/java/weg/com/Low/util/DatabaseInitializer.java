@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.*;
+import weg.com.Low.model.service.RecursoService;
 import weg.com.Low.repository.*;
 
 import javax.annotation.PostConstruct;
@@ -55,6 +56,28 @@ public class DatabaseInitializer implements CommandLineRunner{
         proposta.setEscopoDemandaProposta(Faker.instance().leagueOfLegends().summonerSpell());
         proposta.setVersion(demanda.getVersion() + 1);
         proposta.setStatusDemanda(Status.ASSESSMENT);
+        List<String> responsaveis = new ArrayList<>();
+
+        for(int i = 0; i< 5; i++){
+            responsaveis.add(Faker.instance().gameOfThrones().character());
+        }
+
+        proposta.setResponsavelProposta(responsaveis);
+        List<Recurso> listRecurso = new ArrayList<>();
+
+        for(int i =0; i< 10; i++){
+            Recurso recurso = new Recurso();
+            recurso.setNomeRecurso(Faker.instance().gameOfThrones().house());
+            List<CentroCusto> cc = new ArrayList<>();
+            recurso.setCentroCustoRecurso(cc);
+            recurso.setPerfilDespesaRecurso(PerfilDespesa.corporativo);
+            recurso.setPeriodoExMesesRecurso(6);
+            recurso.setQuantidadeHorasRecurso(Faker.instance().number().randomDigitNotZero());
+            recurso.setTipoDespesaRecurso(TipoDespesa.interno);
+            recurso.setValorHoraRecurso(Faker.instance().number().randomDouble(3, 1, 999));
+            listRecurso.add(recurso);
+        }
+        proposta.setRecursosProposta(listRecurso);
         return proposta;
     }
 
