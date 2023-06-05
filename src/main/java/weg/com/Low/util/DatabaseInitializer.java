@@ -21,7 +21,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class DatabaseInitializer implements CommandLineRunner{
     static ModelMapper modelMapper = new ModelMapper();
-
+    static boolean vez = true;
+    static int vezComissao = 0;
     @Autowired
     private DepartamentoRepository departamentoRepository;
     @Autowired
@@ -55,7 +56,12 @@ public class DatabaseInitializer implements CommandLineRunner{
         proposta.setPaybackProposta(Faker.instance().number().randomDouble(2, 1, 50000));
         proposta.setEscopoDemandaProposta(Faker.instance().leagueOfLegends().summonerSpell());
         proposta.setVersion(demanda.getVersion() + 1);
-        proposta.setStatusDemanda(Status.ASSESSMENT);
+        if(vez){
+            proposta.setStatusDemanda(Status.ASSESSMENT);
+        }else{
+            proposta.setStatusDemanda(Status.BUSINESS_CASE);
+        }
+        vez = !vez;
         List<String> responsaveis = new ArrayList<>();
 
         for(int i = 0; i< 5; i++){
@@ -130,11 +136,40 @@ public class DatabaseInitializer implements CommandLineRunner{
     }
     public Reuniao gerarReuniao(int codigoReuniao, List<Proposta> demandas){
         Reuniao reuniao = new Reuniao();
-        reuniao.setDataReuniao(Faker.instance().date().future(3, TimeUnit.DAYS));
+        reuniao.setDataReuniao(Faker.instance().date().future(60, TimeUnit.DAYS));
         reuniao.setCodigoReuniao(codigoReuniao);
-        reuniao.setComissaoReuniao(Comissao.CPGCI);
+        vezComissao++;
+        if(vezComissao == 1){
+
+            reuniao.setComissaoReuniao(Comissao.CPGCI);
+        }else if(vezComissao == 2){
+            reuniao.setComissaoReuniao(Comissao.CTI);
+
+        }else if(vezComissao == 3){
+
+            reuniao.setComissaoReuniao(Comissao.CPVM);
+        }else if(vezComissao == 4){
+
+            reuniao.setComissaoReuniao(Comissao.DTI);
+        }else if(vezComissao == 5){
+            reuniao.setComissaoReuniao(Comissao.CGPN);
+
+        }else if(vezComissao == 6){
+            reuniao.setComissaoReuniao(Comissao.CWBS);
+            vezComissao = 0;
+
+        }
         reuniao.setStatusReuniao(StatusReuniao.PROXIMO);
-//        reuniao.setPropostasReuniao(demandas);
+
+        List<Proposta> novasPropostas = new ArrayList<>();
+
+        for (Proposta demanda: demandas){
+            Proposta novaProposta = modelMapper.map(demanda, Proposta.class);
+            novaProposta.setVersion(demanda.getVersion() + 1);
+            novaProposta.setStatusDemanda(Status.DISCUSSION);
+            novasPropostas.add(novaProposta);
+        }
+        reuniao.setPropostasReuniao(novasPropostas);
         return reuniao;
     }
 
@@ -153,11 +188,11 @@ public class DatabaseInitializer implements CommandLineRunner{
         Usuario usuario2 = usuarioRepository.save(new Usuario(2, "nomeUsuario", "gt2", "gt2@", encoder.encode("gt2"), departamento, NivelAcesso.GestorTI));
 
         List<Proposta> propostas = new ArrayList<>();
-        for (int i = 1; i < 70; i++) {
+        for (int i = 1; i < 500; i++) {
             Demanda demanda = demandaRepository.save(gerarDemanda(usuario, i));
-            if (i < 20) {
+            if (i < 470) {
                 DemandaClassificada demandaClassificada = demandaClassificadaRepository.save(gerarDemandaClassificada(demanda));
-                if (i < 11) {
+                if (i < 450) {
                     Proposta proposta = propostaRepository.save(gerarProposta(demandaClassificada));
                     propostas.add(proposta);
                     if(i %2 == 0){
