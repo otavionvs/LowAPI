@@ -195,7 +195,7 @@ public class DatabaseInitializer implements CommandLineRunner{
                 if (i < 450) {
                     Proposta proposta = propostaRepository.save(gerarProposta(demandaClassificada));
                     propostas.add(proposta);
-                    if(i %2 == 0){
+                    if(i %2 == 0 && i < 400){
                         Reuniao reuniao = gerarReuniao(i, propostas);
                         reuniaoRepository.save(reuniao);
                         propostas.clear();

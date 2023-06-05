@@ -204,6 +204,9 @@ public class ReuniaoController {
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior.
             if (proposta.getStatusDemanda() == Status.DISCUSSION) {
+//                demandaService.deleteById(proposta.getCodigoDemanda());
+//
+//                proposta = (Proposta) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get();
                 Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
                 Proposta propostaNova = new Proposta();
                 BeanUtils.copyProperties(propostaAnterior, propostaNova);
