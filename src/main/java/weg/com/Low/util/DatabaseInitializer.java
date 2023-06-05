@@ -98,7 +98,6 @@ public class DatabaseInitializer implements CommandLineRunner{
         demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
         return demandaClassificada;
     }
-
     public Demanda gerarDemanda(Usuario usuario, Integer codigoDemanda) {
         Demanda demanda = new Demanda();
         demanda.setCodigoDemanda(codigoDemanda);
@@ -173,17 +172,20 @@ public class DatabaseInitializer implements CommandLineRunner{
         return reuniao;
     }
 
+    public Demanda avancarStatus(Demanda demanda, Status status){
+        demanda.setStatusDemanda(status);
+        demanda.setVersion(demanda.getVersion() + 1);
+        return demanda;
+    }
+
     @Override
     public void run(String... args) throws Exception {
         Departamento departamento = departamentoRepository.save(new Departamento(1, "Departamento"));
-
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         List<Usuario> usuarios =  usuarioRepository.findAll();
-
         if(usuarios.size() != 0){
            return;
         }
-
         Usuario usuario = usuarioRepository.save(new Usuario(1, "nomeUsuario", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
         Usuario usuario2 = usuarioRepository.save(new Usuario(2, "nomeUsuario", "gt2", "gt2@", encoder.encode("gt2"), departamento, NivelAcesso.GestorTI));
 
@@ -199,6 +201,24 @@ public class DatabaseInitializer implements CommandLineRunner{
                         Reuniao reuniao = gerarReuniao(i, propostas);
                         reuniaoRepository.save(reuniao);
                         propostas.clear();
+                    }
+
+                    if(i < 200){
+                        demandaRepository.save(avancarStatus(proposta, Status.DESIGN_AND_BUILD));
+
+                    }
+                    if(i < 190){
+                        demandaRepository.save(avancarStatus(proposta, Status.SUPPORT));
+
+                    } if(i < 170){
+                        demandaRepository.save(avancarStatus(proposta, Status.DONE));
+
+                    } if(i < 150){
+                        demandaRepository.save(avancarStatus(proposta, Status.CANCELLED));
+
+                    } if(i < 130){
+                        demandaRepository.save(avancarStatus(proposta, Status.TO_DO));
+
                     }
                 }
             }
