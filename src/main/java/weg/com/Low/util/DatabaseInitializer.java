@@ -186,18 +186,31 @@ public class DatabaseInitializer implements CommandLineRunner{
         if(usuarios.size() != 0){
            return;
         }
-        Usuario usuario = usuarioRepository.save(new Usuario(1, "nomeUsuario", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
-        Usuario usuario2 = usuarioRepository.save(new Usuario(2, "nomeUsuario", "gt2", "gt2@", encoder.encode("gt2"), departamento, NivelAcesso.GestorTI));
-
+        Usuario gt = usuarioRepository.save(new Usuario(1, "gestorTI", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
+        Usuario s = usuarioRepository.save(new Usuario(2, "solicitante", "s", "s", encoder.encode("s"), departamento, NivelAcesso.Solicitante));
+        Usuario gn = usuarioRepository.save(new Usuario(3, "gerente de negócio", "gn", "gn", encoder.encode("gn"), departamento, NivelAcesso.GerenteNegocio));
+        int contador = 0;
         List<Proposta> propostas = new ArrayList<>();
         for (int i = 1; i < 500; i++) {
-            Demanda demanda = demandaRepository.save(gerarDemanda(usuario, i));
+            contador++;
+            Demanda demanda = new Demanda();
+            if(contador == 1){
+                demanda = demandaRepository.save(gerarDemanda(gt, i));
+            }
+            if(contador == 2){
+                demanda = demandaRepository.save(gerarDemanda(s, i));
+            }
+            if(contador == 3){
+                demanda = demandaRepository.save(gerarDemanda(gn, i));
+                contador = 0;
+            }
+
             if (i < 470) {
                 DemandaClassificada demandaClassificada = demandaClassificadaRepository.save(gerarDemandaClassificada(demanda));
                 if (i < 450) {
                     Proposta proposta = propostaRepository.save(gerarProposta(demandaClassificada));
                     propostas.add(proposta);
-                    if(i %2 == 0 && i < 400){
+                    if(i %2 == 0 && i < 300){
                         Reuniao reuniao = gerarReuniao(i, propostas);
                         reuniaoRepository.save(reuniao);
                         propostas.clear();
