@@ -216,7 +216,7 @@ public class DemandaController {
         demanda.setVersion(0);
         //Caso demanda seja adicionada de alguma outra forma
         if(demanda.getCodigoDemanda() == null) {
-            demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
+            demanda.setCodigoDemanda(demandaService.LastCodigoDemanda() + 1);
         }else {
             demandaService.deletarResquicios(demanda.getCodigoDemanda());
         }

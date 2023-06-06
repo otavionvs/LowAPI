@@ -153,8 +153,8 @@ public class DemandaService {
         return demandaRepository.countAllByCodigoDemanda(codigoDemanda);
     }
 
-    public Integer countByVersion() {
-        return demandaRepository.countByVersionIs(0);
+    public Integer LastCodigoDemanda() {
+        return demandaRepository.LastCodigoDemanda();
     }
 
     @Transactional

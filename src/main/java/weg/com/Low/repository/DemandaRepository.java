@@ -23,7 +23,10 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     List<Demanda> findByCodigoDemanda(Integer codigo);
     boolean existsByCodigoDemanda(Integer codigo);
     Long countAllByCodigoDemanda(Integer codigoDemanda);
+
     Integer countByVersionIs(Integer versao);
+
+
 
     List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario solicitanteDemanda, Usuario analista);
     List<Demanda> findByAnalista(Usuario usuario);
@@ -232,4 +235,6 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "LOWER(d.status_demanda) like %:status2%", nativeQuery = true)
     List<Demanda> search(String status1, String status2, Pageable page);
 
+    @Query(value = "SELECT MAX(d.codigo_demanda) FROM Demanda d", nativeQuery = true)
+    Integer LastCodigoDemanda();
 }
