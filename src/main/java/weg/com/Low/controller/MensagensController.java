@@ -160,11 +160,13 @@ public class MensagensController {
         Usuario usuario = usuarioService.findById(codigoUsuario).get();
         System.out.println("Usuario: " + usuario.getNomeUsuario());
         List<Demanda> listaDemandas = new ArrayList<>();
-        for (Demanda demanda : demandaService.findBySolicitanteDemandaOrAnalista(usuario)) {
+        List<Demanda> listFor = demandaService.findBySolicitanteDemandaOrAnalista(usuario);
+        for (Demanda demanda : listFor) {
             if (demanda.getAnalista() != null) {
                 listaDemandas.add(demanda);
             }
         }
+        listaDemandas = filterLastVersion(listaDemandas);
         List<ReturnMensagens> returnMensagens = new ArrayList<>();
 
         for (Demanda demanda : listaDemandas) {
