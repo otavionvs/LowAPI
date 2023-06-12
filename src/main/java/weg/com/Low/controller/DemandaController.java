@@ -115,7 +115,7 @@ public class DemandaController {
                     status, departamento, ordenar, usuario.getCodigoUsuario(), page));
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, tamanho, analista, departamento, ordenar, page));
+                    status, tamanho, analista, departamento, usuario.getCodigoUsuario(), ordenar, page));
         }
     }
 
@@ -216,7 +216,7 @@ public class DemandaController {
         demanda.setVersion(0);
         //Caso demanda seja adicionada de alguma outra forma
         if(demanda.getCodigoDemanda() == null) {
-            demanda.setCodigoDemanda(demandaService.countByVersion() + 1);
+            demanda.setCodigoDemanda(demandaService.LastCodigoDemanda() + 1);
         }else {
             demandaService.deletarResquicios(demanda.getCodigoDemanda());
         }

@@ -8,6 +8,8 @@ import java.io.Serializable;
 @Embeddable
 @Data
 public class DemandaId implements Serializable {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo_demanda")
     private Integer codigoDemanda;
 

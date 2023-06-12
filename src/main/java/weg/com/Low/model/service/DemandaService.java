@@ -98,21 +98,22 @@ public class DemandaService {
         return demandaRepository.existsByCodigoDemanda(codigo);
     }
 
+    @Transactional
     public void deleteById(Integer codigo) {
         demandaRepository.deleteFirstByCodigoDemandaOrderByVersionDesc(codigo);
     }
 
     public Page<Demanda> search(
             String tituloDemanda, String solicitante, String codigoDemanda, String status,
-            String tamanho, String analista, String departamento, String ordenar, Pageable page) {
+            String tamanho, String analista, String departamento, Integer usuario, String ordenar, Pageable page) {
         return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(), codigoDemanda,
-                status, tamanho, analista, departamento, ordenar, page);
+                status, tamanho, analista, departamento, usuario, ordenar, page);
     }
 
     public Page<Demanda> search(
             String tituloDemanda, String solicitante, String codigoDemanda, String status, String departamento, String ordenar, Integer usuario, Pageable page) {
         return demandaRepository.search(tituloDemanda.toLowerCase(), solicitante.toLowerCase(),
-                codigoDemanda, status, departamento, ordenar, usuario, page);
+                codigoDemanda, status, departamento, usuario, ordenar, page);
     }
 
 
@@ -152,27 +153,34 @@ public class DemandaService {
         return demandaRepository.countAllByCodigoDemanda(codigoDemanda);
     }
 
-    public Integer countByVersion() {
-        return demandaRepository.countByVersionIs(0);
+    public Integer LastCodigoDemanda() {
+        return demandaRepository.LastCodigoDemanda();
     }
 
     @Transactional
     public void deletarResquicios(Integer codigo) {
         Demanda demanda = findLastDemandaById(codigo).get();
-        List<Beneficio> beneficios =  new ArrayList<>();
+        List<Beneficio> beneficios = new ArrayList<>();
         if(demanda.getBeneficioRealDemanda() != null){
             beneficios.add(demanda.getBeneficioRealDemanda());
         }
         if(demanda.getBeneficioPotencialDemanda() != null){
             beneficios.add(demanda.getBeneficioPotencialDemanda());
         }
-        List<CentroCusto> centroCustos = demanda.getCentroCustosDemanda();
+        List<CentroCusto> centroCustos = new ArrayList<>();
+        if(demanda.getCentroCustosDemanda() != null){
+        centroCustos = demanda.getCentroCustosDemanda();
+        }
         demanda.setBeneficioRealDemanda(null);
         demanda.setBeneficioPotencialDemanda(null);
         demanda.setCentroCustosDemanda(null);
         save(demanda, TipoNotificacao.SEM_NOTIFICACAO);
-        beneficioRepository.deleteAll(beneficios);
-        centroCustoRepository.deleteAll(centroCustos);
+        if(beneficios != null) {
+            beneficioRepository.deleteAll(beneficios);
+        }
+        if(centroCustos != null) {
+            centroCustoRepository.deleteAll(centroCustos);
+        }
     }
 
 }
