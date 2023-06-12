@@ -10,6 +10,6 @@ import java.util.Date;
 public class ReturnMensagens {
     private Integer qtdMensagensNaoLidas;
     private Date horaUltimaMensagem;
-    private Integer codigoDemanda;
+    private Integer codigoConversa;
     private Usuario usuarioAguardando;
 }

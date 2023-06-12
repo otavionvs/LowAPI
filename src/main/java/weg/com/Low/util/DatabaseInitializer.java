@@ -23,6 +23,7 @@ public class DatabaseInitializer implements CommandLineRunner{
     static ModelMapper modelMapper = new ModelMapper();
     static boolean vez = true;
     static int vezComissao = 0;
+    static Usuario analista = new Usuario();
     @Autowired
     private DepartamentoRepository departamentoRepository;
     @Autowired
@@ -92,7 +93,7 @@ public class DatabaseInitializer implements CommandLineRunner{
         demandaClassificada.setTamanhoDemandaClassificada(TamanhoDemanda.Grande);
         demandaClassificada.setBuSolicitanteDemandaClassificada(BussinessUnit.WAU);
         demandaClassificada.setBusBeneficiadasDemandaClassificada(List.of(BussinessUnit.WAU));
-        demandaClassificada.setAnalista(demanda.getSolicitanteDemanda());
+        demandaClassificada.setAnalista(analista);
         demandaClassificada.setSecaoDemandaClassificada(Secao.AAS);
         demandaClassificada.setVersion(1);
         demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
@@ -130,7 +131,7 @@ public class DatabaseInitializer implements CommandLineRunner{
 
         List<CentroCusto> listaCentroCusto = new ArrayList<>();
         listaCentroCusto.add(gerarCentroCusto());
-        centroCustoRepository.saveAll(listaCentroCusto);
+        demanda.setCentroCustosDemanda(centroCustoRepository.saveAll(listaCentroCusto));
         return demanda;
     }
     public Reuniao gerarReuniao(int codigoReuniao, List<Proposta> demandas){
@@ -189,6 +190,7 @@ public class DatabaseInitializer implements CommandLineRunner{
         Usuario gt = usuarioRepository.save(new Usuario(1, "gestorTI", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
         Usuario s = usuarioRepository.save(new Usuario(2, "solicitante", "s", "s", encoder.encode("s"), departamento, NivelAcesso.Solicitante));
         Usuario gn = usuarioRepository.save(new Usuario(3, "gerente de negócio", "gn", "gn", encoder.encode("gn"), departamento, NivelAcesso.GerenteNegocio));
+        analista = usuarioRepository.save(  new Usuario(4, "analista", "a", "a", encoder.encode("a"), departamento, NivelAcesso.Analista));
         int contador = 0;
         List<Proposta> propostas = new ArrayList<>();
         for (int i = 1; i < 500; i++) {
