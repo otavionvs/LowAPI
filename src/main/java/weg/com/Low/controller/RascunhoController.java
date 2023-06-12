@@ -38,7 +38,12 @@ public class RascunhoController {
         rascunho.setStatusDemanda(Status.DRAFT);
 
         rascunho.setVersion(0);
-        rascunho.setCodigoDemanda(demandaService.countByVersion() + 1);
+        if(demandaService.LastCodigoDemanda() != null) {
+            rascunho.setCodigoDemanda(demandaService.LastCodigoDemanda() + 1);
+        }else{
+            rascunho.setCodigoDemanda(1);
+        }
+//        System.out.println(demandaService.countByVersion() + 1);
 
         rascunho.setSolicitanteDemanda(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
 
@@ -87,7 +92,7 @@ public class RascunhoController {
     }
 
     @DeleteMapping("/{codigo}")
-    public ResponseEntity<String> deleteById(@PathVariable(value = "codigo") Integer codigo) {
+    public ResponseEntity<?> deleteById(@PathVariable(value = "codigo") Integer codigo) {
         if (!demandaService.existsById(codigo)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Este Rascunho não existe!");
         }

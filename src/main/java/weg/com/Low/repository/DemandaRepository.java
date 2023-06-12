@@ -23,7 +23,10 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     List<Demanda> findByCodigoDemanda(Integer codigo);
     boolean existsByCodigoDemanda(Integer codigo);
     Long countAllByCodigoDemanda(Integer codigoDemanda);
+
     Integer countByVersionIs(Integer versao);
+
+
 
     List<Demanda> findBySolicitanteDemandaOrAnalista(Usuario solicitanteDemanda, Usuario analista);
     List<Demanda> findByAnalista(Usuario usuario);
@@ -80,7 +83,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
                     "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
-                         String tamanho, String analista, String departamento, String ordenar, Pageable page);
+                         String tamanho, String analista, String departamento, Integer usuario, String ordenar, Pageable page);
 
     //Para o caso da demanda não ter demanda classificada
     @Query(value = "select * from demanda " +
@@ -126,7 +129,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
                     "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
-                         String status, String departamento, String ordenar, Integer usuario, Pageable page);
+                         String status, String departamento, Integer usuario, String ordenar, Pageable page);
 
     //Retorna as demandas (correspondem a última versão daquela demanda) de um status (nível gestor)
     @Query(value = "SELECT d.* " +
@@ -232,4 +235,6 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "LOWER(d.status_demanda) like %:status2%", nativeQuery = true)
     List<Demanda> search(String status1, String status2, Pageable page);
 
+    @Query(value = "SELECT MAX(d.codigo_demanda) FROM Demanda d", nativeQuery = true)
+    Integer LastCodigoDemanda();
 }
