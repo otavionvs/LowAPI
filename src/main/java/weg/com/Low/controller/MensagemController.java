@@ -90,6 +90,22 @@ public class MensagemController {
         Conversa conversa = conversaService.findById(codigoConversa).get();
         List<Mensagem> mensagens = conversa.getMensagemConversa();
 
+
+        TokenUtils tokenUtils = new TokenUtils();
+        Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
+        boolean statusAtualizado = false;
+        for (Mensagem mensagem : mensagens) {
+            //Se o usuário que viu a mensagem for diferente que o usuário que enviou, então ela é marcada como vista
+            if ((mensagem.getUsuarioMensagem() != usuario) && (mensagem.getStatusMensagem() != StatusMensagens.VISTA)) {
+                mensagem.setStatusMensagem(StatusMensagens.VISTA);
+                statusAtualizado = true;
+                mensagemService.save(mensagem);
+            }
+        }
+        if (statusAtualizado) {
+            messagingTemplate.convertAndSend("/visto/" + codigoConversa + "/chat", mensagens);
+        }
+
         return ResponseEntity.ok(mensagens);
     }
 
