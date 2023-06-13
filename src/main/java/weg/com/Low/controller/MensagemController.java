@@ -211,7 +211,8 @@ public class MensagemController {
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.addAll(conversa.getUsuariosConversa());
         for (Usuario usuario: usuarios){
-            messagingTemplate.convertAndSend("/notifica/" + usuario.getCodigoUsuario(), usuario.toString());
+            messagingTemplate.convertAndSend("/notifica/" + usuario.getCodigoUsuario(), usuario.toString()
+            );
         }
 
 
