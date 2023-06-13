@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.RascunhoDTO;
+import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.model.entity.Demanda;
 import weg.com.Low.model.entity.Rascunho;
 import weg.com.Low.model.enums.Moeda;
@@ -19,6 +20,8 @@ import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.RascunhoUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @CrossOrigin
 @AllArgsConstructor
@@ -83,6 +86,10 @@ public class RascunhoController {
         }
         if(rascunho.getBeneficioRealDemanda() != null){
         rascunhoNovo.getBeneficioRealDemanda().setCodigoBeneficio(rascunho.getBeneficioRealDemanda().getCodigoBeneficio());
+        }
+
+        if(rascunho.getCentroCustosDemanda().isEmpty()){
+            rascunhoNovo.setCentroCustosDemanda(new ArrayList<>());
         }
         rascunhoNovo.setSolicitanteDemanda(rascunho.getSolicitanteDemanda());
         rascunhoNovo.setStatusDemanda(Status.DRAFT);
