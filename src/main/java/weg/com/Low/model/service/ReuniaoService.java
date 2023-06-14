@@ -83,8 +83,8 @@ public class ReuniaoService {
         List<Reuniao> reunioesPendentes = reuniaoRepository.findByDataReuniaoBeforeAndStatusReuniao(agora, StatusReuniao.PROXIMO);
         for (Reuniao reuniao : reunioesPendentes) {
             reuniao.setStatusReuniao(StatusReuniao.PENDENTE);
-            save(reuniao, TipoNotificacao.REUNIAO_PENDETE);
-            emailService.sendEmail(reuniao.getPropostasReuniao().get(0).getSolicitanteDemanda().getEmailUsuario(), "Reunião Pendente", "");
+            reuniaoRepository.save(reuniao);
+//            emailService.sendEmail(reuniao.getPropostasReuniao().get(0).getSolicitanteDemanda().getEmailUsuario(), "Reunião Pendente", "");
         }
     }
 
