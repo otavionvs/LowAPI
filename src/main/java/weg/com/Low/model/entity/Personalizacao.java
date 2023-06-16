@@ -18,7 +18,8 @@ public class Personalizacao {
     @Column
     @ElementCollection
     private List<String> coresSecundariasPersonalizacao;
-
+    @Column
+    private String nomePersonalizacao;
     @Column
     private boolean ativaPersonalizacao;
 }
