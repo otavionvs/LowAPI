@@ -2,6 +2,7 @@ package weg.com.Low.controller;
 
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +56,17 @@ public class PersonalizacaoController {
         personalizacoes = personalizacaoService.saveAll(personalizacoes);
         return ResponseEntity.status(200).body(personalizacoes);
     }
+    @PutMapping("/{codigo}")
+    public ResponseEntity<Object> editPersonalizacao(@PathVariable Integer codigo, @RequestBody PersonalizacaoDTO personalizacaoDTO){
+        if(!personalizacaoService.existsById(codigo)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Personalização não encontrada!");
+        }
+        Personalizacao personalizacao = personalizacaoService.findById(codigo).get();
+        BeanUtils.copyProperties(personalizacaoDTO, personalizacao);
+        return ResponseEntity.status(200).body(personalizacaoService.save(personalizacao));
+    }
+
+
     @DeleteMapping("/{codigo}")
     public void deletePersonalizacao(@PathVariable(value = "codigo") Integer codigo){
         if(personalizacaoService.existsById(codigo)){
