@@ -193,8 +193,16 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  FROM demanda " +
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
-            "WHERE d.solicitante_demanda = :usuario ", nativeQuery = true)
-    List<Demanda> search(Integer usuario, Pageable page);
+            "WHERE d.solicitante_demanda = :usuario ",
+            countQuery = "SELECT COUNT(d.codigo_demanda) " +
+                    "FROM demanda d " +
+                    "INNER JOIN (" +
+                    "  SELECT codigo_demanda, MAX(version) AS max_version " +
+                    "  FROM demanda " +
+                    "  GROUP BY codigo_demanda " +
+                    ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+                    "WHERE d.solicitante_demanda = :usuario ", nativeQuery = true)
+    Page<Demanda> search(Integer usuario, Pageable page);
 
     //Retorna a última versão de uma demanda de um determinado status,
     //porém somente as do departamento que for repassado abaixo

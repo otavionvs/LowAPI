@@ -129,7 +129,7 @@ public class DemandaService {
         return demandaRepository.search(status1, status2, page);
     }
 
-    public List<Demanda> search(Integer usuario, Pageable page) {
+    public Page<Demanda> search(Integer usuario, Pageable page) {
         return demandaRepository.search(usuario, page);
     }
 

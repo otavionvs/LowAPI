@@ -54,13 +54,14 @@ public class DemandaController {
     }
 
     @GetMapping("/usuario")
-    public ResponseEntity<List<Demanda>> findByUsuario(
+    public ResponseEntity<Page<Demanda>> findByUsuario(
             @PageableDefault(
                     page = 0,
                     size = 24) Pageable page,
             HttpServletRequest httpServletRequest
     ) {
         Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(httpServletRequest)).get();
+//        System.out.println(demandaService.search(usuario.getCodigoUsuario(), page));
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(usuario.getCodigoUsuario(), page));
     }
 
