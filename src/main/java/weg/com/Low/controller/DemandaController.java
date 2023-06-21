@@ -109,14 +109,13 @@ public class DemandaController {
                     page = 0,
                     size = 24) Pageable page,
             HttpServletRequest request) {
-        Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get();
         //requisições com tamanho e analista, exigem demandaClassificação(Backlog_Aprovação)
         if (tamanho.equals("") && analista.equals("")) {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, departamento, ordenar, usuario.getCodigoUsuario(), page));
+                    status, departamento, ordenar, page));
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, tamanho, analista, departamento, usuario.getCodigoUsuario(), ordenar, page));
+                    status, tamanho, analista, departamento, ordenar, page));
         }
     }
 

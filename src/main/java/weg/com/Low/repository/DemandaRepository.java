@@ -49,9 +49,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(a.nome_usuario) like %:analista% " +
             "AND LOWER(de.nome_departamento) like %:departamento% " +
             "AND demanda.status_demanda != 'DRAFT' " +
-            "AND ((demanda.analista_codigo = :usuario) OR " +
-            "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
-            "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
+//            "AND ((demanda.analista_codigo = :usuario) OR " +
+//            "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
+//            "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
             "order by " +
             "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
             "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -73,9 +73,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "AND LOWER(a.nome_usuario) like %:analista% " +
                     "AND LOWER(de.nome_departamento) like %:departamento% " +
                     "AND demanda.status_demanda != 'DRAFT' " +
-                    "AND ((demanda.analista_codigo = :usuario) OR " +
-                    "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
-                    "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
+//                    "AND ((demanda.analista_codigo = :usuario) OR " +
+//                    "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
+//                    "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
                     "order by " +
                     "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
                     "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -83,7 +83,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
                     "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
-                         String tamanho, String analista, String departamento, Integer usuario, String ordenar, Pageable page);
+                         String tamanho, String analista, String departamento, String ordenar, Pageable page);
 
     //Para o caso da demanda não ter demanda classificada
     @Query(value = "select * from demanda " +
@@ -98,9 +98,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(demanda.status_demanda) like %:status% " +
             "AND LOWER(de.nome_departamento) like %:departamento% " +
             "AND demanda.status_demanda != 'DRAFT' " +
-            "AND ((demanda.analista_codigo = :usuario) OR " +
-            "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
-            "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
+//            "AND ((demanda.analista_codigo = :usuario) OR " +
+//            "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
+//            "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
             "order by " +
             "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
             "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -119,9 +119,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "AND LOWER(demanda.status_demanda) like %:status% " +
                     "AND LOWER(de.nome_departamento) like %:departamento% " +
                     "AND demanda.status_demanda != 'DRAFT' " +
-                    "AND ((demanda.analista_codigo = :usuario) OR " +
-                    "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
-                    "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
+//                    "AND ((demanda.analista_codigo = :usuario) OR " +
+//                    "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
+//                    "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
                     "order by " +
                     "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
                     "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -129,7 +129,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
                     "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
-                         String status, String departamento, Integer usuario, String ordenar, Pageable page);
+                         String status, String departamento, String ordenar, Pageable page);
 
     //Retorna as demandas (correspondem a última versão daquela demanda) de um status (nível gestor)
     @Query(value = "SELECT d.* " +
