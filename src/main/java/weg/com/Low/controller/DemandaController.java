@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.Status;
+import weg.com.Low.model.enums.TamanhoDemanda;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
 import weg.com.Low.security.TokenUtils;

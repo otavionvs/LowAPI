@@ -36,7 +36,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     //É necessario que todas as informações existam para que ele busque
     @Query(value = "select * from demanda " +
             "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
-            "INNER JOIN usuario a ON demanda.analista_codigo = u.codigo_usuario " +
+            "INNER JOIN usuario a ON demanda.analista_codigo = a.codigo_usuario " +
             "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +
             "INNER JOIN (SELECT codigo_demanda, MAX(version) AS versao_recente FROM demanda " +
             "GROUP BY codigo_demanda) AS max_d " +
@@ -60,7 +60,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "case when :ordenar = '5' then demanda.titulo_demanda end desc ",
             countQuery = "SELECT COUNT(*) FROM demanda " +
                     "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
-                    "INNER JOIN usuario a ON demanda.analista_codigo = u.codigo_usuario " +
+                    "INNER JOIN usuario a ON demanda.analista_codigo = a.codigo_usuario " +
                     "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +
                     "INNER JOIN (SELECT codigo_demanda, MAX(version) AS versao_recente FROM demanda " +
                     "GROUP BY codigo_demanda) AS max_d " +
@@ -193,7 +193,10 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  FROM demanda " +
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
-            "WHERE d.solicitante_demanda = :usuario ",
+            "WHERE d.solicitante_demanda = :usuario " +
+            "ORDER BY CASE WHEN d.status_demanda = 'DRAFT' THEN 0 ELSE 1 END, " +
+            "CASE WHEN d.status_demanda = 'DRAFT' THEN d.codigo_demanda END, " +
+            "d.codigo_demanda DESC",
             countQuery = "SELECT COUNT(d.codigo_demanda) " +
                     "FROM demanda d " +
                     "INNER JOIN (" +
@@ -201,7 +204,8 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "  FROM demanda " +
                     "  GROUP BY codigo_demanda " +
                     ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
-                    "WHERE d.solicitante_demanda = :usuario ", nativeQuery = true)
+                    "WHERE d.solicitante_demanda = :usuario " +
+                    "ORDER BY d.status_demanda = 'DRAFT' DESC ", nativeQuery = true)
     Page<Demanda> search(Integer usuario, Pageable page);
 
     //Retorna a última versão de uma demanda de um determinado status,
