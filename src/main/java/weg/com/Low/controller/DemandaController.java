@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.Status;
+import weg.com.Low.model.enums.TamanhoDemanda;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
 import weg.com.Low.security.TokenUtils;
@@ -54,13 +55,14 @@ public class DemandaController {
     }
 
     @GetMapping("/usuario")
-    public ResponseEntity<List<Demanda>> findByUsuario(
+    public ResponseEntity<Page<Demanda>> findByUsuario(
             @PageableDefault(
                     page = 0,
                     size = 24) Pageable page,
             HttpServletRequest httpServletRequest
     ) {
         Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(httpServletRequest)).get();
+//        System.out.println(demandaService.search(usuario.getCodigoUsuario(), page));
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(usuario.getCodigoUsuario(), page));
     }
 
@@ -108,14 +110,13 @@ public class DemandaController {
                     page = 0,
                     size = 24) Pageable page,
             HttpServletRequest request) {
-        Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get();
         //requisições com tamanho e analista, exigem demandaClassificação(Backlog_Aprovação)
         if (tamanho.equals("") && analista.equals("")) {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, departamento, ordenar, usuario.getCodigoUsuario(), page));
+                    status, departamento, ordenar, page));
         } else {
             return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(tituloDemanda, solicitante, codigoDemanda,
-                    status, tamanho, analista, departamento, usuario.getCodigoUsuario(), ordenar, page));
+                    status, tamanho, analista, departamento, ordenar, page));
         }
     }
 
