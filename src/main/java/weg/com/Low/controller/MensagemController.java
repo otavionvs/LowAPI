@@ -64,23 +64,7 @@ public class MensagemController {
 
     }
 
-//    @GetMapping("/qtd-total-n-lidas/{codigoUsuario}")
-//    public ResponseEntity<?> findQtdDemandasNaoLidas(@PathVariable(value = "codigoUsuario") Integer codigoUsuario) {
-//        Usuario usuario = usuarioService.findById(codigoUsuario).get();
-//        List<Demanda> demandas = demandaService.findBySolicitanteDemandaOrAnalista(usuario);
-//        List<Demanda> listaDemandasVersaoMaior = filterLastVersion(demandas);
-//        Integer quantidadeMensagensNaoLidas = 0;
-//        for (Demanda demanda : listaDemandasVersaoMaior) {
-//            List<Mensagem> mensagens = mensagemService.findAllByDemanda(demanda);
-//            for (Mensagem mensagem : mensagens) {
-//                if (mensagem.getStatusMensagens() == StatusMensagens.NAO_VISTA && mensagem.getUsuarioMensagem().getCodigoUsuario() != usuario.getCodigoUsuario()) {
-//                    quantidadeMensagensNaoLidas++;
-//                }
-//            }
-//        }
-//
-//        return ResponseEntity.ok(quantidadeMensagensNaoLidas);
-//    }
+
 
     @GetMapping("/{codigoConversa}")
     public ResponseEntity<?> findAllByConversa(@PathVariable(value = "codigoConversa") Integer codigoConversa, HttpServletRequest request) {
@@ -121,7 +105,22 @@ public class MensagemController {
         return dataMaisAtual;
     }
 
-
+    @GetMapping("/verificanotificacoes")
+    public ResponseEntity<Boolean> verificaNotificacoes(HttpServletRequest request) {
+        TokenUtils tokenUtils = new TokenUtils();
+        String username = tokenUtils.getUsuarioUsernameByRequest(request);
+        Usuario usuario = usuarioService.findByUserUsuario(username).get();
+        List<Conversa> conversas = conversaService.findByUsuariosConversa(usuario);
+        for(Conversa conversa: conversas){
+            for (Mensagem mensagem: conversa.getMensagemConversa()){
+                //Se a mensagem ainda não foi vista, e não foi ele mesmo que enviou a mensagem
+                if(mensagem.getStatusMensagem() != StatusMensagens.VISTA && mensagem.getUsuarioMensagem().getCodigoUsuario() != usuario.getCodigoUsuario()){
+                    return ResponseEntity.status(200).body(true);
+                }
+            }
+        }
+        return ResponseEntity.status(200).body(false);
+    }
     /**
      * Inicia um novo Chat
      * Adiciona um analista na demanda para iniciar este chat
@@ -208,11 +207,15 @@ public class MensagemController {
         Conversa conversa = conversaService.findById(mensagemDTO.getConversaMensagem().getCodigoConversa()).get();
         BeanUtils.copyProperties(mensagemDTO, mensagem);
         mensagem.setConversa(conversa);
+        Usuario usuarioMensagem = usuarioService.findById(mensagem.getUsuarioMensagem().getCodigoUsuario()).get();
+
         List<Usuario> usuarios = new ArrayList<>();
         usuarios.addAll(conversa.getUsuariosConversa());
         for (Usuario usuario: usuarios){
-            messagingTemplate.convertAndSend("/notifica/" + usuario.getCodigoUsuario(), usuario.toString()
-            );
+            //Se o usuário que enviou a mensagem for diferente do que estiver cadastrado na mensagem ele notifica o usuário
+            if(usuarioMensagem.getCodigoUsuario() != usuario.getCodigoUsuario()){
+                messagingTemplate.convertAndSend("/notifica/" + usuario.getCodigoUsuario(), conversa.getCodigoConversa());
+            }
         }
 
 
