@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface ReuniaoRepository extends JpaRepository<Reuniao, Integer> {
 
-    @Query(value = "select * from reuniao " +
+    @Query(value = "select distinct reuniao.* from reuniao " +
             "INNER JOIN proposta_reuniao pr ON reuniao.codigo_reuniao = pr.codigo_reuniao " +
             "INNER JOIN demanda d ON pr.codigo_proposta = d.codigo_demanda " +
             "INNER JOIN usuario a ON d.analista_codigo = a.codigo_usuario " +
@@ -30,7 +30,7 @@ public interface ReuniaoRepository extends JpaRepository<Reuniao, Integer> {
             "case when :ordenar = '1' then reuniao.data_reuniao end asc," +
             "case when :ordenar = '2' then reuniao.data_reuniao end desc",
             countQuery =
-                    "select COUNT(*) from reuniao " +
+                    "select COUNT(DISTINCT reuniao.codigo_reuniao) FROM reuniao " +
                             "INNER JOIN proposta_reuniao pr ON reuniao.codigo_reuniao = pr.codigo_reuniao " +
                             "INNER JOIN demanda d ON pr.codigo_proposta = d.codigo_demanda " +
                             "INNER JOIN usuario a ON d.analista_codigo = a.codigo_usuario " +
