@@ -34,9 +34,11 @@ public class Reuniao {
 
     @Column(columnDefinition = "longtext")
     private String motivoCancelamentoReuniao;
+
     @OneToOne
     @JoinColumn(name = "ata_nao_publicada")
     private Ata ataNaoPublicadaReuniao;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "proposta_reuniao", joinColumns =
     @JoinColumn(name = "codigo_reuniao", nullable = false),
