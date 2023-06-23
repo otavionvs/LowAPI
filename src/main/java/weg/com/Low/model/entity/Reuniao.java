@@ -37,11 +37,12 @@ public class Reuniao {
     @OneToOne
     @JoinColumn(name = "ata_nao_publicada")
     private Ata ataNaoPublicadaReuniao;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "proposta_reuniao", joinColumns =
     @JoinColumn(name = "codigo_reuniao", nullable = false),
             inverseJoinColumns = {@JoinColumn(name = "codigo_proposta", referencedColumnName = "codigo_demanda", nullable = false),
-            @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)})
+                    @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)})
     private List<Proposta> propostasReuniao;
 
     @OneToOne()
