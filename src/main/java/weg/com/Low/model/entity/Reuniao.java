@@ -34,6 +34,7 @@ public class Reuniao {
 
     @Column(columnDefinition = "longtext")
     private String motivoCancelamentoReuniao;
+
     @OneToOne
     @JoinColumn(name = "ata_nao_publicada")
     private Ata ataNaoPublicadaReuniao;

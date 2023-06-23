@@ -1,7 +1,6 @@
 package weg.com.Low.dto;
 
 import lombok.Getter;
-import weg.com.Low.model.entity.CentroCusto;
 import weg.com.Low.model.enums.TipoDespesa;
 
 import javax.validation.constraints.*;
