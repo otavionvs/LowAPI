@@ -79,7 +79,7 @@ public class DatabaseInitializer implements CommandLineRunner{
             recurso.setNomeRecurso(Faker.instance().gameOfThrones().house());
             List<CentroCusto> cc = new ArrayList<>();
             recurso.setCentroCustoRecurso(cc);
-            recurso.setPerfilDespesaRecurso(PerfilDespesa.corporativo);
+            recurso.setPerfilDespesaRecurso("Corporativo");
             recurso.setPeriodoExMesesRecurso(6);
             recurso.setQuantidadeHorasRecurso(Faker.instance().number().randomDigitNotZero());
             recurso.setTipoDespesaRecurso(TipoDespesa.interno);

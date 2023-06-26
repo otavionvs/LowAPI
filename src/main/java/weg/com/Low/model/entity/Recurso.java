@@ -1,7 +1,6 @@
 package weg.com.Low.model.entity;
 
 import lombok.Data;
-import weg.com.Low.model.enums.PerfilDespesa;
 import weg.com.Low.model.enums.TipoDespesa;
 
 import javax.persistence.*;
@@ -24,8 +23,7 @@ public class Recurso {
     @Enumerated(value = EnumType.STRING)
     private TipoDespesa tipoDespesaRecurso;
     @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private PerfilDespesa perfilDespesaRecurso;
+    private String perfilDespesaRecurso;
     @Column(nullable = false)
     private Integer periodoExMesesRecurso;
     @ManyToMany(cascade = CascadeType.ALL)

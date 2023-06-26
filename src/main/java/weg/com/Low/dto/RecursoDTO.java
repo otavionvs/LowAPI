@@ -1,8 +1,6 @@
 package weg.com.Low.dto;
 
 import lombok.Getter;
-import weg.com.Low.model.entity.CentroCusto;
-import weg.com.Low.model.enums.PerfilDespesa;
 import weg.com.Low.model.enums.TipoDespesa;
 
 import javax.validation.constraints.*;
@@ -21,7 +19,7 @@ public class RecursoDTO {
     @NotNull
     private TipoDespesa tipoDespesaRecurso;
     @NotNull
-    private PerfilDespesa perfilDespesaRecurso;
+    private String perfilDespesaRecurso;
     @NotNull
     private Integer periodoExMesesRecurso;
     @NotEmpty

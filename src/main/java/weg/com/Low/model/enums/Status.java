@@ -10,8 +10,8 @@ public enum Status {
     BACKLOG_CLASSIFICACAO("BackLog - Classificação"), //1
     BACKLOG_APROVACAO("BackLog - Aprovação"), //2
     BACKLOG_PROPOSTA("BackLog - Proposta"), //3
-    ASSESSMENT("Assessment"), //4
-    BUSINESS_CASE("Business Case"), //5
+    BUSINESS_CASE("Business Case"), //4
+    ASSESSMENT("Assessment"), //5
     DISCUSSION("Discussion"), //6
     TO_DO("To Do"), //7
     DESIGN_AND_BUILD("Design and Build"), //8

@@ -36,7 +36,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     //É necessario que todas as informações existam para que ele busque
     @Query(value = "select * from demanda " +
             "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
-            "INNER JOIN usuario a ON demanda.analista_codigo = u.codigo_usuario " +
+            "INNER JOIN usuario a ON demanda.analista_codigo = a.codigo_usuario " +
             "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +
             "INNER JOIN (SELECT codigo_demanda, MAX(version) AS versao_recente FROM demanda " +
             "GROUP BY codigo_demanda) AS max_d " +
@@ -49,9 +49,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(a.nome_usuario) like %:analista% " +
             "AND LOWER(de.nome_departamento) like %:departamento% " +
             "AND demanda.status_demanda != 'DRAFT' " +
-            "AND ((demanda.analista_codigo = :usuario) OR " +
-            "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
-            "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
+//            "AND ((demanda.analista_codigo = :usuario) OR " +
+//            "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
+//            "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
             "order by " +
             "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
             "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -60,7 +60,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "case when :ordenar = '5' then demanda.titulo_demanda end desc ",
             countQuery = "SELECT COUNT(*) FROM demanda " +
                     "INNER JOIN usuario u ON demanda.solicitante_demanda = u.codigo_usuario " +
-                    "INNER JOIN usuario a ON demanda.analista_codigo = u.codigo_usuario " +
+                    "INNER JOIN usuario a ON demanda.analista_codigo = a.codigo_usuario " +
                     "INNER JOIN departamento de ON u.departamento_codigo = de.codigo_departamento " +
                     "INNER JOIN (SELECT codigo_demanda, MAX(version) AS versao_recente FROM demanda " +
                     "GROUP BY codigo_demanda) AS max_d " +
@@ -73,9 +73,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "AND LOWER(a.nome_usuario) like %:analista% " +
                     "AND LOWER(de.nome_departamento) like %:departamento% " +
                     "AND demanda.status_demanda != 'DRAFT' " +
-                    "AND ((demanda.analista_codigo = :usuario) OR " +
-                    "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
-                    "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
+//                    "AND ((demanda.analista_codigo = :usuario) OR " +
+//                    "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
+//                    "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
                     "order by " +
                     "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
                     "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -83,7 +83,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
                     "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda, String status,
-                         String tamanho, String analista, String departamento, Integer usuario, String ordenar, Pageable page);
+                         String tamanho, String analista, String departamento, String ordenar, Pageable page);
 
     //Para o caso da demanda não ter demanda classificada
     @Query(value = "select * from demanda " +
@@ -98,9 +98,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "AND LOWER(demanda.status_demanda) like %:status% " +
             "AND LOWER(de.nome_departamento) like %:departamento% " +
             "AND demanda.status_demanda != 'DRAFT' " +
-            "AND ((demanda.analista_codigo = :usuario) OR " +
-            "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
-            "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
+//            "AND ((demanda.analista_codigo = :usuario) OR " +
+//            "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
+//            "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
             "order by " +
             "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
             "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -119,9 +119,9 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "AND LOWER(demanda.status_demanda) like %:status% " +
                     "AND LOWER(de.nome_departamento) like %:departamento% " +
                     "AND demanda.status_demanda != 'DRAFT' " +
-                    "AND ((demanda.analista_codigo = :usuario) OR " +
-                    "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
-                    "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
+//                    "AND ((demanda.analista_codigo = :usuario) OR " +
+//                    "((demanda.status_demanda = 'BACKLOG_CLASSIFICACAO') OR " +
+//                    "(demanda.status_demanda != 'BACKLOG_CLASSIFICACAO' AND demanda.solicitante_demanda = :usuario))) " +
                     "order by " +
                     "case when :ordenar = '1' then demanda.data_criacao_demanda end asc," +
                     "case when :ordenar = '2' then demanda.data_criacao_demanda end desc," +
@@ -129,7 +129,7 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
                     "case when :ordenar = '4' then demanda.titulo_demanda end asc, " +
                     "case when :ordenar = '5' then demanda.titulo_demanda end desc ", nativeQuery = true)
     Page<Demanda> search(String tituloDemanda, String solicitante, String codigoDemanda,
-                         String status, String departamento, Integer usuario, String ordenar, Pageable page);
+                         String status, String departamento, String ordenar, Pageable page);
 
     //Retorna as demandas (correspondem a última versão daquela demanda) de um status (nível gestor)
     @Query(value = "SELECT d.* " +
@@ -193,8 +193,20 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
             "  FROM demanda " +
             "  GROUP BY codigo_demanda " +
             ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
-            "WHERE d.solicitante_demanda = :usuario ", nativeQuery = true)
-    List<Demanda> search(Integer usuario, Pageable page);
+            "WHERE d.solicitante_demanda = :usuario " +
+            "ORDER BY CASE WHEN d.status_demanda = 'DRAFT' THEN 0 ELSE 1 END, " +
+            "CASE WHEN d.status_demanda = 'DRAFT' THEN d.codigo_demanda END, " +
+            "d.codigo_demanda DESC",
+            countQuery = "SELECT COUNT(d.codigo_demanda) " +
+                    "FROM demanda d " +
+                    "INNER JOIN (" +
+                    "  SELECT codigo_demanda, MAX(version) AS max_version " +
+                    "  FROM demanda " +
+                    "  GROUP BY codigo_demanda " +
+                    ") d2 ON d.codigo_demanda = d2.codigo_demanda AND d.version = d2.max_version " +
+                    "WHERE d.solicitante_demanda = :usuario " +
+                    "ORDER BY d.status_demanda = 'DRAFT' DESC ", nativeQuery = true)
+    Page<Demanda> search(Integer usuario, Pageable page);
 
     //Retorna a última versão de uma demanda de um determinado status,
     //porém somente as do departamento que for repassado abaixo
