@@ -43,7 +43,7 @@ public class Reuniao {
     @JoinTable(name = "proposta_reuniao", joinColumns =
     @JoinColumn(name = "codigo_reuniao", nullable = false),
             inverseJoinColumns = {@JoinColumn(name = "codigo_proposta", referencedColumnName = "codigo_demanda", nullable = false),
-            @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)})
+                    @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)})
     private List<Proposta> propostasReuniao;
 
     @OneToOne()
