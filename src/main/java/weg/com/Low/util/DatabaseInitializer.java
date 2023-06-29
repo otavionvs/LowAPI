@@ -38,6 +38,8 @@ public class DatabaseInitializer implements CommandLineRunner{
     private PropostaRepository propostaRepository;
     @Autowired
     private ReuniaoRepository reuniaoRepository;
+    @Autowired
+    private PersonalizacaoRepository personalizacaoRepository;
 
 
     public CentroCusto gerarCentroCusto() {
@@ -98,6 +100,18 @@ public class DatabaseInitializer implements CommandLineRunner{
         demandaClassificada.setVersion(1);
         demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
         return demandaClassificada;
+    }
+
+    public Personalizacao gerarPersonalizacao(){
+        Personalizacao personalizacao = new Personalizacao();
+        personalizacao.setNomePersonalizacao("Cores WEG");
+        personalizacao.setAtivaPersonalizacao(true);
+        personalizacao.setCodigoPersonalizacao(1);
+        personalizacao.setCoresPrimariasPersonalizacao(List.of("#72BBF7","#00579D" ,"#00579D", "#00579D","#8862A2", "#FFDD43", "#B4B0A8", "#EF8300", "#000000", "#0091BD", "#EA1010", "#00612E"));
+        personalizacao.setCoresSecundariasPersonalizacao(List.of("#A7D5FB", "#4889B8", "#4889B8", "#4889B8", "#B389CF", "#FFF0AA", "#D2CFC7", "#FCC17A", "#494949", "#65CEEE", "#FF8383", "#529572"));
+        personalizacao.setCoresPrimariasReuniaoPersonalizacao(List.of("#00579D", "#EF8300", "#8862A2", "#00612E", "#EA1010"));
+        personalizacao.setCoresSecundariasReuniaoPersonalizacao(List.of("#4889B8", "#FCC17A", "#B389CF", "#529572", "#FF8383"));
+        return personalizacao;
     }
     public Demanda gerarDemanda(Usuario usuario, Integer codigoDemanda) {
         Demanda demanda = new Demanda();
@@ -187,6 +201,7 @@ public class DatabaseInitializer implements CommandLineRunner{
         if(usuarios.size() != 0){
            return;
         }
+        personalizacaoRepository.save(gerarPersonalizacao());
         Usuario gt = usuarioRepository.save(new Usuario(1, "gestorTI", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
         Usuario s = usuarioRepository.save(new Usuario(2, "solicitante", "s", "s", encoder.encode("s"), departamento, NivelAcesso.Solicitante));
         Usuario gn = usuarioRepository.save(new Usuario(3, "gerente de negócio", "gn", "gn", encoder.encode("gn"), departamento, NivelAcesso.GerenteNegocio));
