@@ -148,17 +148,17 @@ public class DemandaController {
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         List<Integer> listQtd = new ArrayList<>();
-        if (usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
+//        if (usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
             for (int i = 0; i < 13; i++) {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getCodigoUsuario(), page));
                 listQtd.add(demandaService.countDemanda(usuario.getCodigoUsuario(), Status.values()[i] + ""));
             }
-        } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista) {
-            for (int i = 0; i < 13; i++) {
-                listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
-                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
-            }
-        }
+//        } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista) {
+//            for (int i = 0; i < 13; i++) {
+//                listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
+//                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
+//            }
+//        }
 
         Map<String, Object> response = new HashMap<>();
         response.put("demandas", listaDemandas);
@@ -274,10 +274,10 @@ public class DemandaController {
         //Necessario para realizar um put
 
         ModelMapper modelMapper = new ModelMapper();
-
+        
         DemandaClassificada demandaNova = modelMapper.map(demanda, DemandaClassificada.class);
         demandaNova.setVersion(demanda.getVersion() + 1);
-        //O sout n deve ser tirado
+
         //Precisam ser criado novamente - para não ter duplicidade
 //        demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());/
 
