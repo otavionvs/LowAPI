@@ -274,10 +274,10 @@ public class DemandaController {
         //Necessario para realizar um put
 
         ModelMapper modelMapper = new ModelMapper();
-
+        
         DemandaClassificada demandaNova = modelMapper.map(demanda, DemandaClassificada.class);
         demandaNova.setVersion(demanda.getVersion() + 1);
-        //O sout n deve ser tirado
+
         //Precisam ser criado novamente - para não ter duplicidade
 //        demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());/
 

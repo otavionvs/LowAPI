@@ -42,6 +42,7 @@ public class DemandaClassificada extends Demanda{
         System.out.println(demandaClassificada.busBeneficiadasDemandaClassificada);
         busBeneficiadasDemandaClassificada = demandaClassificada.busBeneficiadasDemandaClassificada;
         secaoDemandaClassificada = demandaClassificada.secaoDemandaClassificada;
+        score = demandaClassificada.score;
         this.setAnalista(demandaClassificada.getAnalista());
         this.setGerenteNegocio(demandaClassificada.getGerenteNegocio());
         this.setSolicitanteDemanda(demandaClassificada.getSolicitanteDemanda());
