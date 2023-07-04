@@ -14,6 +14,7 @@ import weg.com.Low.repository.ReuniaoRepository;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,26 +37,27 @@ public class ReuniaoService {
     @Transactional
     public Reuniao save(Reuniao reuniao, TipoNotificacao tipoNotificacao) {
         Usuario usuario = reuniao.getPropostasReuniao().get(0).getAnalista();
+        SimpleDateFormat formatoDataHora = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         switch (tipoNotificacao) {
             case MARCOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Marcada!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuario));
+                        "Reunião com a " + reuniao.getComissaoReuniao() + " marcada para " + formatoDataHora.format(reuniao.getDataReuniao()), LocalDateTime.now(), false, usuario));
             }
             case EDITOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Alterada!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuario));
+                        "Reunião com a " + reuniao.getComissaoReuniao() + " foi alterada para " + formatoDataHora.format(reuniao.getDataReuniao()), LocalDateTime.now(), false, usuario));
             }
             case FINALIZOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Finalizada!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuario));
+                        "Reunião com a " + reuniao.getComissaoReuniao() + " finalizada!", LocalDateTime.now(), false, usuario));
             }
             case DESMARCOU_REUNIAO -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Desmarcada!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao(), LocalDateTime.now(), false, usuario));
+                        "Reunião com a " + reuniao.getComissaoReuniao() + " desmarcada!", LocalDateTime.now(), false, usuario));
             }
             case REUNIAO_PROXIMA -> {
                 notificacaoService.save(new Notificacao(null, "Reunião está Próxima!", tipoNotificacao,
-                        "Reunião com a " + reuniao.getComissaoReuniao() + " está próxima!", LocalDateTime.now(), false, usuario));
+                        "Reunião com a " + reuniao.getComissaoReuniao() + " está próxima! Data: " + formatoDataHora.format(reuniao.getDataReuniao()), LocalDateTime.now(), false, usuario));
             }
             case REUNIAO_PENDETE -> {
                 notificacaoService.save(new Notificacao(null, "Reunião Pendente!", tipoNotificacao,
