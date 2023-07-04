@@ -28,7 +28,6 @@ import java.util.Optional;
 public class ReuniaoService {
     private ReuniaoRepository reuniaoRepository;
     private NotificacaoService notificacaoService;
-    private EmailService emailService;
 
     public List<Reuniao> findAll() {
         return reuniaoRepository.findAll();
@@ -79,14 +78,12 @@ public class ReuniaoService {
         for (Reuniao reuniao : reunioes) {
             reuniao.setStatusReuniao(StatusReuniao.PROXIMO);
             save(reuniao, TipoNotificacao.REUNIAO_PROXIMA);
-            emailService.sendEmail(reuniao.getPropostasReuniao().get(0).getSolicitanteDemanda().getEmailUsuario(), "Reunião Próxima", "");
         }
 
         List<Reuniao> reunioesPendentes = reuniaoRepository.findByDataReuniaoBeforeAndStatusReuniao(agora, StatusReuniao.PROXIMO);
         for (Reuniao reuniao : reunioesPendentes) {
             reuniao.setStatusReuniao(StatusReuniao.PENDENTE);
             reuniaoRepository.save(reuniao);
-//            emailService.sendEmail(reuniao.getPropostasReuniao().get(0).getSolicitanteDemanda().getEmailUsuario(), "Reunião Pendente", "");
         }
     }
 
