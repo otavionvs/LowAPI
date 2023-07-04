@@ -134,7 +134,7 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
 
-    //Retorna uma quantidade de demandas de cada status - para analista
+    //Retorna uma quantidade de demandas de cada status - para analista e gestor
     @GetMapping("/status")
     public ResponseEntity<Map<String, Object>> search(
             @PageableDefault(
@@ -148,18 +148,15 @@ public class DemandaController {
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         List<Integer> listQtd = new ArrayList<>();
-//        if (usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
-            for (int i = 0; i < 13; i++) {
+        Page<Demanda> suasDemandas = demandaService.search(usuario.getCodigoUsuario(), page);
+        if(!suasDemandas.isEmpty()) {
+            listaDemandas.add(suasDemandas.getContent());
+            listQtd.add(suasDemandas.getSize());
+        }
+            for (int i = 1; i < 13; i++) {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getCodigoUsuario(), page));
                 listQtd.add(demandaService.countDemanda(usuario.getCodigoUsuario(), Status.values()[i] + ""));
             }
-//        } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista) {
-//            for (int i = 0; i < 13; i++) {
-//                listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
-//                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
-//            }
-//        }
-
         Map<String, Object> response = new HashMap<>();
         response.put("demandas", listaDemandas);
         response.put("qtdDemandas", listQtd);
