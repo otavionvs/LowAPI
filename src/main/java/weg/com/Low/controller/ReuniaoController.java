@@ -187,7 +187,7 @@ public class ReuniaoController {
             listaPropostaReuniao.add((Proposta) i);
         }
         reuniao.setPropostasReuniao(listaPropostaReuniao);
-        reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO);
+        reuniaoService.save(reuniao, TipoNotificacao.SEM_NOTIFICACAO);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaComParecer);
     }

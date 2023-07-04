@@ -327,13 +327,19 @@ public class DemandaController {
         if (!demandaService.existsById(codigoDemanda)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
+
+        if(motivoReprovacao.equals("")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Motivo da repovação não informado");
+        }
+        System.out.println("Entrou no cencelar");
         Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
-        demanda.setMotivoReprovacaoDemanda(motivoReprovacao);
-        demanda.setStatusDemanda(Status.CANCELLED);
+
         //Necessário para a realização de um PUT
-        ModelMapper modelMapper = new ModelMapper();
-        Demanda demandaNova = modelMapper.map(demanda, Demanda.class);
+        Demanda demandaNova = new Demanda();
+        BeanUtils.copyProperties(demanda, demandaNova);
         demandaNova.setVersion(demanda.getVersion() + 1);
+        demandaNova.setMotivoReprovacaoDemanda(motivoReprovacao);
+        demandaNova.setStatusDemanda(Status.CANCELLED);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
     }
 
