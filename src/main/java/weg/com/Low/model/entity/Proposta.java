@@ -60,6 +60,9 @@ public class Proposta extends DemandaClassificada {
     @Column(columnDefinition = "longtext")
     private String parecerDGProposta;
 
+    @Column(columnDefinition = "longtext")
+    private String recomendacaoDGProposta;
+
     @Column
     private String numAtaDG;
 

@@ -1,6 +1,8 @@
 package weg.com.Low.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -9,15 +11,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import weg.com.Low.dto.InfoDgDTO;
 import weg.com.Low.dto.PropostaDTO;
 import weg.com.Low.dto.RecursoDTO;
 import weg.com.Low.model.entity.*;
+import weg.com.Low.model.enums.DecisaoProposta;
 import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
 import weg.com.Low.util.PropostaUtil;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +33,7 @@ import java.util.Optional;
 @RequestMapping("/low/proposta")
 public class PropostaController {
     private PropostaService propostaService;
-    private RecursoService recursoService;
+    private ArquivoService arquivoService;
     private CentroCustoService centroCustoService;
     private DemandaService demandaService;
 //    private BeneficioService beneficioService;
@@ -127,6 +132,57 @@ public class PropostaController {
 
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova, TipoNotificacao.EDITOU_DEMANDA));
+    }
+
+
+    @PutMapping("/dg/{codigoDemanda}")
+    public ResponseEntity<Object> infoDGProposta(
+            @PathVariable(value = "codigoDemanda") Integer codigoDemanda,
+            @RequestParam("arquivo") MultipartFile arquivo,
+            @RequestParam("infoDg") String infoDgString) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            InfoDgDTO infoDgDTO = objectMapper.readValue(infoDgString, InfoDgDTO.class);
+            Proposta demanda = (Proposta) demandaService.findLastDemandaById(codigoDemanda).get();
+            BeanUtils.copyProperties(infoDgDTO, demanda);
+            demanda.setArquivoDG(arquivoService.save(new Arquivo(null,
+                    arquivo.getOriginalFilename(),
+                    arquivo.getContentType(),
+                    arquivo.getBytes())));
+
+            if (demanda.getDecisaoDG().equals(DecisaoProposta.APROVAR.toString())) {
+                demanda.setStatusDemanda(Status.TO_DO);
+
+                if (demanda.getParecerComissaoProposta().length() == 0) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
+                }
+
+
+
+            } else if (demanda.getDecisaoDG().equals(DecisaoProposta.APROVAR_COM_RECOMENDACAO.toString())) {
+
+                demanda.setStatusDemanda(Status.TO_DO);
+
+                if (demanda.getParecerComissaoProposta().length() == 0) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
+                }
+
+            } else if (demanda.getDecisaoDG().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO.toString())) {
+
+                demanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+
+                if (demanda.getParecerComissaoProposta().length() == 0) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
+                }
+
+            } else if (demanda.getDecisaoDG().equals(DecisaoProposta.REPROVAR.toString())) {
+                demanda.setStatusDemanda(Status.CANCELLED);
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda, TipoNotificacao.EDITOU_DEMANDA));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
+        }
     }
 
 
