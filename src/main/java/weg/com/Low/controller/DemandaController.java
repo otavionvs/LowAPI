@@ -262,21 +262,22 @@ public class DemandaController {
             @RequestParam("codigo") @NotNull Integer codigo,
             @RequestParam("decisao") @NotNull Integer decisao,
             HttpServletRequest request) {
+
         if (!demandaService.existsById(codigo)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
-        DemandaClassificada demanda= (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
+
+        DemandaClassificada demanda = (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
         //Necessario para realizar um put
 
-        ModelMapper modelMapper = new ModelMapper();
-        
-        DemandaClassificada demandaNova = modelMapper.map(demanda, DemandaClassificada.class);
+        Proposta demandaNova = new Proposta();
+        BeanUtils.copyProperties(demanda, demandaNova);
         demandaNova.setVersion(demanda.getVersion() + 1);
 
         //Precisam ser criado novamente - para não ter duplicidade
-//        demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());/
+        demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());
 
         if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
             if (decisao == 1) {
