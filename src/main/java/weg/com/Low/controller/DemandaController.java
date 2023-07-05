@@ -1,8 +1,6 @@
 package weg.com.Low.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,15 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.model.entity.*;
-import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.Status;
-import weg.com.Low.model.enums.TamanhoDemanda;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
 import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -62,7 +57,6 @@ public class DemandaController {
             HttpServletRequest httpServletRequest
     ) {
         Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(httpServletRequest)).get();
-//        System.out.println(demandaService.search(usuario.getCodigoUsuario(), page));
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(usuario.getCodigoUsuario(), page));
     }
 
@@ -271,7 +265,6 @@ public class DemandaController {
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
         //Necessario para realizar um put
-
         Proposta demandaNova = new Proposta();
         BeanUtils.copyProperties(demanda, demandaNova);
         demandaNova.setVersion(demanda.getVersion() + 1);
@@ -341,18 +334,4 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
     }
 
-//    //    //Não Deleta todas as demandas do codigo
-//    @DeleteMapping("/{codigo}")
-//    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-//        Optional demandaOptional = demandaService.findLastDemandaById(codigo);
-//        if (demandaOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
-//        }
-//        Demanda demanda = (Demanda) demandaOptional.get();
-////        beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
-////        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
-//
-//        demandaService.deleteById(codigo);
-//        return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
-//    }
 }
