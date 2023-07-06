@@ -30,7 +30,6 @@ public class Proposta extends DemandaClassificada {
 
     @Column(columnDefinition = "longtext")
     private String parecerComissaoProposta;
-
     @Column
     private TipoAtaProposta tipoAtaProposta;
 
@@ -52,6 +51,25 @@ public class Proposta extends DemandaClassificada {
     @JoinColumn(name = "codigo_proposta", referencedColumnName = "codigo_demanda"), @JoinColumn(name = "version", referencedColumnName = "version")},
             inverseJoinColumns = @JoinColumn(name = "codigo_recurso"))
     private List<Recurso> recursosProposta;
+
+
+
+    @Column
+    private String decisaoDG;
+
+    @Column(columnDefinition = "longtext")
+    private String parecerDGProposta;
+
+    @Column(columnDefinition = "longtext")
+    private String recomendacaoDGProposta;
+
+    @Column
+    private String numAtaDG;
+
+    @OneToOne()
+    @JoinColumn(name = "id_reuniao")
+    private Arquivo arquivoDG;
+
 
 //    @ManyToOne
 //    @JoinColumn(name = "codigo_arquivo")

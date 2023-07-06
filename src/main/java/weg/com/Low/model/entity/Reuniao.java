@@ -29,9 +29,6 @@ public class Reuniao {
     @JoinColumn(name = "ata_publicada")
     private Ata ataPublicadaReuniao;
 
-    @Column
-    private String numAtaDG;
-
     @Column(columnDefinition = "longtext")
     private String motivoCancelamentoReuniao;
 
@@ -46,9 +43,6 @@ public class Reuniao {
                     @JoinColumn(name = "version", referencedColumnName = "version", nullable = false)})
     private List<Proposta> propostasReuniao;
 
-    @OneToOne()
-    @JoinColumn(name = "id_reuniao")
-    private Arquivo arquivoReuniao;
 
 
 }
