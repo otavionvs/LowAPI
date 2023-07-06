@@ -260,6 +260,19 @@ public class ReuniaoController {
         reuniao.setStatusReuniao(StatusReuniao.CANCELADO);
         reuniao.setMotivoCancelamentoReuniao(motivoCancelamentoReuniao);
 
+        List<Proposta> listaPropostas = new ArrayList<>();
+
+        for(Proposta proposta : reuniao.getPropostasReuniao()) {
+            proposta = (Proposta) demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
+            proposta.setVersion(proposta.getVersion() + 2);
+
+            Proposta propostaNova = new Proposta();
+            BeanUtils.copyProperties(proposta, propostaNova);
+
+            listaPropostas.add((Proposta) demandaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
+        }
+        reuniao.setPropostasReuniao(listaPropostas);
+
         return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.DESMARCOU_REUNIAO));
     }
 
