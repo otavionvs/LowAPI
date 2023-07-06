@@ -88,7 +88,6 @@ public class PropostaController {
 
         proposta.setVersion(demanda.getVersion() + 1);
 
-
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta, TipoNotificacao.AVANCOU_STATUS_DEMANDA));
     }
 

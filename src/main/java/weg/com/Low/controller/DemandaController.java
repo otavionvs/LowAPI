@@ -1,8 +1,6 @@
 package weg.com.Low.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,15 +13,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.model.entity.*;
-import weg.com.Low.model.enums.NivelAcesso;
 import weg.com.Low.model.enums.Status;
-import weg.com.Low.model.enums.TamanhoDemanda;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
 import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.DemandaUtil;
 import weg.com.Low.util.GeradorPDF;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -62,7 +57,6 @@ public class DemandaController {
             HttpServletRequest httpServletRequest
     ) {
         Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(httpServletRequest)).get();
-//        System.out.println(demandaService.search(usuario.getCodigoUsuario(), page));
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.search(usuario.getCodigoUsuario(), page));
     }
 
@@ -134,7 +128,7 @@ public class DemandaController {
         return ResponseEntity.status(HttpStatus.OK).body(listaDemandas);
     }
 
-    //Retorna uma quantidade de demandas de cada status - para analista
+    //Retorna uma quantidade de demandas de cada status - para analista e gestor
     @GetMapping("/status")
     public ResponseEntity<Map<String, Object>> search(
             @PageableDefault(
@@ -148,18 +142,15 @@ public class DemandaController {
         TokenUtils tokenUtils = new TokenUtils();
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         List<Integer> listQtd = new ArrayList<>();
-        if (usuario.getNivelAcessoUsuario() == NivelAcesso.GestorTI) {
-            for (int i = 0; i < 13; i++) {
+        Page<Demanda> suasDemandas = demandaService.search(usuario.getCodigoUsuario(), page);
+        if(!suasDemandas.isEmpty()) {
+            listaDemandas.add(suasDemandas.getContent());
+            listQtd.add(suasDemandas.getSize());
+        }
+            for (int i = 1; i < 13; i++) {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getCodigoUsuario(), page));
                 listQtd.add(demandaService.countDemanda(usuario.getCodigoUsuario(), Status.values()[i] + ""));
             }
-        } else if (usuario.getNivelAcessoUsuario() == NivelAcesso.Analista) {
-            for (int i = 0; i < 13; i++) {
-                listaDemandas.add(demandaService.search(usuario.getCodigoUsuario(), Status.values()[i] + "", page));
-                listQtd.add(demandaService.countDemanda(Status.values()[i] + "", usuario.getCodigoUsuario()));
-            }
-        }
-
         Map<String, Object> response = new HashMap<>();
         response.put("demandas", listaDemandas);
         response.put("qtdDemandas", listQtd);
@@ -265,21 +256,21 @@ public class DemandaController {
             @RequestParam("codigo") @NotNull Integer codigo,
             @RequestParam("decisao") @NotNull Integer decisao,
             HttpServletRequest request) {
+
         if (!demandaService.existsById(codigo)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
-        DemandaClassificada demanda= (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
+
+        DemandaClassificada demanda = (DemandaClassificada) demandaService.findLastDemandaById(codigo).get();
         String demandaStatus = demanda.getStatusDemanda().getStatus();
 
         //Necessario para realizar um put
-
-        ModelMapper modelMapper = new ModelMapper();
-
-        DemandaClassificada demandaNova = modelMapper.map(demanda, DemandaClassificada.class);
+        Proposta demandaNova = new Proposta();
+        BeanUtils.copyProperties(demanda, demandaNova);
         demandaNova.setVersion(demanda.getVersion() + 1);
-        //O sout n deve ser tirado
+
         //Precisam ser criado novamente - para não ter duplicidade
-//        demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());/
+        demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());
 
         if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
             if (decisao == 1) {
@@ -327,28 +318,20 @@ public class DemandaController {
         if (!demandaService.existsById(codigoDemanda)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
+
+        if(motivoReprovacao.equals("")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Motivo da repovação não informado");
+        }
+        System.out.println("Entrou no cencelar");
         Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
-        demanda.setMotivoReprovacaoDemanda(motivoReprovacao);
-        demanda.setStatusDemanda(Status.CANCELLED);
+
         //Necessário para a realização de um PUT
-        ModelMapper modelMapper = new ModelMapper();
-        Demanda demandaNova = modelMapper.map(demanda, Demanda.class);
+        Demanda demandaNova = new Demanda();
+        BeanUtils.copyProperties(demanda, demandaNova);
         demandaNova.setVersion(demanda.getVersion() + 1);
+        demandaNova.setMotivoReprovacaoDemanda(motivoReprovacao);
+        demandaNova.setStatusDemanda(Status.CANCELLED);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
     }
 
-//    //    //Não Deleta todas as demandas do codigo
-//    @DeleteMapping("/{codigo}")
-//    public ResponseEntity<Object> deleteById(@PathVariable(value = "codigo") Integer codigo) {
-//        Optional demandaOptional = demandaService.findLastDemandaById(codigo);
-//        if (demandaOptional.isEmpty()) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada!");
-//        }
-//        Demanda demanda = (Demanda) demandaOptional.get();
-////        beneficioService.deleteById(demanda.getBeneficioPotencialDemanda().getCodigoBeneficio());
-////        beneficioService.deleteById(demanda.getBeneficioRealDemanda().getCodigoBeneficio());
-//
-//        demandaService.deleteById(codigo);
-//        return ResponseEntity.status(HttpStatus.OK).body("Demanda Deletada!");
-//    }
 }

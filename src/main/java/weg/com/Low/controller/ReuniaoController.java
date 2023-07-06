@@ -118,6 +118,8 @@ public class ReuniaoController {
             Proposta propostaNova = modelMapper.map(proposta, Proposta.class);
             propostaNova.setStatusDemanda(Status.DISCUSSION);
             propostaNova.setVersion(proposta.getVersion() + 1);
+            //N retirar o sout
+            System.out.println(propostaNova.getScore());
             //É criado uma nova proposta para atulizar a versão corretamente.
             //Necessário para a realização de um PUT
             listaPropostas.add(propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
@@ -175,7 +177,7 @@ public class ReuniaoController {
             listaPropostaReuniao.add((Proposta) i);
         }
         reuniao.setPropostasReuniao(listaPropostaReuniao);
-        reuniaoService.save(reuniao, TipoNotificacao.MARCOU_REUNIAO);
+        reuniaoService.save(reuniao, TipoNotificacao.SEM_NOTIFICACAO);
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaComParecer);
     }
