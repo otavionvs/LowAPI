@@ -149,17 +149,7 @@ public class ReuniaoController {
         ModelMapper modelMapper = new ModelMapper();
         Proposta novaDemanda = modelMapper.map(demanda, Proposta.class);
 
-        if (parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR)) {
-            novaDemanda.setStatusDemanda(Status.TO_DO);
-
-        } else if (parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.APROVAR_COM_RECOMENDACAO)) {
-            novaDemanda.setStatusDemanda(Status.TO_DO);
-
-            if (parecerComissaoDTO.getParecerComissaoProposta().length() == 0) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Envie alguma Recomendação");
-            }
-
-        } else if (parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)) {
+      if (parecerComissaoDTO.getDecisaoProposta().equals(DecisaoProposta.REAPRESENTAR_COM_RECOMENDACAO)) {
 
             novaDemanda.setStatusDemanda(Status.BACKLOG_PROPOSTA);
 
@@ -204,8 +194,8 @@ public class ReuniaoController {
         reuniao.setStatusReuniao(StatusReuniao.CONCLUIDO);
         List<Proposta> listaPropostas = new ArrayList<>();
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
-            //Aqui deve retornar ao status anterior.
-            if (proposta.getStatusDemanda() == Status.DISCUSSION) {
+            //Aqui deve retornar ao status anterior. (Caso não tiver parecer da comissão)
+            if (proposta.getParecerComissaoProposta().length() == 0) {
 //                demandaService.deleteById(proposta.getCodigoDemanda());
 //
 //                proposta = (Proposta) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get();
@@ -225,26 +215,6 @@ public class ReuniaoController {
     }
 
 
-    @PutMapping("/parecer-dg/{codigoReuniao}")
-    public ResponseEntity<Object> addInfoDG(
-            @PathVariable(value = "codigoReuniao") Integer codigoReuniao,
-            @RequestParam("arquivo") MultipartFile arquivo,
-            @RequestParam("numAtaDG") String numAtaDG) throws IOException {
-
-        if(!reuniaoService.existsById(codigoReuniao)){
-            return ResponseEntity.status(404).body("Demanda não encontrada");
-        }
-
-        Reuniao reuniao = reuniaoService.findById(codigoReuniao).get();
-
-        reuniao.setArquivoReuniao(arquivoService.save(new Arquivo(null,
-                arquivo.getOriginalFilename(),
-                arquivo.getContentType(),
-                arquivo.getBytes())));
-        reuniao.setNumAtaDG(numAtaDG);
-
-        return ResponseEntity.status(HttpStatus.OK).body(reuniaoService.save(reuniao, TipoNotificacao.FINALIZOU_REUNIAO));
-    }
 
 
     //Caso o usuário adicionar um parecer antes de cancelar uma reunião, a proposta deve voltar a sua versão anterior

@@ -23,6 +23,8 @@ public class DatabaseInitializer implements CommandLineRunner{
     static ModelMapper modelMapper = new ModelMapper();
     static boolean vez = true;
     static int vezComissao = 0;
+    static boolean vezAnalista = true;
+    static Usuario analistaGT = new Usuario();
     static Usuario analista = new Usuario();
     @Autowired
     private DepartamentoRepository departamentoRepository;
@@ -95,7 +97,12 @@ public class DatabaseInitializer implements CommandLineRunner{
         demandaClassificada.setTamanhoDemandaClassificada(TamanhoDemanda.Grande);
         demandaClassificada.setBuSolicitanteDemandaClassificada(BussinessUnit.WAU);
         demandaClassificada.setBusBeneficiadasDemandaClassificada(List.of(BussinessUnit.WAU));
-        demandaClassificada.setAnalista(analista);
+        if(vezAnalista){
+            demandaClassificada.setAnalista(analista);
+        }else{
+            demandaClassificada.setAnalista(analistaGT);
+        }
+        vezAnalista = !vezAnalista;
         demandaClassificada.setSecaoDemandaClassificada(Secao.AAS);
         demandaClassificada.setVersion(1);
         demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
@@ -205,6 +212,7 @@ public class DatabaseInitializer implements CommandLineRunner{
         Usuario gt = usuarioRepository.save(new Usuario(1, "gestorTI", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
         Usuario s = usuarioRepository.save(new Usuario(2, "solicitante", "s", "s", encoder.encode("s"), departamento, NivelAcesso.Solicitante));
         Usuario gn = usuarioRepository.save(new Usuario(3, "gerente de negócio", "gn", "gn", encoder.encode("gn"), departamento, NivelAcesso.GerenteNegocio));
+        analistaGT = gt;
         analista = usuarioRepository.save(  new Usuario(4, "analista", "a", "a", encoder.encode("a"), departamento, NivelAcesso.Analista));
         int contador = 0;
         List<Proposta> propostas = new ArrayList<>();
