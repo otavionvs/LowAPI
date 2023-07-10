@@ -58,6 +58,7 @@ public class AutenticacaoConfig {
                 // /* - um parâmetro depois da rota,  /** - dois os mais parâmetros
                 .antMatchers( "/low/login/**",
                         "/low/logout",
+                        "/low/personalizacao/ativa",
                         "/low/usuario",
                         "/low/departamento",
                         "/swagger-ui/**",
