@@ -195,7 +195,7 @@ public class ReuniaoController {
         List<Proposta> listaPropostas = new ArrayList<>();
         for (Proposta proposta : reuniao.getPropostasReuniao()) {
             //Aqui deve retornar ao status anterior. (Caso não tiver parecer da comissão)
-            if (proposta.getParecerComissaoProposta().length() == 0) {
+            if (proposta.getParecerComissaoProposta() == null) {
 //                demandaService.deleteById(proposta.getCodigoDemanda());
 //
 //                proposta = (Proposta) demandaService.findLastDemandaById(proposta.getCodigoDemanda()).get();
