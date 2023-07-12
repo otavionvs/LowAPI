@@ -209,11 +209,11 @@ public class DatabaseInitializer implements CommandLineRunner{
            return;
         }
         personalizacaoRepository.save(gerarPersonalizacao());
-        Usuario gt = usuarioRepository.save(new Usuario(1, "gestorTI", "gt", "gt", encoder.encode("gt"), departamento, NivelAcesso.GestorTI));
-        Usuario s = usuarioRepository.save(new Usuario(2, "solicitante", "s", "s", encoder.encode("s"), departamento, NivelAcesso.Solicitante));
-        Usuario gn = usuarioRepository.save(new Usuario(3, "gerente de negócio", "gn", "gn", encoder.encode("gn"), departamento, NivelAcesso.GerenteNegocio));
+        Usuario gt = usuarioRepository.save(new Usuario(1, "gestorTI", "gt", "gt", encoder.encode("gt"), false, departamento, NivelAcesso.GestorTI));
+        Usuario s = usuarioRepository.save(new Usuario(2, "solicitante", "s", "s", encoder.encode("s"), false, departamento, NivelAcesso.Solicitante));
+        Usuario gn = usuarioRepository.save(new Usuario(3, "gerente de negócio", "gn", "gn", encoder.encode("gn"), false, departamento, NivelAcesso.GerenteNegocio));
         analistaGT = gt;
-        analista = usuarioRepository.save(  new Usuario(4, "analista", "a", "a", encoder.encode("a"), departamento, NivelAcesso.Analista));
+        analista = usuarioRepository.save(  new Usuario(4, "analista", "a", "a", encoder.encode("a"), false, departamento, NivelAcesso.Analista));
         int contador = 0;
         List<Proposta> propostas = new ArrayList<>();
         for (int i = 1; i < 500; i++) {
