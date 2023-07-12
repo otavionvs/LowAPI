@@ -241,7 +241,6 @@ public class DemandaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("É necessário preencher todos os campos do benefício Real");
         }
 
-
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
         demandaNova.setSolicitanteDemanda(demanda.getSolicitanteDemanda());
         demandaNova.setVersion(demanda.getVersion() + 1);
@@ -268,6 +267,8 @@ public class DemandaController {
         Proposta demandaNova = new Proposta();
         BeanUtils.copyProperties(demanda, demandaNova);
         demandaNova.setVersion(demanda.getVersion() + 1);
+        System.out.println(demanda.getBusBeneficiadasDemandaClassificada());
+        demandaNova.setBusBeneficiadasDemandaClassificada(demanda.getBusBeneficiadasDemandaClassificada());
 
         //Precisam ser criado novamente - para não ter duplicidade
         demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());
@@ -313,16 +314,16 @@ public class DemandaController {
 
     //Reprova uma demanda
     @PutMapping("/cancell/{codigoDemanda}")
-    public ResponseEntity<Object> updateAprovacao(
+    public ResponseEntity<Object> updateCancelar(
             @PathVariable(value = "codigoDemanda") Integer codigoDemanda, @RequestBody @NotBlank String motivoReprovacao) {
         if (!demandaService.existsById(codigoDemanda)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
 
         if(motivoReprovacao.equals("")){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Motivo da repovação não informado");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Motivo da reprovação não informado!");
         }
-        System.out.println("Entrou no cencelar");
+
         Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
 
         //Necessário para a realização de um PUT
@@ -331,6 +332,29 @@ public class DemandaController {
         demandaNova.setVersion(demanda.getVersion() + 1);
         demandaNova.setMotivoReprovacaoDemanda(motivoReprovacao);
         demandaNova.setStatusDemanda(Status.CANCELLED);
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
+    }
+
+    //Aprova com recomendação
+    @PutMapping("/aprovar-recomendacao/{codigoDemanda}")
+    public ResponseEntity<Object> updateAprovacao(
+            @PathVariable(value = "codigoDemanda") Integer codigoDemanda, @RequestBody @NotBlank String recomendacao) {
+        if (!demandaService.existsById(codigoDemanda)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
+        }
+
+        if(recomendacao.equals("")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Recomendação não informada!");
+        }
+
+        Demanda demanda = demandaService.findLastDemandaById(codigoDemanda).get();
+
+        //Necessário para a realização de um PUT
+        Proposta demandaNova = new Proposta();
+        BeanUtils.copyProperties(demanda, demandaNova);
+        demandaNova.setVersion(demanda.getVersion() + 1);
+        demandaNova.setRecomendacaoProposta(recomendacao);
+        demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
     }
 
