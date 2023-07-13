@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public class JpaService implements UserDetailsService {
     @Autowired
-    private UsuarioRepository pessoaRepository;
+    public UsuarioRepository pessoaRepository;
 
 
     @Override

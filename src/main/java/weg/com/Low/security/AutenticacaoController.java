@@ -81,6 +81,12 @@ public class AutenticacaoController {
         if (authentication.isAuthenticated()) {
             response.addCookie(tokenUtils.gerarCookie(authentication));
             UserJpa userJpa = (UserJpa) authentication.getPrincipal();
+            if(userJpa.getUsuario().getPrimeiroAcesso() == false) {
+                Usuario usuario = userJpa.getUsuario();
+                usuario.setPrimeiroAcesso(true);
+                jpaService.pessoaRepository.save(usuario);
+                usuario.setPrimeiroAcesso(false);
+            }
             return ResponseEntity.ok(userJpa.getUsuario());
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
