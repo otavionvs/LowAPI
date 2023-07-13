@@ -287,8 +287,13 @@ public class DatabaseInitializer implements CommandLineRunner{
 
 
 
-                    if(i < 300 && i >=190){
-
+                    if(i < 300){
+                        propostas.add(proposta);
+                        if(i %2 == 0){
+                            Reuniao reuniao = gerarReuniao(i, propostas);
+                            reuniaoRepository.save(reuniao);
+                            propostas.clear();
+                        }
                         demandaRepository.save(avancarStatus(proposta, Status.DISCUSSION));
 
                     }
@@ -299,7 +304,7 @@ public class DatabaseInitializer implements CommandLineRunner{
                         demandaRepository.save(avancarStatus(proposta, Status.TO_DO));
 
                     } if(i < 160){
-                        demandaRepository.save(avancarStatus(proposta, Status.SUPPORT));
+                       demandaRepository.save(avancarStatus(proposta, Status.SUPPORT));
 
                     } if(i < 140){
                         demandaRepository.save(avancarStatus(proposta, Status.DONE));
@@ -309,12 +314,7 @@ public class DatabaseInitializer implements CommandLineRunner{
 
                     }
 
-                    propostas.add(proposta);
-                    if(i %2 == 0){
-                        Reuniao reuniao = gerarReuniao(i, propostas);
-                        reuniaoRepository.save(reuniao);
-                        propostas.clear();
-                    }
+
 
                 }
             }
