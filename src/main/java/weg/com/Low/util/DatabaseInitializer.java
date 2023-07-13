@@ -178,6 +178,16 @@ public class DatabaseInitializer implements CommandLineRunner{
     public Reuniao gerarReuniao(int codigoReuniao, List<Proposta> demandas){
         Reuniao reuniao = new Reuniao();
         reuniao.setCodigoReuniao(codigoReuniao);
+        List<Proposta> novasPropostas = new ArrayList<>();
+
+        for (Proposta demanda: demandas){
+            Proposta novaProposta = modelMapper.map(demanda, Proposta.class);
+            novaProposta.setVersion(demanda.getVersion() + 1);
+            novaProposta.setStatusDemanda(Status.DISCUSSION);
+            novasPropostas.add(novaProposta);
+        }
+        reuniao.setPropostasReuniao(novasPropostas);
+
         vezComissao++;
         if(vezComissao == 1){
 
@@ -200,14 +210,15 @@ public class DatabaseInitializer implements CommandLineRunner{
 
         }
 
-        if(vezStatusReuniao == 0){
+        vezStatusReuniao++;
+        if(vezStatusReuniao == 1){
             reuniao.setStatusReuniao(StatusReuniao.PROXIMO);
             reuniao.setDataReuniao(Faker.instance().date().future(15, TimeUnit.DAYS));
-        }else if(vezStatusReuniao == 1){
+        }else if(vezStatusReuniao == 2){
 
             reuniao.setStatusReuniao(StatusReuniao.AGUARDANDO);
             reuniao.setDataReuniao(Faker.instance().date().future(60,15, TimeUnit.DAYS));
-        }else if(vezStatusReuniao == 2){
+        }else if(vezStatusReuniao == 3){
             reuniao.setDataReuniao(Faker.instance().date().past(15, TimeUnit.DAYS));
             reuniao.setStatusReuniao(StatusReuniao.CONCLUIDO);
             for(Proposta proposta: reuniao.getPropostasReuniao()){
@@ -218,23 +229,15 @@ public class DatabaseInitializer implements CommandLineRunner{
                 proposta.setTipoAtaProposta(TipoAtaProposta.PUBLICADA);
                 proposta.setStatusDemanda(Status.TO_DO);
             }
-        }else if(vezStatusReuniao == 3){
-            reuniao.setDataReuniao(Faker.instance().date().past(15, TimeUnit.DAYS));
-            reuniao.setStatusReuniao(StatusReuniao.CANCELADO);
         }else if(vezStatusReuniao == 4){
             reuniao.setDataReuniao(Faker.instance().date().past(15, TimeUnit.DAYS));
-            vezStatusReuniao = -1;
+            reuniao.setStatusReuniao(StatusReuniao.CANCELADO);
+        }else if(vezStatusReuniao == 5){
+            reuniao.setStatusReuniao(StatusReuniao.PENDENTE);
+            reuniao.setDataReuniao(Faker.instance().date().past(15, TimeUnit.DAYS));
+            vezStatusReuniao = 0;
         }
-        vezStatusReuniao++;
-        List<Proposta> novasPropostas = new ArrayList<>();
 
-        for (Proposta demanda: demandas){
-            Proposta novaProposta = modelMapper.map(demanda, Proposta.class);
-            novaProposta.setVersion(demanda.getVersion() + 1);
-            novaProposta.setStatusDemanda(Status.DISCUSSION);
-            novasPropostas.add(novaProposta);
-        }
-        reuniao.setPropostasReuniao(novasPropostas);
         return reuniao;
     }
 
@@ -280,7 +283,7 @@ public class DatabaseInitializer implements CommandLineRunner{
                 if (i < 450) {
                     Proposta proposta = propostaRepository.save(gerarProposta(demandaClassificada));
                     propostas.add(proposta);
-                    if(i %2 == 0 && i < 300){
+                    if(i %2 == 0 && i < 300 && i >= 200){
                         Reuniao reuniao = gerarReuniao(i, propostas);
                         reuniaoRepository.save(reuniao);
                         propostas.clear();
