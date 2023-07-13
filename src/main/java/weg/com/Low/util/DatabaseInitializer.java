@@ -13,6 +13,7 @@ import weg.com.Low.model.service.RecursoService;
 import weg.com.Low.repository.*;
 
 import javax.annotation.PostConstruct;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,6 +25,7 @@ public class DatabaseInitializer implements CommandLineRunner{
     static boolean vez = true;
     static int vezComissao = 0;
     static boolean vezAnalista = true;
+    static int vezStatusReuniao = 0;
     static Usuario analistaGT = new Usuario();
     static Usuario analista = new Usuario();
     @Autowired
@@ -99,16 +101,32 @@ public class DatabaseInitializer implements CommandLineRunner{
         demandaClassificada.setBusBeneficiadasDemandaClassificada(List.of(BussinessUnit.WAU));
         if(vezAnalista){
             demandaClassificada.setAnalista(analista);
+            demandaClassificada.setStatusDemanda(Status.BACKLOG_APROVACAO);
         }else{
             demandaClassificada.setAnalista(analistaGT);
+            demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
         }
         vezAnalista = !vezAnalista;
         demandaClassificada.setSecaoDemandaClassificada(Secao.AAS);
         demandaClassificada.setVersion(1);
-        demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
         return demandaClassificada;
     }
-
+/*
+* Cores primarias: #f772f5,#009d37,#9d7b00,#9d002f,#1100ff,#43ddff,#ab0972,#555982,#ad72ad,#1a3b45,#291b1b,#a8bfb3
+* Cores secundarias:* #b559b4,#48b87c,#b1b848,#b84880,#c26afc,#70673f,#D2CFC7,#7a9bfc,#d694d6,#6b848c,#c9b1b1, #529572
+#633a60,
+*
+* Reunião primaria #02090f,#57350b,#9725e6,#30c275,#805757
+*
+* Reunião sec
+*
+*
+#254861,
+#6b5337,
+#370a54,
+#1ee67d,
+#d9b0b0,
+* */
     public Personalizacao gerarPersonalizacao(){
         Personalizacao personalizacao = new Personalizacao();
         personalizacao.setNomePersonalizacao("Cores WEG");
@@ -118,6 +136,17 @@ public class DatabaseInitializer implements CommandLineRunner{
         personalizacao.setCoresSecundariasPersonalizacao(List.of("#A7D5FB", "#4889B8", "#4889B8", "#4889B8", "#B389CF", "#FFF0AA", "#D2CFC7", "#FCC17A", "#494949", "#65CEEE", "#FF8383", "#529572"));
         personalizacao.setCoresPrimariasReuniaoPersonalizacao(List.of("#00579D", "#EF8300", "#8862A2", "#00612E", "#EA1010"));
         personalizacao.setCoresSecundariasReuniaoPersonalizacao(List.of("#4889B8", "#FCC17A", "#B389CF", "#529572", "#FF8383"));
+        return personalizacao;
+    }
+    public Personalizacao gerarPersonalizacao2(){
+        Personalizacao personalizacao = new Personalizacao();
+        personalizacao.setNomePersonalizacao("Personalizacao de Teste");
+        personalizacao.setAtivaPersonalizacao(false);
+        personalizacao.setCodigoPersonalizacao(2);
+        personalizacao.setCoresPrimariasPersonalizacao(List.of("#f772f5","#009d37","#9d7b00","#9d002f","#1100ff","#43ddff","#ab0972","#555982","#ad72ad","#1a3b45","#291b1b","#a8bfb3"));
+        personalizacao.setCoresSecundariasPersonalizacao(List.of("#b559b4","#48b87c","#b1b848","#b84880","#c26afc","#70673f","#D2CFC7","#7a9bfc","#d694d6","#6b848c","#c9b1b1", "#529572"));
+        personalizacao.setCoresPrimariasReuniaoPersonalizacao(List.of("#02090f","#57350b","#9725e6","#30c275","#805757"));
+        personalizacao.setCoresSecundariasReuniaoPersonalizacao(List.of("#254861","#6b5337","#370a54","#1ee67d","#d9b0b0"));
         return personalizacao;
     }
     public Demanda gerarDemanda(Usuario usuario, Integer codigoDemanda) {
@@ -132,24 +161,16 @@ public class DatabaseInitializer implements CommandLineRunner{
         demanda.setSolicitanteDemanda(usuario);
 
         Beneficio beneficio = new Beneficio();
-
         beneficio.setMoedaBeneficio(Moeda.Real);
         beneficio.setMemoriaDeCalculoBeneficio(Faker.instance().lorem().fixedString(1000));
         beneficio.setValorBeneficio(Faker.instance().number().randomDouble(5, 500, 50000000));
-
         demanda.setBeneficioPotencialDemanda(beneficio);
-
         Beneficio beneficio2 = new Beneficio();
-
         beneficio2.setMoedaBeneficio(Moeda.Dollar);
         beneficio2.setMemoriaDeCalculoBeneficio(Faker.instance().lorem().fixedString(1000));
         beneficio2.setValorBeneficio(Faker.instance().number().randomDouble(5, 500, 50000000));
-
         demanda.setBeneficioRealDemanda(beneficio2);
-
-
         demanda.setBeneficioQualitativoDemanda(Faker.instance().lorem().fixedString(1000));
-
         List<CentroCusto> listaCentroCusto = new ArrayList<>();
         listaCentroCusto.add(gerarCentroCusto());
         demanda.setCentroCustosDemanda(centroCustoRepository.saveAll(listaCentroCusto));
@@ -157,8 +178,17 @@ public class DatabaseInitializer implements CommandLineRunner{
     }
     public Reuniao gerarReuniao(int codigoReuniao, List<Proposta> demandas){
         Reuniao reuniao = new Reuniao();
-        reuniao.setDataReuniao(Faker.instance().date().future(60, TimeUnit.DAYS));
         reuniao.setCodigoReuniao(codigoReuniao);
+        List<Proposta> novasPropostas = new ArrayList<>();
+
+        for (Proposta demanda: demandas){
+            Proposta novaProposta = modelMapper.map(demanda, Proposta.class);
+            novaProposta.setVersion(demanda.getVersion() + 1);
+            novaProposta.setStatusDemanda(Status.DISCUSSION);
+            novasPropostas.add(novaProposta);
+        }
+        reuniao.setPropostasReuniao(novasPropostas);
+
         vezComissao++;
         if(vezComissao == 1){
 
@@ -180,17 +210,35 @@ public class DatabaseInitializer implements CommandLineRunner{
             vezComissao = 0;
 
         }
-        reuniao.setStatusReuniao(StatusReuniao.PROXIMO);
 
-        List<Proposta> novasPropostas = new ArrayList<>();
+        vezStatusReuniao++;
+        if(vezStatusReuniao == 1){
+            reuniao.setStatusReuniao(StatusReuniao.PROXIMO);
+            reuniao.setDataReuniao(Faker.instance().date().future(15, TimeUnit.DAYS));
+        }else if(vezStatusReuniao == 2){
 
-        for (Proposta demanda: demandas){
-            Proposta novaProposta = modelMapper.map(demanda, Proposta.class);
-            novaProposta.setVersion(demanda.getVersion() + 1);
-            novaProposta.setStatusDemanda(Status.DISCUSSION);
-            novasPropostas.add(novaProposta);
+            reuniao.setStatusReuniao(StatusReuniao.AGUARDANDO);
+            reuniao.setDataReuniao(Faker.instance().date().future(60,15, TimeUnit.DAYS));
+        }else if(vezStatusReuniao == 3){
+            reuniao.setDataReuniao(Faker.instance().date().past(15, TimeUnit.DAYS));
+            reuniao.setStatusReuniao(StatusReuniao.CONCLUIDO);
+            for(Proposta proposta: reuniao.getPropostasReuniao()){
+                proposta.setParecerComissaoProposta(Faker.instance().leagueOfLegends().summonerSpell());
+                proposta.setParecerDGProposta(Faker.instance().leagueOfLegends().summonerSpell());
+                proposta.setDecisaoDG("APROVAR");
+                proposta.setUltimaDecisaoComissao("APROVAR");
+                proposta.setTipoAtaProposta(TipoAtaProposta.PUBLICADA);
+                proposta.setStatusDemanda(Status.TO_DO);
+            }
+        }else if(vezStatusReuniao == 4){
+            reuniao.setDataReuniao(Faker.instance().date().past(15, TimeUnit.DAYS));
+            reuniao.setStatusReuniao(StatusReuniao.CANCELADO);
+        }else if(vezStatusReuniao == 5){
+            reuniao.setStatusReuniao(StatusReuniao.PENDENTE);
+            reuniao.setDataReuniao(Faker.instance().date().past(15, TimeUnit.DAYS));
+            vezStatusReuniao = 0;
         }
-        reuniao.setPropostasReuniao(novasPropostas);
+
         return reuniao;
     }
 
@@ -209,6 +257,8 @@ public class DatabaseInitializer implements CommandLineRunner{
            return;
         }
         personalizacaoRepository.save(gerarPersonalizacao());
+        personalizacaoRepository.save(gerarPersonalizacao2());
+
         Usuario gt = usuarioRepository.save(new Usuario(1, "gestorTI", "gt", "gt", encoder.encode("gt"), false, departamento, NivelAcesso.GestorTI));
         Usuario s = usuarioRepository.save(new Usuario(2, "solicitante", "s", "s", encoder.encode("s"), false, departamento, NivelAcesso.Solicitante));
         Usuario gn = usuarioRepository.save(new Usuario(3, "gerente de negócio", "gn", "gn", encoder.encode("gn"), false, departamento, NivelAcesso.GerenteNegocio));
@@ -234,30 +284,39 @@ public class DatabaseInitializer implements CommandLineRunner{
                 DemandaClassificada demandaClassificada = demandaClassificadaRepository.save(gerarDemandaClassificada(demanda));
                 if (i < 450) {
                     Proposta proposta = propostaRepository.save(gerarProposta(demandaClassificada));
-                    propostas.add(proposta);
-                    if(i %2 == 0 && i < 300){
-                        Reuniao reuniao = gerarReuniao(i, propostas);
-                        reuniaoRepository.save(reuniao);
-                        propostas.clear();
-                    }
 
-                    if(i < 200){
-                        demandaRepository.save(avancarStatus(proposta, Status.DESIGN_AND_BUILD));
+
+
+
+                    if(i < 300){
+                        propostas.add(proposta);
+                        if(i %2 == 0){
+                            Reuniao reuniao = gerarReuniao(i, propostas);
+                            reuniaoRepository.save(reuniao);
+                            propostas.clear();
+                        }
+                        demandaRepository.save(avancarStatus(proposta, Status.DISCUSSION));
 
                     }
                     if(i < 190){
-                        demandaRepository.save(avancarStatus(proposta, Status.SUPPORT));
-
-                    } if(i < 170){
-                        demandaRepository.save(avancarStatus(proposta, Status.DONE));
-
-                    } if(i < 150){
-                        demandaRepository.save(avancarStatus(proposta, Status.CANCELLED));
-
-                    } if(i < 130){
+                        demandaRepository.save(avancarStatus(proposta, Status.DESIGN_AND_BUILD));
+                    }
+                    if(i < 180){
                         demandaRepository.save(avancarStatus(proposta, Status.TO_DO));
 
+                    } if(i < 160){
+                       demandaRepository.save(avancarStatus(proposta, Status.SUPPORT));
+
+                    } if(i < 140){
+                        demandaRepository.save(avancarStatus(proposta, Status.DONE));
+
+                    } if(i < 120){
+                        demandaRepository.save(avancarStatus(proposta, Status.CANCELLED));
+
                     }
+
+
+
                 }
             }
         }
