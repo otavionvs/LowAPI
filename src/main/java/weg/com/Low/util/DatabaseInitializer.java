@@ -101,13 +101,14 @@ public class DatabaseInitializer implements CommandLineRunner{
         demandaClassificada.setBusBeneficiadasDemandaClassificada(List.of(BussinessUnit.WAU));
         if(vezAnalista){
             demandaClassificada.setAnalista(analista);
+            demandaClassificada.setStatusDemanda(Status.BACKLOG_APROVACAO);
         }else{
             demandaClassificada.setAnalista(analistaGT);
+            demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
         }
         vezAnalista = !vezAnalista;
         demandaClassificada.setSecaoDemandaClassificada(Secao.AAS);
         demandaClassificada.setVersion(1);
-        demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
         return demandaClassificada;
     }
 /*
@@ -282,30 +283,39 @@ public class DatabaseInitializer implements CommandLineRunner{
                 DemandaClassificada demandaClassificada = demandaClassificadaRepository.save(gerarDemandaClassificada(demanda));
                 if (i < 450) {
                     Proposta proposta = propostaRepository.save(gerarProposta(demandaClassificada));
+
+
+
+
+                    if(i < 300 && i >=190){
+
+                        demandaRepository.save(avancarStatus(proposta, Status.DISCUSSION));
+
+                    }
+                    if(i < 190){
+                        demandaRepository.save(avancarStatus(proposta, Status.DESIGN_AND_BUILD));
+                    }
+                    if(i < 180){
+                        demandaRepository.save(avancarStatus(proposta, Status.TO_DO));
+
+                    } if(i < 160){
+                        demandaRepository.save(avancarStatus(proposta, Status.SUPPORT));
+
+                    } if(i < 140){
+                        demandaRepository.save(avancarStatus(proposta, Status.DONE));
+
+                    } if(i < 120){
+                        demandaRepository.save(avancarStatus(proposta, Status.CANCELLED));
+
+                    }
+
                     propostas.add(proposta);
-                    if(i %2 == 0 && i < 300 && i >= 200){
+                    if(i %2 == 0){
                         Reuniao reuniao = gerarReuniao(i, propostas);
                         reuniaoRepository.save(reuniao);
                         propostas.clear();
                     }
 
-                    if(i < 200){
-                        demandaRepository.save(avancarStatus(proposta, Status.DESIGN_AND_BUILD));
-
-                    }
-                    if(i < 190){
-                        demandaRepository.save(avancarStatus(proposta, Status.SUPPORT));
-
-                    } if(i < 170){
-                        demandaRepository.save(avancarStatus(proposta, Status.DONE));
-
-                    } if(i < 150){
-                        demandaRepository.save(avancarStatus(proposta, Status.CANCELLED));
-
-                    } if(i < 130){
-                        demandaRepository.save(avancarStatus(proposta, Status.TO_DO));
-
-                    }
                 }
             }
         }
