@@ -25,13 +25,11 @@ public class Usuario {
     private String userUsuario;
     @Column(nullable = false, unique = true)
     private String emailUsuario;
-//    @Column(nullable = false)
-//    private Date data_nascimentoUsuario;
-//    @Column(nullable = false, length = 11)
-//    private Integer telefoneUsuario;
     @Column(nullable = false, length = 150)
     @JsonIgnore
     private String senhaUsuario;
+    @Column
+    private Boolean primeiroAcesso = false;
     @ManyToOne
     @JoinColumn(name = "departamento_codigo", nullable = false)
     private Departamento departamentoUsuario;

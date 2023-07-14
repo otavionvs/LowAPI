@@ -52,8 +52,6 @@ public class Proposta extends DemandaClassificada {
             inverseJoinColumns = @JoinColumn(name = "codigo_recurso"))
     private List<Recurso> recursosProposta;
 
-
-
     @Column
     private String decisaoDG;
 
