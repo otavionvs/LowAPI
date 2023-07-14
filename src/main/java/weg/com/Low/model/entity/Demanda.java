@@ -70,6 +70,9 @@ public class Demanda{
     @JoinColumn(name = "gerente_negocio_codigo")
     private Usuario gerenteNegocio;
 
+    @ManyToMany(mappedBy = "demandasFavoritas")
+    private List<Usuario> usuariosFavoritos;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "arquivo_demanda",

@@ -143,10 +143,19 @@ public class DemandaController {
         Usuario usuario = usuarioService.findByUserUsuario(tokenUtils.getUsuarioUsernameByRequest(request)).get();
         List<Integer> listQtd = new ArrayList<>();
         Page<Demanda> suasDemandas = demandaService.search(usuario.getCodigoUsuario(), page);
+
+        List<Demanda> demandasFavoritas = demandaService.findByUsuariosFavoritos(usuario);
+        if(!demandasFavoritas.isEmpty()){
+            listaDemandas.add(demandasFavoritas);
+            listQtd.add(demandasFavoritas.size());
+        }
+
         if(!suasDemandas.isEmpty()) {
             listaDemandas.add(suasDemandas.getContent());
-            listQtd.add(suasDemandas.getSize());
+            listQtd.add(Integer.parseInt(""+suasDemandas.getTotalElements()));
         }
+
+
             for (int i = 1; i < 13; i++) {
                 listaDemandas.add(demandaService.search(Status.values()[i] + "", usuario.getCodigoUsuario(), page));
                 listQtd.add(demandaService.countDemanda(usuario.getCodigoUsuario(), Status.values()[i] + ""));

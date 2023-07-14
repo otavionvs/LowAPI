@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import weg.com.Low.model.enums.NivelAcesso;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "usuario")
@@ -37,5 +38,18 @@ public class Usuario {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private NivelAcesso nivelAcessoUsuario;
+    @JsonIgnore
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "demandas_favoritas",
+            joinColumns = {
+                    @JoinColumn(name = "codigo_usuario"),
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "codigo_demanda", referencedColumnName = "codigo_demanda"),
+                    @JoinColumn(name = "version", referencedColumnName = "version")
+
+            })
+    private List<Demanda> demandasFavoritas;
 
 }
