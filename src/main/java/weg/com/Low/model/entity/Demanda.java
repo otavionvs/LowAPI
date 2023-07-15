@@ -16,7 +16,6 @@ import java.util.List;
 public class Demanda{
     //O BD não suporta o Identity nesse caso
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "codigo_demanda")
     private Integer codigoDemanda;
     @Id
@@ -39,10 +38,11 @@ public class Demanda{
     private Date dataCriacaoDemanda = new Date();
     @Column(columnDefinition = "longtext")
     private String motivoReprovacaoDemanda;
+    //Quem atualizou está demanda
+    @Column
+    private String autor;
 
-//    @Column
-//    @ElementCollection
-//    @OneToMany(cascade = CascadeType.ALL)
+
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "centro_custo_demanda",
