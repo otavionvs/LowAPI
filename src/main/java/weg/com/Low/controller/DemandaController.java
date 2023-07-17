@@ -223,13 +223,16 @@ public class DemandaController {
         }
 
         demanda.setSolicitanteDemanda(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
+        demanda.setAutor(demanda.getSolicitanteDemanda().getNomeUsuario());
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demanda, TipoNotificacao.CRIOU_DEMANDA));
     }
 
     @PutMapping("/update")
     public ResponseEntity<Object> update(
-            @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("demanda") String demandaJson) {
+            @RequestParam("arquivos") MultipartFile[] arquivos,
+            @RequestParam("demanda") String demandaJson,
+            HttpServletRequest request) {
         DemandaUtil demandaUtil = new DemandaUtil();
         Demanda demandaNova = demandaUtil.convertJsonToModel(demandaJson);
         if (!arquivos[0].getOriginalFilename().equals("")) {
@@ -253,6 +256,9 @@ public class DemandaController {
         Demanda demanda = demandaService.findLastDemandaById(demandaNova.getCodigoDemanda()).get();
         demandaNova.setSolicitanteDemanda(demanda.getSolicitanteDemanda());
         demandaNova.setVersion(demanda.getVersion() + 1);
+
+        //Adiciona quem fez a modificação nessa demanda
+        demandaNova.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.EDITOU_DEMANDA));
     }
@@ -282,12 +288,12 @@ public class DemandaController {
         //Precisam ser criado novamente - para não ter duplicidade
         demandaNova.setArquivosClassificada(demanda.getArquivosDemanda());
 
+        //Usuario que fez a requicisão
+        Usuario usuario = usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get();
+        demandaNova.setAutor(usuario.getNomeUsuario());
+
         if (demandaStatus.equals(Status.BACKLOG_APROVACAO.getStatus())) {
             if (decisao == 1) {
-                TokenUtils tokenUtils = new TokenUtils();
-                String token = tokenUtils.buscarCookie(request);
-                String user = tokenUtils.getUsuarioUsername(token);
-                Usuario usuario = usuarioService.findByUserUsuario(user).get();
                 demandaNova.setGerenteNegocio(usuario);
                 demandaNova.setDataAprovacao(new Date());
                 demandaNova.setScore(demandaClassificadaService.gerarScore(demandaNova));
@@ -324,7 +330,9 @@ public class DemandaController {
     //Reprova uma demanda
     @PutMapping("/cancell/{codigoDemanda}")
     public ResponseEntity<Object> updateCancelar(
-            @PathVariable(value = "codigoDemanda") Integer codigoDemanda, @RequestBody @NotBlank String motivoReprovacao) {
+            @PathVariable(value = "codigoDemanda") Integer codigoDemanda,
+            @RequestBody @NotBlank String motivoReprovacao,
+            HttpServletRequest request) {
         if (!demandaService.existsById(codigoDemanda)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
@@ -341,13 +349,19 @@ public class DemandaController {
         demandaNova.setVersion(demanda.getVersion() + 1);
         demandaNova.setMotivoReprovacaoDemanda(motivoReprovacao);
         demandaNova.setStatusDemanda(Status.CANCELLED);
+
+        //Adiciona quem fez a modificação nessa demanda
+        demandaNova.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
+
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
     }
 
     //Aprova com recomendação
     @PutMapping("/aprovar-recomendacao/{codigoDemanda}")
     public ResponseEntity<Object> updateAprovacao(
-            @PathVariable(value = "codigoDemanda") Integer codigoDemanda, @RequestBody @NotBlank String recomendacao) {
+            @PathVariable(value = "codigoDemanda") Integer codigoDemanda,
+            @RequestBody @NotBlank String recomendacao,
+            HttpServletRequest request) {
         if (!demandaService.existsById(codigoDemanda)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta demanda não existe");
         }
@@ -364,7 +378,11 @@ public class DemandaController {
         demandaNova.setVersion(demanda.getVersion() + 1);
         demandaNova.setRecomendacaoProposta(recomendacao);
         demandaNova.setStatusDemanda(Status.BACKLOG_PROPOSTA);
-        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.CANCELOU_DEMANDA));
+
+        //Adiciona quem fez a modificação nessa demanda
+        demandaNova.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
+
+        return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(demandaNova, TipoNotificacao.AVANCOU_STATUS_DEMANDA));
     }
 
 }

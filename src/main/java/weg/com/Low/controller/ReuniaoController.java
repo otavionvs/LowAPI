@@ -17,12 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import weg.com.Low.dto.*;
 import weg.com.Low.model.entity.*;
 import weg.com.Low.model.enums.*;
-import weg.com.Low.model.service.ArquivoService;
-import weg.com.Low.model.service.DemandaService;
-import weg.com.Low.model.service.PropostaService;
-import weg.com.Low.model.service.ReuniaoService;
+import weg.com.Low.model.service.*;
+import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.GeradorPDF;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -40,6 +39,7 @@ public class ReuniaoController {
     private DemandaService demandaService;
     private PropostaService propostaService;
     private ArquivoService arquivoService;
+    private UsuarioService usuarioService;
 
     @GetMapping
     public ResponseEntity<List<Reuniao>> findAll() {
@@ -90,7 +90,9 @@ public class ReuniaoController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody @Valid ReuniaoDTO reuniaoDTO) {
+    public ResponseEntity<Object> save(
+            @RequestBody @Valid ReuniaoDTO reuniaoDTO,
+            HttpServletRequest request) {
         Reuniao reuniao = new Reuniao();
 
         ModelMapper modelMapper = new ModelMapper();
@@ -118,6 +120,9 @@ public class ReuniaoController {
             Proposta propostaNova = modelMapper.map(proposta, Proposta.class);
             propostaNova.setStatusDemanda(Status.DISCUSSION);
             propostaNova.setVersion(proposta.getVersion() + 1);
+            //Adiciona quem fez a modificação nessa demanda
+            propostaNova.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
+
             //N retirar o sout
             System.out.println(propostaNova.getScore());
             //É criado uma nova proposta para atulizar a versão corretamente.
@@ -140,7 +145,8 @@ public class ReuniaoController {
     public ResponseEntity<Object> parecer(
             @PathVariable(value = "codigoProposta") Integer codigoProposta,
             @RequestParam Integer codigoReuniao,
-            @RequestBody @Valid ParecerComissaoDTO parecerComissaoDTO) {
+            @RequestBody @Valid ParecerComissaoDTO parecerComissaoDTO,
+            HttpServletRequest request) {
 
 
         Proposta demanda = (Proposta) demandaService.findLastDemandaById(codigoProposta).get();
@@ -165,6 +171,8 @@ public class ReuniaoController {
         novaDemanda.setVersion(demanda.getVersion() + 1);
         BeanUtils.copyProperties(parecerComissaoDTO, novaDemanda);
 
+        //Adiciona quem fez a modificação nessa demanda
+        novaDemanda.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
 
         Demanda demandaComParecer = demandaService.save(novaDemanda, TipoNotificacao.SEM_NOTIFICACAO);
 
@@ -185,7 +193,8 @@ public class ReuniaoController {
 
     @PutMapping("/finalizar/{codigoReuniao}")
     public ResponseEntity<Object> update(
-            @PathVariable(value = "codigoReuniao") Integer codigoReuniao) {
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao,
+            HttpServletRequest request) {
         if (!reuniaoService.existsById(codigoReuniao)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Esta reunião não existe!");
         }
@@ -205,6 +214,10 @@ public class ReuniaoController {
                 propostaNova.setCentroCustosDemanda(propostaAnterior.getCentroCustosDemanda());
                 propostaNova.setArquivosClassificada(propostaAnterior.getArquivosDemanda());
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
+
+                //Adiciona quem fez a modificação nessa demanda
+                propostaNova.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
+
                 demandaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
             }
             listaPropostas.add(proposta);
@@ -220,7 +233,9 @@ public class ReuniaoController {
     //Caso o usuário adicionar um parecer antes de cancelar uma reunião, a proposta deve voltar a sua versão anterior
     @PutMapping("/cancelar/{codigoReuniao}")
     public ResponseEntity<Object> cancell(
-            @PathVariable(value = "codigoReuniao") Integer codigoReuniao, @RequestBody String motivoCancelamentoReuniao) {
+            @PathVariable(value = "codigoReuniao") Integer codigoReuniao,
+            @RequestBody String motivoCancelamentoReuniao,
+            HttpServletRequest request) {
 
 
         if (!reuniaoService.existsById(codigoReuniao)) {
@@ -239,6 +254,9 @@ public class ReuniaoController {
             Proposta propostaNova = new Proposta();
             BeanUtils.copyProperties(proposta, propostaNova);
 
+            //Adiciona quem fez a modificação nessa demanda
+            propostaNova.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
+
             listaPropostas.add((Proposta) demandaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO));
         }
         reuniao.setPropostasReuniao(listaPropostas);
@@ -249,7 +267,8 @@ public class ReuniaoController {
     @PutMapping("/update/{codigo}")
     public ResponseEntity<Object> update(
             @PathVariable(value = "codigo") Integer codigo,
-            @RequestBody @Valid ReuniaoDTO reuniaoDTO) {
+            @RequestBody @Valid ReuniaoDTO reuniaoDTO,
+            HttpServletRequest request) {
         ModelMapper modelMapper = new ModelMapper();
         Reuniao reuniao = new Reuniao();
         //Verificação para caso a Reunião não tenha Propostas
@@ -279,6 +298,9 @@ public class ReuniaoController {
             if (!(proposta.getStatusDemanda() == Status.DISCUSSION)) {
                 propostaNova.setStatusDemanda(Status.DISCUSSION);
                 propostaNova.setVersion(proposta.getVersion() + 1);
+
+                //Adiciona quem fez a modificação nessa demanda
+                propostaNova.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
             }
             //Verificação de caso a reunião foi editada, porém tirou uma demanda.
             //Esta demanda retirada deve voltar ao seu status anterior
@@ -302,6 +324,8 @@ public class ReuniaoController {
                 Demanda propostaAnterior = demandaService.findFirstByCodigoDemandaAndVersion(proposta.getCodigoDemanda(), proposta.getVersion() - 1).get();
                 Proposta propostaNova = modelMapper.map(propostaAnterior, Proposta.class);
                 propostaNova.setVersion(propostaAnterior.getVersion() + 2);
+                //Adiciona quem fez a modificação nessa demanda
+                propostaNova.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
                 System.out.println("Proposta retornada a seu antigo status");
                 propostaService.save(propostaNova, TipoNotificacao.SEM_NOTIFICACAO);
             }

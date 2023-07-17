@@ -34,7 +34,9 @@ public class DemandaClassificadaController {
     //verificar se demanda existe
     //verificar se demanda não esta sendo usada (status)
     @PostMapping
-    public ResponseEntity<Object> save(@RequestBody @Valid DemandaClassificadaDTO demandaClassificadaDTO, HttpServletRequest request) {
+    public ResponseEntity<Object> save(
+            @RequestBody @Valid DemandaClassificadaDTO demandaClassificadaDTO,
+            HttpServletRequest request) {
         Optional demandaOptional = demandaService.findLastDemandaById(demandaClassificadaDTO.getCodigoDemanda());
         if(demandaOptional.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Demanda não encontrada");
@@ -54,6 +56,7 @@ public class DemandaClassificadaController {
         demandaClassificada.setStatusDemanda(Status.BACKLOG_APROVACAO);
         demandaClassificada.setVersion(demandaClassificada.getVersion() + 1);
         demandaClassificada.setAnalista(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get());
+        demandaClassificada.setAutor(demandaClassificada.getAnalista().getNomeUsuario());
 
         //O sout n deve ser tirado
         System.out.println(demandaClassificada.getCentroCustosDemanda());

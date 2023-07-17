@@ -19,8 +19,10 @@ import weg.com.Low.model.enums.DecisaoProposta;
 import weg.com.Low.model.enums.Status;
 import weg.com.Low.model.enums.TipoNotificacao;
 import weg.com.Low.model.service.*;
+import weg.com.Low.security.TokenUtils;
 import weg.com.Low.util.PropostaUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +38,7 @@ public class PropostaController {
     private ArquivoService arquivoService;
     private CentroCustoService centroCustoService;
     private DemandaService demandaService;
+    private UsuarioService usuarioService;
 //    private BeneficioService beneficioService;
 
     //Gets são feitos em DemandaController
@@ -45,7 +48,8 @@ public class PropostaController {
     @PostMapping
     public ResponseEntity<Object> save(
             @RequestParam("arquivos") MultipartFile[] arquivos,
-            @RequestParam("proposta") String propostaJson) {
+            @RequestParam("proposta") String propostaJson,
+            HttpServletRequest request) {
         PropostaUtil propostaUtil = new PropostaUtil();
         Proposta proposta = propostaUtil.convertJsonToModel(propostaJson);
 
@@ -88,12 +92,17 @@ public class PropostaController {
 
         proposta.setVersion(demanda.getVersion() + 1);
 
+        //Adiciona quem fez a modificação nessa demanda
+        proposta.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
+
         return ResponseEntity.status(HttpStatus.OK).body(propostaService.save(proposta, TipoNotificacao.AVANCOU_STATUS_DEMANDA));
     }
 
     @PutMapping("/update")
     public ResponseEntity<Object> updateProposta(
-            @RequestParam("arquivos") MultipartFile[] arquivos, @RequestParam("proposta") String propostaJson) {
+            @RequestParam("arquivos") MultipartFile[] arquivos,
+            @RequestParam("proposta") String propostaJson,
+            HttpServletRequest request) {
         PropostaUtil propostaUtil = new PropostaUtil();
         Proposta propostaNova = propostaUtil.convertJsonToModel(propostaJson);
         if (!arquivos[0].getOriginalFilename().equals("")) {
@@ -129,6 +138,8 @@ public class PropostaController {
         propostaNova.setStatusDemanda(proposta.getStatusDemanda());
         propostaNova.setVersion(propostaNova.getVersion() + 1);
 
+        //Adiciona quem fez a modificação nessa demanda
+        propostaNova.setAutor(usuarioService.findByUserUsuario(new TokenUtils().getUsuarioUsernameByRequest(request)).get().getNomeUsuario());
 
         return ResponseEntity.status(HttpStatus.OK).body(demandaService.save(propostaNova, TipoNotificacao.EDITOU_DEMANDA));
     }

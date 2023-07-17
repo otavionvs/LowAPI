@@ -63,6 +63,7 @@ public class DatabaseInitializer implements CommandLineRunner{
         proposta.setPaybackProposta(Faker.instance().number().randomDouble(2, 1, 50000));
         proposta.setEscopoDemandaProposta(Faker.instance().leagueOfLegends().summonerSpell());
         proposta.setVersion(demanda.getVersion() + 1);
+        proposta.setAutor(proposta.getAnalista().getNomeUsuario());
         if(vez){
             proposta.setStatusDemanda(Status.ASSESSMENT);
         }else{
@@ -102,9 +103,11 @@ public class DatabaseInitializer implements CommandLineRunner{
         if(vezAnalista){
             demandaClassificada.setAnalista(analista);
             demandaClassificada.setStatusDemanda(Status.BACKLOG_APROVACAO);
+            demandaClassificada.setAutor(analista.getNomeUsuario());
         }else{
             demandaClassificada.setAnalista(analistaGT);
             demandaClassificada.setStatusDemanda(Status.BACKLOG_PROPOSTA);
+            demandaClassificada.setAutor(analista.getNomeUsuario());
         }
         vezAnalista = !vezAnalista;
         demandaClassificada.setSecaoDemandaClassificada(Secao.AAS);
@@ -159,6 +162,7 @@ public class DatabaseInitializer implements CommandLineRunner{
         demanda.setObjetivoDemanda(Faker.instance().lorem().sentence());
         demanda.setFrequenciaDeUsoDemanda("MuitoAlta");
         demanda.setSolicitanteDemanda(usuario);
+        demanda.setAutor(usuario.getNomeUsuario());
 
         Beneficio beneficio = new Beneficio();
         beneficio.setMoedaBeneficio(Moeda.Real);
