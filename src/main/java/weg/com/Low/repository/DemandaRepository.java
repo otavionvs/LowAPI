@@ -23,6 +23,8 @@ public interface DemandaRepository extends JpaRepository<Demanda, Integer> {
     List<Demanda> findByCodigoDemanda(Integer codigo);
     boolean existsByCodigoDemanda(Integer codigo);
     Long countAllByCodigoDemanda(Integer codigoDemanda);
+    List<Demanda> findByUsuariosFavoritos(Usuario usuario);
+
 
     Integer countByVersionIs(Integer versao);
 

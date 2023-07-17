@@ -40,6 +40,10 @@ public class DemandaService {
         return demandaRepository.findBySolicitanteDemandaOrAnalista(solicitanteDemanda, solicitanteDemanda);
     }
 
+    public List<Demanda> findByUsuariosFavoritos(Usuario usuario) {
+        return demandaRepository.findByUsuariosFavoritos(usuario);
+    }
+
     public List<Demanda> findAll() {
         return demandaRepository.findAll();
     }
